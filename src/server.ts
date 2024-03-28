@@ -6,14 +6,8 @@ const fs = require('fs');
 
 import { router } from './routes';
 
-const passphrase = 'Senha@123';
-const privateKey = fs.readFileSync('key.pem', 'utf8');
-const certificate = fs.readFileSync('cert.pem', 'utf8');
-const credentials = { key: privateKey, cert: certificate,   passphrase: passphrase };
-
 
         const app = express();
-        const httpsServer = https.createServer(credentials, app);
 
         app.use(express.json());    
         app.use(router)
@@ -30,10 +24,7 @@ const credentials = { key: privateKey, cert: certificate,   passphrase: passphra
                         messsage: 'internal server error.'
                     })
                 })
-
-    //app.listen(3000,()=>{ console.log('app rodando porta 3000')}
-    const PORT = 3000; // Porta padrão para HTTPS
-    httpsServer.listen(PORT, () => {
-        console.log(`Servidor HTTPS rodando na porta ${PORT}`);
-      });
+                const PORT = 3000; // Porta padrão para HTTPS
+   app.listen(3000,()=>{ console.log('app rodando porta 3000')})
+   
 
