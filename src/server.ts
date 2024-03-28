@@ -6,10 +6,10 @@ const fs = require('fs');
 
 import { router } from './routes';
 
-
+const passphrase = 'Senha@123';
 const privateKey = fs.readFileSync('key.pem', 'utf8');
 const certificate = fs.readFileSync('cert.pem', 'utf8');
-const credentials = { key: privateKey, cert: certificate };
+const credentials = { key: privateKey, cert: certificate,   passphrase: passphrase };
 
 
         const app = express();
