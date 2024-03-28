@@ -5,27 +5,60 @@ export class InsereProdutos {
 
 
 
-    async  index( json:any, conexao:any, dbpublico:any , dbestoque:any ,req:Request,res:Response ) {
-        if(!json.produto){
-           console.log('produto nao informado')
-        }else{
+    async  index( json:any, conexao:any, dbpublico:any , dbestoque:any, res:Response ) {
+        if (!json.produto) {
+            console.log('Produto não informado');
+            return null; // Retorna null caso o produto não seja informado
+        }
+           
+        
+        
+        const idProd: any = await this.insertProduto(json.produto[0], conexao, dbpublico);
+           
+           if(!idProd){
+                console.log('erro ao cadastrar')
+                 res.status(500).json({err:"erro ao cadastrar produto"})
+           return null;
+            }else{
+                console.log("produto cadastrado produto: "+idProd)
+            }
 
-                const  idProd:any = await this.insertProduto( json.produto[0], conexao, dbpublico, req, res);
-            
-                //const produtoTabela = await  this.validaTabelaDePreco(idProd, conexao, dbpublico);
-                await this.insertTabelaDePrecos( json.tabelaDePreco[0], idProd, conexao, dbpublico);
-                 await this.insertUnidade( json.unidades[0], idProd, conexao, dbpublico);
-                await this.insertProdutoSetor( json.setores[0], idProd, conexao, dbestoque);
+            try {
+                await this.insertTabelaDePrecos(json.tabelaDePreco[0], idProd, conexao, dbpublico);
+                console.log("tabela ok produto:"+idProd)
+            }catch(err)
+            {
+                return res.status(500).json({err:"erro ao cadastrar tabela de preços"})
+            }
+        
+        
+            try {
+                await this.insertUnidade(json.unidades[0], idProd, conexao, dbpublico);
+                console.log("unidades ok produto:"+idProd)
+            }catch(err)
+            {
+                return res.status(500).json({err:"erro ao cadastrar unidade de medida"})
+            }
 
-                return await this.buscaProdutoCadastrado(idProd, conexao, dbestoque, dbpublico)
-    }
+            try {
+                await this.insertProdutoSetor(json.setores[0], idProd, conexao, dbestoque);
+                console.log("setor ok produto:"+idProd)
+
+            }catch(err)
+            {
+                return res.status(500).json({err:"erro ao cadastrar setor"})
+            }
+
+         
+        return { codigo: idProd };
+
+    }         
 
 
-    }
 
 
 
-    async insertProduto( produto:any, conexao:any, publico:any , req:Request,res:Response){
+    async insertProduto( produto:any, conexao:any, publico:any ){
        
         const {
             codigo, 
@@ -89,7 +122,7 @@ export class InsereProdutos {
                     if (err) {
                         reject(err);
                     } else {
-                        resolve(result.insertId);
+                        resolve(result);
                     }
                 }
             );
@@ -161,9 +194,9 @@ async insertProdutoSetor( json: any, codigo: number, conexao: any, dbestoque: an
     } = json;
 
 
-    return new Promise(  ( reject, resolve )=>{
+    return new Promise( async ( resolve, reject )=>{
 
-        conexao.query(
+        await conexao.query(
             ` INSERT INTO ${dbestoque}.prod_setor 
             ( SETOR, PRODUTO, ESTOQUE, LOCAL1_PRODUTO, LOCAL2_PRODUTO, LOCAL3_PRODUTO, LOCAL_PRODUTO)
             VALUES( ?,?,?,?,?,?,?)
@@ -172,7 +205,7 @@ async insertProdutoSetor( json: any, codigo: number, conexao: any, dbestoque: an
                 if(err){
                     reject(err);
                 }else{
-                    resolve(result);
+                    resolve(result)
                 }
             }
         )

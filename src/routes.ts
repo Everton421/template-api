@@ -17,7 +17,7 @@ const router = Router();
         console.log(req.body);
     })
 
-/* busca 1 produto com suas configurações */ 
+/* ------------busca 1 produto com suas configurações------------ */ 
     router.get('/produto/:produto',async(req:Request, res:Response)=>{
       //return  res.json({"ok":true});
       const obj = new produto();
@@ -33,15 +33,17 @@ const router = Router();
       });
      
 
-      router.post('/produto/cadastrar', async (req:Request ,res:Response )=>{
+      router.post('/produto/cadastrar', async (req: Request, res: Response) => {
         const a = new InsereProdutos();
-        try{
-       const aux = await a.index( req.body, conn , db_publico,db_estoque ,req,res); 
-       res.json({"produto cadastrado":aux});
-      }catch(err){
-        console.log(err);
-      }
-       //res.json('produto cadastrado');
-      })
+        const result = await a.index(req.body, conn, db_publico, db_estoque,res);
+        if (result) {
+            res.json({ "produto cadastrado": result }); 
+        } else {
+            res.status(500).json({ error: "Erro ao cadastrar o produto." }); 
+        }
+    });
+
+
+    
 
     export {router} 
