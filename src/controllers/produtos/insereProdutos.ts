@@ -10,9 +10,16 @@ export class InsereProdutos {
             console.log('Produto não informado');
             return null; // Retorna null caso o produto não seja informado
         }
-           
         
+        const sku = json.produto[0].outro_cod;
+     const aux: any = await this.validaSkuCadastrado(sku, conexao, dbpublico);
+   
         
+        if(aux.length > 0 ){
+            console.log("produto ja esta cadastrado");
+            return res.status(400).json({ error: "Produto já cadastrado com esse SKU" });
+        }
+
         const idProd: any = await this.insertProduto(json.produto[0], conexao, dbpublico);
            
            if(!idProd){
@@ -230,6 +237,22 @@ async buscaProdutoCadastrado( codigo:any, conexao:any, dbestoque:any, dbpublico:
             
             )
     })
+}
+
+async validaSkuCadastrado(codigo: any, conexao: any, dbpublico: any) {
+    return new Promise((resolve, reject) => {
+        conexao.query(
+            `SELECT * FROM ${dbpublico}.cad_prod WHERE OUTRO_COD = ?`,
+            [codigo],
+            (err: any, result: any) => {
+                if (err) {
+                    reject(err);
+                } else {
+                    resolve(result);
+                }
+            }
+        );
+    });
 }
 
 

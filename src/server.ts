@@ -11,7 +11,12 @@ import { router } from './routes';
 
         app.use(express.json());    
         app.use(router)
-        app.use(cors)
+        const corsOption = {
+            origin: ['http://localhost:3000'],
+            credentials: true,
+            methods: ["GET", "POST", "PUT", "DELETE"],
+        }
+        app.use(cors(corsOption));
         app.use(
                 (err:Error, req:Request, res:Response, next:NextFunction)=>{
                     if(err instanceof Error){
