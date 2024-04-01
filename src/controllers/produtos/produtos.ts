@@ -115,24 +115,28 @@ export class produto {
 
   async buscaProduto(conexao:any, req:Request,res:Response, estoque:any, publico:any) {
        const codigo:any =  req.params.produto
-    let produto: any = [];
-    let setores: any = [];
-    let tabelaDePreco:any=[];
-    let unidades:any=[];
+    let auxProduto: any = [];
+    let auxSetores: any = [];
+    let auxTabelaDePreco:any=[];
+    let auxUnidades:any=[];
 
     try {
-      produto = await this.prodQuery(conexao ,codigo,res, publico);
-      setores = await this.setorQuery(conexao, codigo, estoque);
-      tabelaDePreco = await this.tabelaPrecosQuery(conexao, codigo, publico);
-      unidades = await this.unidadesQuery(conexao, codigo, publico);
+      auxProduto = await this.prodQuery(conexao ,codigo,res, publico);
+      auxSetores = await this.setorQuery(conexao, codigo, estoque);
+      auxTabelaDePreco = await this.tabelaPrecosQuery(conexao, codigo, publico);
+      auxUnidades = await this.unidadesQuery(conexao, codigo, publico);
     } catch (err) {
       console.log(err);
     }
 
- 
+ let produto  = auxProduto[0];
+ let setores = auxSetores[0];
+let tabelaDePreco = auxTabelaDePreco[0];
+let unidades = auxUnidades[0];
+
     const aux = {
-      produto,
-      setores,
+      produto ,
+      setores ,
       tabelaDePreco,
       unidades
     };

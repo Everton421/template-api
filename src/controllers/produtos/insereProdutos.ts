@@ -11,16 +11,16 @@ export class InsereProdutos {
             return null; // Retorna null caso o produto não seja informado
         }
         
-        const sku = json.produto[0].outro_cod;
+        const sku = json.produto.outro_cod;
      const aux: any = await this.validaSkuCadastrado(sku, conexao, dbpublico);
    
         
         if(aux.length > 0 ){
             console.log("produto ja esta cadastrado");
-            return res.status(400).json({ error: "Produto já cadastrado com esse SKU" });
+            return res.json({ error: "Produto já cadastrado com esse SKU" });
         }
 
-        const idProd: any = await this.insertProduto(json.produto[0], conexao, dbpublico);
+        const idProd: any = await this.insertProduto(json.produto, conexao, dbpublico);
            
            if(!idProd){
                 console.log('erro ao cadastrar')
@@ -31,7 +31,7 @@ export class InsereProdutos {
             }
 
             try {
-                await this.insertTabelaDePrecos(json.tabelaDePreco[0], idProd, conexao, dbpublico);
+                await this.insertTabelaDePrecos(json.tabelaDePreco, idProd, conexao, dbpublico);
                 console.log("tabela ok produto:"+idProd)
             }catch(err)
             {
@@ -40,7 +40,7 @@ export class InsereProdutos {
         
         
             try {
-                await this.insertUnidade(json.unidades[0], idProd, conexao, dbpublico);
+                await this.insertUnidade(json.unidades, idProd, conexao, dbpublico);
                 console.log("unidades ok produto:"+idProd)
             }catch(err)
             {
@@ -48,7 +48,7 @@ export class InsereProdutos {
             }
 
             try {
-                await this.insertProdutoSetor(json.setores[0], idProd, conexao, dbestoque);
+                await this.insertProdutoSetor(json.setores, idProd, conexao, dbestoque);
                 console.log("setor ok produto:"+idProd)
 
             }catch(err)
@@ -65,7 +65,7 @@ export class InsereProdutos {
 
 
 
-    async insertProduto( produto:any, conexao:any, publico:any ){
+   async insertProduto( produto:any, conexao:any, publico:any ){
        
         const {
             codigo, 
@@ -254,6 +254,8 @@ async validaSkuCadastrado(codigo: any, conexao: any, dbpublico: any) {
         );
     });
 }
+
+
 
 
 

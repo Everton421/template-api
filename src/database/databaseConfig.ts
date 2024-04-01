@@ -45,9 +45,9 @@ import mysql from 'mysql';
 
 /*---------------------------------------------------------------------*/ 
     
-        var estoqueEletrodigital:string = "eletrodigital_estoque";
-        var vendasEletrodigital:string ="eletrodigital_vendas";
-        var publicoEletrodigital:string = "eletrodigital_publico";
+       export var estoqueEletrodigital:string = "eletrodigital_estoque";
+       export var vendasEletrodigital:string ="eletrodigital_vendas";
+       export var publicoEletrodigital:string = "eletrodigital_publico";
         var portEletrodigital = 3306;
 
         export  var connEletrodigital:any = mysql.createPool({
@@ -59,14 +59,14 @@ import mysql from 'mysql';
         })
 
 /*---------------------------------------------------------------------*/ 
-        var estoqueFilialsc:string = "filialsc_estoque";
-        var vendasFilialsc:string ="filialsc_vendas";
-        var publicoFilialsc:string = "filialsc_publico";
+       export var estoqueFilialsc:string = "filialsc_estoque";
+       export var vendasFilialsc:string ="filialsc_vendas";
+       export var publicoFilialsc:string = "filialsc_publico";
         var portFilialsc = 3306;
 
         export  var connFilialsc:any = mysql.createPool({
         connectionLimit : 10,
-        host: "192.168.1.250",
+        host: "179.184.45.238",
         user: "root",
         port:portFilialsc,
         password: "Nileduz",
