@@ -8,7 +8,7 @@ export class InsereProdutos {
     async  index( json:any, conexao:any, dbpublico:any , dbestoque:any, res:Response ) {
         if (!json.produto) {
             console.log('Produto não informado');
-            return null; // Retorna null caso o produto não seja informado
+            return res.status(500).json({ error: "Produto não informado" });
         }
         
         const sku = json.produto.outro_cod;
@@ -16,18 +16,16 @@ export class InsereProdutos {
    
         
         if(aux.length > 0 ){
-            console.log("produto ja esta cadastrado");
-            return res.json({ error: "Produto já cadastrado com esse SKU" });
+         // console.log("Produto já cadastrado com esse SKU");
+            return res.status(500).json({ err: "Produto já cadastrado com esse SKU" });
         }
 
         const idProd: any = await this.insertProduto(json.produto, conexao, dbpublico);
            
            if(!idProd){
                 console.log('erro ao cadastrar')
-                 res.status(500).json({err:"erro ao cadastrar produto"})
-           return null;
-            }else{
-                console.log("produto cadastrado produto: "+idProd)
+                return  res.status(500).json({err:"erro ao cadastrar produto"})
+           
             }
 
             try {
@@ -57,7 +55,7 @@ export class InsereProdutos {
             }
 
          
-        return { codigo: idProd };
+        return res.status(200).json({"codigo": idProd});
 
     }         
 
@@ -122,9 +120,9 @@ export class InsereProdutos {
     
         return new Promise((resolve, reject) => {
             conexao.query(
-                `INSERT INTO ${publico}.prod_tabprecos (TABELA, PRODUTO, LBV, PRECO, PROMOCAO, VALID_PROM, PROMOCAO_NET, VALID_PROM_NET, LBC, PROM_ESPECIAL,  PROM_ESPECIAL_NET, VALOR_FRETE)
-                VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
-                [tabela, codigo, lbv, preco, promocao, valid_prom, promocao_net, valid_prom_net, lbc, prom_especial, prom_especial_net, valor_frete],
+                `INSERT INTO ${publico}.prod_tabprecos (TABELA, PRODUTO)
+                VALUES (?, ?)`,
+                [tabela, codigo],
                 (err: any, result: any) => {
                     if (err) {
                         reject(err);
@@ -207,7 +205,7 @@ async insertProdutoSetor( json: any, codigo: number, conexao: any, dbestoque: an
             ` INSERT INTO ${dbestoque}.prod_setor 
             ( SETOR, PRODUTO, ESTOQUE, LOCAL1_PRODUTO, LOCAL2_PRODUTO, LOCAL3_PRODUTO, LOCAL_PRODUTO)
             VALUES( ?,?,?,?,?,?,?)
-            `,[codigoSetor, codigo, estoque, local1, local2, local3, local ], (err:any, result:any)=>{
+            `,[1, codigo, 0, local1, local2, local3, local ], (err:any, result:any)=>{
 
                 if(err){
                     reject(err);
@@ -243,7 +241,7 @@ async validaSkuCadastrado(codigo: any, conexao: any, dbpublico: any) {
     return new Promise((resolve, reject) => {
         conexao.query(
             `SELECT * FROM ${dbpublico}.cad_prod WHERE OUTRO_COD = ?`,
-            [codigo],
+            [`${codigo}`],
             (err: any, result: any) => {
                 if (err) {
                     reject(err);

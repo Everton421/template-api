@@ -66,7 +66,7 @@ import mysql from 'mysql';
 
         export  var connFilialsc:any = mysql.createPool({
         connectionLimit : 10,
-        host: "179.184.45.238",
+        host: "192.168.100.106",
         user: "root",
         port:portFilialsc,
         password: "Nileduz",

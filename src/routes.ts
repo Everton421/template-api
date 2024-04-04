@@ -13,9 +13,12 @@ const router = Router();
       return  res.json({"ok":true});
     })
 
-    router.post('/teste',(req:Request, res:Response)=>{
+    router.post('/teste', async (req:Request, res:Response)=>{
       console.log(req.body);
 //        return res.json(req.body);
+      const obj = new InsereProdutos();
+      const response = await obj.validaSkuCadastrado('wwww', conn, db_publico)
+    
     })
 
 /* ------------busca 1 produto com suas configurações------------ */ 
@@ -28,9 +31,12 @@ const router = Router();
     })
 
 
+
+
+
       router.get('/produtos/:produto', async (req: Request, res: Response) => {
         const a = new produto();
-        const aux = await a.busca(connFilialsc,req,res );
+        const aux = await a.busca(conn,req,res );
         res.json(aux)
       });
      
@@ -41,9 +47,8 @@ const router = Router();
 
          const a = new InsereProdutos();
          try{
-         await a.insertProduto(json.produto, conn, db_publico);
-        
-        res.status(200).json({"ok": "produto cadastrado"})
+        const response = await a.index(json, conn ,db_publico, db_estoque, res);
+          //return response;
         }
         catch(err){
           res.json(err);
@@ -60,6 +65,12 @@ const router = Router();
 
       });
 
-    
+      router.get('/setores', async (req: Request, res: Response) => {
+        
+        const a = new produto();
+        const aux = await a.buscaSetores(conn,db_estoque, req,res);
+        res.json(aux)
+      });
+
 
     export {router} 

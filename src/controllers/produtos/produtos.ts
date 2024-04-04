@@ -30,7 +30,7 @@ export class produto {
 
 
 
-  async setorQuery(conexao:any ,codigo: number, estoque:any) {
+  async prodSetorQuery(conexao:any ,codigo: number, estoque:any) {
     return new Promise(async (resolve, reject) => {
       
       
@@ -122,7 +122,7 @@ export class produto {
 
     try {
       auxProduto = await this.prodQuery(conexao ,codigo,res, publico);
-      auxSetores = await this.setorQuery(conexao, codigo, estoque);
+      auxSetores = await this.prodSetorQuery(conexao, codigo, estoque);
       auxTabelaDePreco = await this.tabelaPrecosQuery(conexao, codigo, publico);
       auxUnidades = await this.unidadesQuery(conexao, codigo, publico);
     } catch (err) {
@@ -221,7 +221,24 @@ let unidades = auxUnidades[0];
       }
     })
   }
+  async buscaSetores(conexao:any ,estoque:any, req:Request ,res:Response) {
 
+    return new Promise(async (resolve, reject) => {
+
+      const sql = `
+        SELECT CODIGO codigo, NOME nome 
+        FROM ${estoque}.setores;
+      `
+      
+      await conexao.query(sql, (err: any, result: any) => {
+        if (err) {
+          reject(err);
+        } else {
+          resolve(result);
+        }
+      });
+    });
+  }
 
 
 
