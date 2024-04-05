@@ -4,7 +4,7 @@ import { controlerOrcamento } from "./controllers/orcamento/orcamento";
 import { Cliente } from "./controllers/cliente/cliente";
 import { formaDePagamamento } from "./controllers/formaDePagamamento/formaDePagamamento";
 import { Acerto } from "./controllers/acerto/acerto";
-import { conn, connDigital, connEletrodigital, connFilialsc, connSpace, db_estoque, db_publico, estoqueEletrodigital, estoqueFilialsc, estoqueSpace, publicoEletrodigital, publicoFilialsc, publicoSpace } from "./database/databaseConfig";
+import { conn,conn2,db_estoque, db_estoque2, db_publico, db_publico2 } from "./database/databaseConfig";
 import { InsereProdutos } from "./controllers/produtos/insereProdutos";
 
 const router = Router();
@@ -21,25 +21,36 @@ const router = Router();
     
     })
 
+
 /* ------------busca 1 produto com suas configurações------------ */ 
     router.get('/produto/:produto',async(req:Request, res:Response)=>{
       //return  res.json({"ok":true});
       const obj = new produto();
-    const aux = await obj.buscaProduto( connFilialsc ,req,res , estoqueFilialsc, publicoFilialsc);
+    const aux = await obj.buscaProduto( conn2 ,req,res , db_estoque2, db_publico2);
 
      res.json(aux)
     })
+/* ------------------------------------------------------------ */ 
+
+router.post('/teste', async (req:Request, res:Response)=>{
+  const json = req.body
+//        return res.json(req.body);
+  const obj = new Acerto();
+
+  try{
+    await obj.insereAcerto(req, res, json )
+  }catch(err){console.log(err)}
+
+})
 
 
 
-
-
-      router.get('/produtos/:produto', async (req: Request, res: Response) => {
-        const a = new produto();
-        const aux = await a.busca(conn,req,res );
-        res.json(aux)
-      });
-     
+    //  router.get('/produtos/:produto', async (req: Request, res: Response) => {
+    //    const a = new produto();
+    //    const aux = await a.busca(conn,req,res );
+    //    res.json(aux)
+    //  });
+    // 
 
       router.post('/produto/cadastrar', async (req: Request, res: Response) => {
         const json = req.body;
