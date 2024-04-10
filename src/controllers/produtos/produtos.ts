@@ -3,8 +3,11 @@ import { Request, Response, response } from "express";
 
 export class produto {
 
-  async busca(conexao:any , req: Request, res: Response) {
 
+//busca varios produtos
+// consulta sql  feita por codigo ou descricao do produto
+
+  async busca(conexao:any , req: Request, res: Response) {
     const parametro = req.params.produto;
     const sql: string = `
             SELECT p.codigo, p.descricao, ps.estoque, pp.preco
@@ -30,10 +33,44 @@ export class produto {
 
 
 
+
+//            busca 1 produto com suas configurações
+//            consulta sql feita pelo codigo ou outro_cod do produto
+
+  async buscaProduto(conexao:any, req:Request,res:Response, estoque:any, publico:any) {
+       const codigo:any =  req.params.produto
+    let auxProduto: any = [];
+    let auxSetores: any = [];
+    let auxTabelaDePreco:any=[];
+    let auxUnidades:any=[];
+
+    try {
+      auxProduto = await this.prodQuery(conexao ,codigo,res, publico);
+      auxSetores = await this.prodSetorQuery(conexao, codigo, estoque);
+      auxTabelaDePreco = await this.tabelaPrecosQuery(conexao, codigo, publico);
+      auxUnidades = await this.unidadesQuery(conexao, codigo, publico);
+    } catch (err) {
+      console.log(err);
+    }
+
+ let produto  = auxProduto[0];
+ let setores = auxSetores[0];
+let tabelaDePreco = auxTabelaDePreco[0];
+let unidades = auxUnidades[0];
+
+    const aux = {
+      produto ,
+      setores ,
+      tabelaDePreco,
+      unidades
+    };
+    return aux;
+  }
+
+
+
   async prodSetorQuery(conexao:any ,codigo: number, estoque:any) {
     return new Promise(async (resolve, reject) => {
-      
-      
       const sql: string = `
         SELECT ps.setor codigoSetor  , s.nome nome_setor ,ps.produto, ps.estoque, ps.LOCAL1_PRODUTO local1,	ps.LOCAL2_PRODUTO local2,	ps.LOCAL3_PRODUTO local3,	ps.DATA_RECAD data_recad,	ps.LOCAL_PRODUTO local
          FROM ${estoque}.prod_setor ps
@@ -41,8 +78,6 @@ export class produto {
          on s.codigo = ps.setor
           WHERE produto = ${codigo}
       `;
-      
-      
       await conexao.query(sql, (err: any, result: any) => {
         if (err) {
           reject(err);
@@ -53,13 +88,13 @@ export class produto {
     });
   }
   
+
   async prodQuery(conexao:any, codigo: number,res:Response,publico:any) {
     return new Promise(async (resolve, reject) => {
-
       let sql = `SELECT CODIGO codigo, GRUPO grupo, DESCRICAO descricao, NUM_FABRICANTE numfabricante, 
       NUM_ORIGINAL num_original,	OUTRO_COD outro_cod, 	 	MARCA marca, 	ATIVO ativo, 	TIPO tipo, CLASS_FISCAL class_fiscal,	ORIGEM origem,	CST cst, OBSERVACOES1 observacoes1,
       OBSERVACOES2 observacoes2 , OBSERVACOES3 observacoes3
-      FROM ${publico}.cad_prod WHERE codigo = ${codigo}`;
+      FROM ${publico}.cad_prod WHERE codigo = ${codigo} OR outro_cod = '${codigo}'  `;
       
       await conexao.query(sql, (err:any, result:any) => {
         if (err) {
@@ -111,37 +146,6 @@ export class produto {
         });
     });
 }
-
-
-  async buscaProduto(conexao:any, req:Request,res:Response, estoque:any, publico:any) {
-       const codigo:any =  req.params.produto
-    let auxProduto: any = [];
-    let auxSetores: any = [];
-    let auxTabelaDePreco:any=[];
-    let auxUnidades:any=[];
-
-    try {
-      auxProduto = await this.prodQuery(conexao ,codigo,res, publico);
-      auxSetores = await this.prodSetorQuery(conexao, codigo, estoque);
-      auxTabelaDePreco = await this.tabelaPrecosQuery(conexao, codigo, publico);
-      auxUnidades = await this.unidadesQuery(conexao, codigo, publico);
-    } catch (err) {
-      console.log(err);
-    }
-
- let produto  = auxProduto[0];
- let setores = auxSetores[0];
-let tabelaDePreco = auxTabelaDePreco[0];
-let unidades = auxUnidades[0];
-
-    const aux = {
-      produto ,
-      setores ,
-      tabelaDePreco,
-      unidades
-    };
-    return aux;
-  }
 
   async buscaDoAcerto(conexao:any,req: Request, res: Response) {
     const parametro = req.params.produto;

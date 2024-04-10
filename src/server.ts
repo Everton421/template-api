@@ -3,15 +3,14 @@ import "express-async-errors";
 import cors from 'cors';
 const https = require('https');
 const fs = require('fs');
+import 'dotenv/config';
+
 
 import { router } from './routes';
 
-
         const app = express();
-
         app.use(express.json());    
         app.use(router)
-      
         app.use(cors());
         app.use(
                 (err:Error, req:Request, res:Response, next:NextFunction)=>{
@@ -25,7 +24,9 @@ import { router } from './routes';
                         messsage: 'internal server error.'
                     })
                 })
-                const PORT = 3000; // Porta padrão para HTTPS
-   app.listen(3000,()=>{ console.log('app rodando porta 3000')})
+
+                const PORT_API = process.env.PORT_API; // Porta padrão para HTTPS
+
+   app.listen(PORT_API,()=>{ console.log(`app rodando porta ${PORT_API}`)})
    
 

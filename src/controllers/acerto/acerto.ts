@@ -5,15 +5,19 @@ export class Acerto{
 
 
     
-      async insereAcerto(req: Request, res: Response, json: any) {
-        const { setor,  estoque, produto, } = json;
+      async insereAcerto(req: Request, res: Response, json: any, dbestoque:any) {
+        const { codigoSetor,  estoque, produto, } = json;
         try {
             const sql = `UPDATE ${db_estoque}.prod_setor
                               SET ESTOQUE = ?
                               WHERE PRODUTO = ? AND setor = ?; 
                               `;
+
+                              const sql2 = `INSERT INTO ${dbestoque}.prod_setor values 
+                              (?,?,?) ON DUPLICATE KEY UPDATE ESTOQUE = ${estoque}
+                              `
     
-            await conn.query(sql,  [estoque, produto, setor],(err: any, result: any) => {
+            await conn.query(sql2,  [estoque, produto, codigoSetor],(err: any, result: any) => {
               if (err) {
                res.status(500).json({ err: "erro ao atualizar" });
                 console.log(err)

@@ -1,7 +1,5 @@
 import { Request, Response, request, response } from "express";
 import { conn, db_vendas, db_estoque, db_publico } from "../../database/databaseConfig";
-import { Produto } from "../../models/Produto";
-import { Orcamento } from "../../models/Orcamento";
 
 export class controlerOrcamento {
 
