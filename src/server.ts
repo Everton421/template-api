@@ -7,6 +7,7 @@ import 'dotenv/config';
 
 
 import { router } from './routes';
+import { conn } from './database/databaseConfig';
 
         const app = express();
         app.use(express.json());    
@@ -27,6 +28,8 @@ import { router } from './routes';
 
                 const PORT_API = process.env.PORT_API; // Porta padrão para HTTPS
 
-   app.listen(PORT_API,()=>{ console.log(`app rodando porta ${PORT_API}`)})
+
+
+   app.listen(PORT_API,()=>{ console.log(`app rodando porta ${PORT_API}  `)})
    
 

@@ -61,8 +61,6 @@ export class InsereProdutos {
 
 
 
-
-
    async insertProduto( produto:any, conexao:any, publico:any ){
        
         const {
@@ -154,7 +152,7 @@ export class InsereProdutos {
     async insertUnidade( json: any, codigo: number, conexao: any, publico: any ){
 
         const {
-
+            item,
             descricao,
             sigla,
             fracionavel,
@@ -170,9 +168,9 @@ export class InsereProdutos {
         return new Promise(  (resolve, reject)=>{
              conexao.query( 
                 ` INSERT INTO ${publico}.unid_prod 
-                    (PRODUTO, DESCRICAO, SIGLA)
-                    VALUES( ?,?,?)
-                `,[codigo, descricao, sigla ], (err:any, result:any)=>{
+                    (PRODUTO, ITEM, DESCRICAO, SIGLA, FRACIONAVEL, PADR_ENT, PADR_SAI, PADR_SEP, UND_TRIB)
+                    VALUES( ?,?,?,?,?,?,?,?,?)
+                `,[codigo, item, descricao, sigla,'S','S','S','S','S',], (err:any, result:any)=>{
                         if(err){
                             reject(err.sqlMessage);
                         }else{

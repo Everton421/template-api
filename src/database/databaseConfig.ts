@@ -35,7 +35,7 @@ import mysql from 'mysql';
 const portdb2 = process.env.PORT_DB2;
           const username2    = process.env.USER2;
           const dbpassword2  = process.env.PASSWORD2;
-          const hostname2    = process.env.HOST ;
+          const hostname2    = process.env.HOST2;
 
 	   export const db_financeiro2:string | undefined = process.env.DB_FINANCEIRO2;
            export const db_estoque2:string    | undefined = process.env.DB_ESTOQUE2;

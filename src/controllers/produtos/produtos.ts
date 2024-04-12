@@ -7,13 +7,13 @@ export class produto {
 //busca varios produtos
 // consulta sql  feita por codigo ou descricao do produto
 
-  async busca(conexao:any , req: Request, res: Response) {
+  async busca(conexao:any , req: Request, res: Response, dbestoque:any,dbpublico:any) {
     const parametro = req.params.produto;
     const sql: string = `
-            SELECT p.codigo, p.descricao, ps.estoque, pp.preco
-            FROM ${db_publico}.cad_prod p
-            JOIN ${db_estoque}.prod_setor ps ON p.codigo = ps.produto
-            JOIN ${db_publico}.prod_tabprecos pp ON p.codigo = pp.produto
+            SELECT p.codigo, p.descricao, p.outro_cod sku ,ps.estoque, pp.preco
+            FROM ${dbpublico}.cad_prod p
+            JOIN ${dbestoque}.prod_setor ps ON p.codigo = ps.produto
+            JOIN ${dbpublico}.prod_tabprecos pp ON p.codigo = pp.produto
             WHERE p.CODIGO like ?  OR p.DESCRICAO like ?
             limit 25
             `;
@@ -94,7 +94,7 @@ let unidades = auxUnidades[0];
       let sql = `SELECT CODIGO codigo, GRUPO grupo, DESCRICAO descricao, NUM_FABRICANTE numfabricante, 
       NUM_ORIGINAL num_original,	OUTRO_COD outro_cod, 	 	MARCA marca, 	ATIVO ativo, 	TIPO tipo, CLASS_FISCAL class_fiscal,	ORIGEM origem,	CST cst, OBSERVACOES1 observacoes1,
       OBSERVACOES2 observacoes2 , OBSERVACOES3 observacoes3
-      FROM ${publico}.cad_prod WHERE codigo = ${codigo} OR outro_cod = '${codigo}'  `;
+      FROM ${publico}.cad_prod WHERE codigo = ${codigo}  `;
       
       await conexao.query(sql, (err:any, result:any) => {
         if (err) {
@@ -133,7 +133,7 @@ let unidades = auxUnidades[0];
     return new Promise(async (resolve, reject) => {
         let sql = `
             SELECT
-            PRODUTO produto, DESCRICAO descricao, SIGLA sigla, FRACIONAVEL fracionavel, FATOR_VAL fator_val, FATOR_QTDE fator_qtde, PADR_ENT padr_ent,
+            PRODUTO produto, ITEM item,  DESCRICAO descricao, SIGLA sigla, FRACIONAVEL fracionavel, FATOR_VAL fator_val, FATOR_QTDE fator_qtde, PADR_ENT padr_ent,
             PADR_SAI padr_sai, PADR_SEP padr_sep, UND_TRIB und_trib
             FROM ${publico}.unid_prod WHERE PRODUTO = ${codigo};`;
 

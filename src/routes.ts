@@ -8,32 +8,40 @@ import { conn,conn2,db_estoque, db_estoque2, db_publico, db_publico2 } from "./d
 import { InsereProdutos } from "./controllers/produtos/insereProdutos";
 import { Usuario } from "./controllers/usuario/usuario";
 import 'dotenv/config';
+import { Marcas } from "./controllers/produtos/marcas";
+import { Grupo } from "./controllers/produtos/grupo";
 
 const router = Router();
 
     router.get('/', async (req:Request, res:Response)=>{
+     
       await conn.getConnection(
-        (err:Error)=>{
+        async (err:Error)=>{
           if(err){
-              return res.status(500).json({"erro": "falha ao se conectar ao banco de dados "})
+              return res.status(500).json({"erro": "falha ao se conectar ao banco de dados1 "})
           }else{
+            //return  res.json({"ok":true});
+    
+          await  conn2.getConnection((error:any)=>{
+              if(error){ 
+                return res.status(500).json({"erro": "falha ao se conectar ao banco de dados2" })
+              }else{
             return  res.json({"ok":true});
+              }
+             })
+    
           }
         }
       )
     })
+
+
      router.post('/teste',(req,res) =>{
-        return res.json(req.headers)
+      return res.json(req.headers)
      })
 
- //   router.post('/teste', async (req:Request, res:Response)=>{
- //     console.log(req.body);
- //     const obj = new InsereProdutos();
- //     const response = await obj.validaSkuCadastrado('wwww', conn, db_publico)
- //   
- //   })
-/*------------------------ rota de login -------------------*/
 
+/*------------------------ rota de login -------------------*/
 function checkToken(req:Request, res:Response, next:NextFunction){
   const header = req.headers['authorization']
   const token =  header && header.split(" ")[1]
@@ -55,7 +63,7 @@ function checkToken(req:Request, res:Response, next:NextFunction){
 router.post('/auth', async (req:Request, res:Response)=>{
 
   const { nome, senha } = req.body;
-
+console.log(req.body)
   
   if(!nome){
     res.status(500).json({"error": "usuario não informado"})
@@ -65,13 +73,13 @@ router.post('/auth', async (req:Request, res:Response)=>{
     }
 
     const obj = new Usuario();
-    const aux = await obj.usuarioSistema(conn, db_publico, nome, senha ); 
+    const aux:any = await obj.usuarioSistema(conn, db_publico, nome, senha ); 
     console.log(aux)
     if(!aux){
       res.status(500).json({"error": "usuario invalido"})
     }
     if(aux){
-      res.status(200).json({"ok": aux})
+      res.status(200).json({"usuario": aux.nome})
     }
 
   });
@@ -81,10 +89,10 @@ router.post('/auth', async (req:Request, res:Response)=>{
 
 /* ------------------ rotas acerto -------------------------- */
 //            busca 1 produto com suas configurações
-//            consulta sql feita pelo codigo ou outro_cod do produto
+//            consulta sql feita pelo codigo 
 router.get('/acerto/produto/:produto',checkToken,async(req:Request, res:Response)=>{
   const obj = new produto();
-const aux = await obj.buscaProduto( conn2 ,req,res , db_estoque, db_publico);
+const aux = await obj.buscaProduto( conn ,req,res , db_estoque, db_publico);
  res.json(aux)
 })
 
@@ -93,7 +101,7 @@ const aux = await obj.buscaProduto( conn2 ,req,res , db_estoque, db_publico);
 // consulta sql  feita por codigo ou descricao do produto
 router.get('/acerto/produtos/:produto', async (req: Request, res: Response) => {
   const a = new produto();
-  const aux = await a.busca(conn,req,res );
+  const aux = await a.busca(conn,req,res, db_estoque,db_publico);
   res.json(aux)
 });
 
@@ -119,7 +127,9 @@ router.post('/acerto', async (req:Request, res:Response)=>{
      
 
 /* --------------------- cadastra produto --------------------------------------- */ 
-      router.post('/produto/cadastrar', async (req: Request, res: Response) => {
+//            busca 1 produto com suas configurações
+//            consulta sql feita pelo codigo 
+      router.post('/produto/cadastrar',checkToken, async (req: Request, res: Response) => {
         const json = req.body;
         //console.log(json)
          const a = new InsereProdutos();
@@ -131,8 +141,51 @@ router.post('/acerto', async (req:Request, res:Response)=>{
           res.json(err);
         }
       });
+/**-=--------- busca as marcas dos produtos onde seram cadastrados ------------- */
+router.get('/produto/marca/:marca', checkToken, async (req,res)=>{
+  const obj = new Marcas();
+  const aux = await obj.buscaMarcas(conn, db_publico, req,res)
+  if(!aux || aux === null ){
+    return res.json({msg: "erro ao obter as marcas"})
+  }else{
+    res.json(aux[0])
+  }
+})
+/**------------------------------------------------------------------------------ */
+      
+
+router.get('/produto/grupo/:grupo', checkToken, async (req,res)=>{
+  const obj = new Grupo();
+  const aux = await obj.buscaGrupo(conn, db_publico, req,res)
+  if(!aux || aux === null ){
+    return res.json({msg: "erro ao obter as marcas"})
+  }else{
+    res.json(aux[0])
+  }
+})
+/**------------------------------------------------------------------------------ */
+
+
+router.get('/produto/:produto',checkToken,async(req:Request, res:Response)=>{
+        const obj = new produto();
+      const aux = await obj.buscaProduto( conn2 ,req,res , db_estoque2, db_publico2);
+       res.json(aux)
+      })
 /* ------------------------------------------------------------ */ 
 
-     
+
+/* ---------------------- busca produtos da empresa 1-------------------------------------- */ 
+router.get('/empresa1/produtos/:produto',checkToken, async (req: Request, res: Response) => {
+  const a = new produto();
+  const aux = await a.busca(conn,req,res,db_estoque,db_publico );
+  res.json(aux)
+});
+
+/* ---------------------- busca produtos da empresa 1-------------------------------------- */ 
+router.get('/empresa2/produtos/:produto',checkToken, async (req: Request, res: Response) => {
+  const a = new produto();
+  const aux = await a.busca(conn2,req,res,db_estoque2,db_publico2);
+  res.json(aux)
+});
 
     export {router} 
