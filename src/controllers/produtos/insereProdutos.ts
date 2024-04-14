@@ -11,7 +11,7 @@ export class InsereProdutos {
             return res.status(500).json({ error: "Produto não informado" });
         }
         
-        const sku = json.produto.outro_cod;
+        const sku = json.produto.sku;
      const aux: any = await this.validaSkuCadastrado(sku, conexao, dbpublico);
    
         
@@ -29,16 +29,17 @@ export class InsereProdutos {
             }
 
             try {
-                await this.insertTabelaDePrecos(json.tabelaDePreco, idProd, conexao, dbpublico);
+                await this.insertTabelaDePrecos(json, idProd, conexao, dbpublico);
                 console.log("tabela ok produto:"+idProd)
             }catch(err)
             {
+                console.log(err)
                 return res.status(500).json({err:"erro ao cadastrar tabela de preços"})
             }
         
         
             try {
-                await this.insertUnidade(json.unidades, idProd, conexao, dbpublico);
+                await this.insertUnidade(json, idProd, conexao, dbpublico);
                 console.log("unidades ok produto:"+idProd)
             }catch(err)
             {
@@ -46,7 +47,7 @@ export class InsereProdutos {
             }
 
             try {
-                await this.insertProdutoSetor(json.setores, idProd, conexao, dbestoque);
+                await this.insertProdutoSetor(json, idProd, conexao, dbestoque);
                 console.log("setor ok produto:"+idProd)
 
             }catch(err)
@@ -69,7 +70,7 @@ export class InsereProdutos {
             descricao, 
             numfabricante, 
             num_original ,
-            outro_cod ,
+            sku ,
             marca ,
             ativo ,
             tipo ,
@@ -86,7 +87,7 @@ export class InsereProdutos {
                 (GRUPO,DESCRICAO,NUM_FABRICANTE,NUM_ORIGINAL,OUTRO_COD,APLICACAO,MARCA,ATIVO,TIPO,CLASS_FISCAL
                     ,ORIGEM,CST,OBSERVACOES1,OBSERVACOES2,OBSERVACOES3)
                     VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)
-            `,[  grupo ,descricao, numfabricante, num_original ,outro_cod, descricao, marca ,ativo ,tipo ,class_fiscal, origem,cst,observacoes1,observacoes2,observacoes3 ]     
+            `,[  grupo ,descricao, numfabricante, num_original ,sku, descricao, marca ,ativo ,tipo ,class_fiscal, origem,cst,observacoes1,observacoes2,observacoes3 ]     
             , (err:any, result:any)=>{
                     if(err){
                         reject(err.sqlMessage);
@@ -120,7 +121,7 @@ export class InsereProdutos {
             conexao.query(
                 `INSERT INTO ${publico}.prod_tabprecos (TABELA, PRODUTO)
                 VALUES (?, ?)`,
-                [tabela, codigo],
+                [1, codigo],
                 (err: any, result: any) => {
                     if (err) {
                         reject(err);
@@ -170,7 +171,7 @@ export class InsereProdutos {
                 ` INSERT INTO ${publico}.unid_prod 
                     (PRODUTO, ITEM, DESCRICAO, SIGLA, FRACIONAVEL, PADR_ENT, PADR_SAI, PADR_SEP, UND_TRIB)
                     VALUES( ?,?,?,?,?,?,?,?,?)
-                `,[codigo, item, descricao, sigla,'S','S','S','S','S',], (err:any, result:any)=>{
+                `,[codigo, 1, "UNIDADE", 'UND','S','S','S','S','S',], (err:any, result:any)=>{
                         if(err){
                             reject(err.sqlMessage);
                         }else{
@@ -203,7 +204,7 @@ async insertProdutoSetor( json: any, codigo: number, conexao: any, dbestoque: an
             ` INSERT INTO ${dbestoque}.prod_setor 
             ( SETOR, PRODUTO, ESTOQUE, LOCAL1_PRODUTO, LOCAL2_PRODUTO, LOCAL3_PRODUTO, LOCAL_PRODUTO)
             VALUES( ?,?,?,?,?,?,?)
-            `,[1, codigo, 0, local1, local2, local3, local ], (err:any, result:any)=>{
+            `,[1, codigo, 0, '', '', '', '' ], (err:any, result:any)=>{
 
                 if(err){
                     reject(err);

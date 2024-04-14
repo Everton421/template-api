@@ -10,7 +10,10 @@ export class produto {
   async busca(conexao:any , req: Request, res: Response, dbestoque:any,dbpublico:any) {
     const parametro = req.params.produto;
     const sql: string = `
-            SELECT p.codigo, p.descricao, p.outro_cod sku ,ps.estoque, pp.preco
+            SELECT DISTINCT p.codigo, p.grupo, p.descricao,p.num_fabricante,
+            p.num_original, p.outro_cod sku, p.marca, p.ativo, p.tipo, 
+            p.class_fiscal, p.origem, p.cst, p.observacoes1 ,p.observacoes2,
+            p.observacoes3, ps.estoque, pp.preco
             FROM ${dbpublico}.cad_prod p
             JOIN ${dbestoque}.prod_setor ps ON p.codigo = ps.produto
             JOIN ${dbpublico}.prod_tabprecos pp ON p.codigo = pp.produto

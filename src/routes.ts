@@ -99,7 +99,7 @@ const aux = await obj.buscaProduto( conn ,req,res , db_estoque, db_publico);
 
 //busca varios produtos
 // consulta sql  feita por codigo ou descricao do produto
-router.get('/acerto/produtos/:produto', async (req: Request, res: Response) => {
+router.get('/acerto/produtos/:produto',checkToken, async (req: Request, res: Response) => {
   const a = new produto();
   const aux = await a.busca(conn,req,res, db_estoque,db_publico);
   res.json(aux)
@@ -107,7 +107,7 @@ router.get('/acerto/produtos/:produto', async (req: Request, res: Response) => {
 
 
 //  busca setores do sistema 
-router.get('/acerto/setores/', async (req: Request, res: Response) => {
+router.get('/acerto/setores/', checkToken,async (req: Request, res: Response) => {
   const a = new produto();
   const aux = await a.buscaSetores(conn,db_estoque, req,res);
   res.json(aux)
@@ -115,7 +115,7 @@ router.get('/acerto/setores/', async (req: Request, res: Response) => {
 
 
 //            recebe acerto de estoque
-router.post('/acerto', async (req:Request, res:Response)=>{
+router.post('/acerto', checkToken,async (req:Request, res:Response)=>{
   const json = req.body
   const obj = new Acerto();
   try{
