@@ -6,23 +6,28 @@ export class Acerto{
 
     
       async insereAcerto(req: Request, res: Response, json: any, dbestoque:any) {
-        const { codigoSetor,  estoque, produto, } = json;
+        const { setor,  codigo, estoque  } = json;
+        if(!setor){
+          return res.json({msg: "não informado o setor!"})
+        }
+        if(!codigo){
+          return res.json({msg: "não informado o Produto!"})
+        }
+        if(!estoque){
+          return res.json({msg: "não informado o novo saldo!"})
+        }
         try {
-            const sql = `UPDATE ${db_estoque}.prod_setor
-                              SET ESTOQUE = ?
-                              WHERE PRODUTO = ? AND setor = ?; 
-                              `;
-
-                              const sql2 = `INSERT INTO ${dbestoque}.prod_setor values 
-                              (?,?,?) ON DUPLICATE KEY UPDATE ESTOQUE = ${estoque}
+          
+                              const sql2 = `INSERT INTO ${dbestoque}.prod_setor  ( SETOR, PRODUTO, ESTOQUE)
+                              VALUES (?,?,?) ON DUPLICATE KEY UPDATE ESTOQUE = ${estoque}
                               `
     
-            await conn.query(sql2,  [estoque, produto, codigoSetor],(err: any, result: any) => {
+            await conn.query(sql2,  [ setor , codigo, estoque ],(err: any, result: any) => {
               if (err) {
-               res.status(500).json({ err: "erro ao atualizar" });
+               res.status(500).json({ msg: "erro ao atualizar" });
                 console.log(err)
               } else {
-                res.status(200).json({ "ok": `produto ${produto} atualizado` });
+                res.status(200).json({ "ok": `produto ${codigo} atualizado` });
               }
             });
 

@@ -39,7 +39,7 @@ export class produto {
 
 //            busca 1 produto com suas configurações
 //            consulta sql feita pelo codigo ou outro_cod do produto
-
+/*
   async buscaProduto(conexao:any, req:Request,res:Response, estoque:any, publico:any) {
        const codigo:any =  req.params.produto
     let auxProduto: any = [];
@@ -69,7 +69,7 @@ let unidades = auxUnidades[0];
     };
     return aux;
   }
-
+*/
 
 
   async prodSetorQuery(conexao:any ,codigo: number, estoque:any) {
@@ -150,13 +150,14 @@ let unidades = auxUnidades[0];
     });
 }
 
-  async buscaDoAcerto(conexao:any,req: Request, res: Response) {
+// consulta um produto pelo seu codigo
+  async buscaDoAcerto(conexao:any,req: Request, res: Response, dbestoque:any, dbpublico:any) {
     const parametro = req.params.produto;
     const sql: string = `
               SELECT p.codigo, p.descricao, ps.estoque, pp.preco
-              FROM ${db_publico}.cad_prod p
-              JOIN ${db_estoque}.prod_setor ps ON p.codigo = ps.produto
-              JOIN ${db_publico}.prod_tabprecos pp ON p.codigo = pp.produto
+              FROM ${dbpublico}.cad_prod p
+              JOIN ${dbestoque}.prod_setor ps ON p.codigo = ps.produto
+              JOIN ${dbpublico}.prod_tabprecos pp ON p.codigo = pp.produto
               WHERE p.CODIGO = ?;
               `;
     const queryParam = `${parametro}`;

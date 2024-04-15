@@ -37,7 +37,9 @@ const router = Router();
 
 
      router.post('/teste',(req,res) =>{
-      return res.json(req.headers)
+      //return res.json(req.headers)
+      return res.json(req.body)
+
      })
 
 
@@ -92,8 +94,8 @@ console.log(req.body)
 //            consulta sql feita pelo codigo 
 router.get('/acerto/produto/:produto',checkToken,async(req:Request, res:Response)=>{
   const obj = new produto();
-const aux = await obj.buscaProduto( conn ,req,res , db_estoque, db_publico);
- res.json(aux)
+const aux = await obj.buscaDoAcerto( conn ,req,res , db_estoque, db_publico);
+ res.json(aux[0])
 })
 
 
@@ -104,6 +106,7 @@ router.get('/acerto/produtos/:produto',checkToken, async (req: Request, res: Res
   const aux = await a.busca(conn,req,res, db_estoque,db_publico);
   res.json(aux)
 });
+
 
 
 //  busca setores do sistema 
