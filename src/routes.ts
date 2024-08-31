@@ -1,7 +1,7 @@
 import { Router,Request,Response, NextFunction } from "express";
-import { produto } from "./controllers/produtos/produtos";
+import { controllerProduto } from "./controllers/produtos/produtos";
 import { controlerOrcamento } from "./controllers/orcamento/orcamento";
-import { Cliente } from "./controllers/cliente/cliente";
+import { Cliente    } from "./controllers/cliente/cliente";
 import { formaDePagamamento } from "./controllers/formaDePagamamento/formaDePagamamento";
 import { Acerto } from "./controllers/acerto/acerto";
 import { conn,conn2,db_estoque, db_estoque2, db_publico, db_publico2 } from "./database/databaseConfig";
@@ -14,33 +14,26 @@ import { Grupo } from "./controllers/produtos/grupo";
 const router = Router();
 
     router.get('/', async (req:Request, res:Response)=>{
-     
       await conn.getConnection(
         async (err:Error)=>{
           if(err){
               return res.status(500).json({"erro": "falha ao se conectar ao banco de dados1 "})
           }else{
-            //return  res.json({"ok":true});
-    
-          await  conn2.getConnection((error:any)=>{
-              if(error){ 
-                return res.status(500).json({"erro": "falha ao se conectar ao banco de dados2" })
-              }else{
             return  res.json({"ok":true});
-              }
-             })
-    
           }
         }
       )
     })
 
-
      router.post('/teste',(req,res) =>{
       //return res.json(req.headers)
-      return res.json(req.body)
+      console.log(req.body);
+      if(req.body){
+        return res.status(200)
+      }
+//      console.log(req.headers);
 
-     })
+     }) 
 
 
 /*------------------------ rota de login -------------------*/
@@ -73,7 +66,6 @@ console.log(req.body)
   if(!senha){
     res.status(500).json({"error": "senha não informada"})
     }
-
     const obj = new Usuario();
     const aux:any = await obj.usuarioSistema(conn, db_publico, nome, senha ); 
     console.log(aux)
@@ -86,15 +78,19 @@ console.log(req.body)
 
   });
 
-
+  router.get('/produtos/:produto',checkToken, async (req: Request, res: Response) => {
+    const a = new controllerProduto();
+    const aux = await a.busca(conn,req,res, db_estoque,db_publico);
+    res.json(aux)
+  });
 
 
 /* ------------------ rotas acerto -------------------------- */
 //            busca 1 produto com suas configurações
 //            consulta sql feita pelo codigo 
 router.get('/acerto/produto/:produto',checkToken,async(req:Request, res:Response)=>{
-  const obj = new produto();
-const aux = await obj.buscaDoAcerto( conn ,req,res , db_estoque, db_publico);
+  const obj = new controllerProduto();
+const aux:any = await obj.buscaDoAcerto( conn ,req,res , db_estoque, db_publico);
  res.json(aux[0])
 })
 
@@ -102,17 +98,32 @@ const aux = await obj.buscaDoAcerto( conn ,req,res , db_estoque, db_publico);
 //busca varios produtos
 // consulta sql  feita por codigo ou descricao do produto
 router.get('/acerto/produtos/:produto',checkToken, async (req: Request, res: Response) => {
-  const a = new produto();
+  const a = new controllerProduto();
   const aux = await a.busca(conn,req,res, db_estoque,db_publico);
   res.json(aux)
 });
 
 
-
 //  busca setores do sistema 
 router.get('/acerto/setores/', checkToken,async (req: Request, res: Response) => {
-  const a = new produto();
+  const a = new controllerProduto();
   const aux = await a.buscaSetores(conn,db_estoque, req,res);
+  res.json(aux)
+});
+//busca produto no setor
+router.get('/acerto/produtoSetor/:produto', checkToken,async (req: Request, res: Response) => {
+  const codigo:any  = req.params.produto;
+console.log(codigo)
+  const a = new controllerProduto();
+  const aux = await a.prodSetorQuery(conn,codigo,db_estoque,);
+  res.json(aux)
+});
+//busca preco do produto
+router.get('/acerto/produtoPreco/:produto', checkToken,async (req: Request, res: Response) => {
+  const codigo:any  = req.params.produto;
+console.log(codigo)
+  const a = new controllerProduto();
+  const aux = await a.tabelaPrecosQuery(conn,codigo,db_publico,);
   res.json(aux)
 });
 
@@ -127,68 +138,32 @@ router.post('/acerto', checkToken,async (req:Request, res:Response)=>{
 })
 /* ------------------------------------------------------------ */ 
 
+/* clientes */ 
+
+//router.get('/clientes/:cliente', async ()=> await new Cliente().busca);
      
+const cliente = new Cliente();
+const fpgt = new formaDePagamamento();
 
-/* --------------------- cadastra produto --------------------------------------- */ 
-//            busca 1 produto com suas configurações
-//            consulta sql feita pelo codigo 
-      router.post('/produto/cadastrar',checkToken, async (req: Request, res: Response) => {
-        const json = req.body;
-        //console.log(json)
-         const a = new InsereProdutos();
-         try{
-        const response = await a.index(json, conn ,db_publico, db_estoque, res);
-          //return response;
-        }
-        catch(err){
-          res.json(err);
-        }
-      });
-/**-=--------- busca as marcas dos produtos onde seram cadastrados ------------- */
-router.get('/produto/marca/:marca', checkToken, async (req,res)=>{
-  const obj = new Marcas();
-  const aux = await obj.buscaMarcas(conn, db_publico, req,res)
-  if(!aux || aux === null ){
-    return res.json({msg: "erro ao obter as marcas"})
-  }else{
-    res.json(aux[0])
-  }
-})
-/**------------------------------------------------------------------------------ */
-      
+router.get('/clientes/:cliente',   cliente.busca  );
+router.get('/offline/clientes',   cliente.buscaCompleta  );
 
-router.get('/produto/grupo/:grupo', checkToken, async (req,res)=>{
-  const obj = new Grupo();
-  const aux = await obj.buscaGrupo(conn, db_publico, req,res)
-  if(!aux || aux === null ){
-    return res.json({msg: "erro ao obter as marcas"})
-  }else{
-    res.json(aux[0])
-  }
-})
-/**------------------------------------------------------------------------------ */
-
-
-router.get('/produto/:produto',checkToken,async(req:Request, res:Response)=>{
-        const obj = new produto();
-      const aux = await obj.buscaProduto( conn2 ,req,res , db_estoque2, db_publico2);
-       res.json(aux)
-      })
-/* ------------------------------------------------------------ */ 
-
-
-/* ---------------------- busca produtos da empresa 1-------------------------------------- */ 
-router.get('/empresa1/produtos/:produto',checkToken, async (req: Request, res: Response) => {
-  const a = new produto();
-  const aux = await a.busca(conn,req,res,db_estoque,db_publico );
-  res.json(aux)
+router.get('/formas_Pagamento/', checkToken ,async  (req,res)=>{
+  await fpgt.busca(req,res);
 });
 
-/* ---------------------- busca produtos da empresa 1-------------------------------------- */ 
-router.get('/empresa2/produtos/:produto',checkToken, async (req: Request, res: Response) => {
-  const a = new produto();
-  const aux = await a.busca(conn2,req,res,db_estoque2,db_publico2);
-  res.json(aux)
+router.post('/orcamentos',checkToken,  new controlerOrcamento().cadastra);
+router.put('/orcamentos',checkToken,  new controlerOrcamento().atualizaOrcamento);
+router.get('/orcamentos/diario/:filtro',checkToken,  new controlerOrcamento().buscaOrcamentosDoDia);
+router.get('/orcamentos/:codigo',checkToken,  new controlerOrcamento().buscaPorCodigo);
+
+/**___________ */
+
+router.get('/offline/produtos',checkToken, async ( req:Request, res:Response ) =>{
+  let obj = new controllerProduto();
+  let aux =  await obj.buscaCompleta()
+  res .json (aux);
 });
+/**___________ */
 
     export {router} 

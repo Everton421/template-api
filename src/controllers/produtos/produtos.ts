@@ -1,7 +1,7 @@
 import { conn, db_publico, db_estoque, db_vendas } from "../../database/databaseConfig";
-import { Request, Response, response } from "express";
+import {   Request, Response  } from "express";
 
-export class produto {
+export class controllerProduto {
 
 
 //busca varios produtos
@@ -13,10 +13,9 @@ export class produto {
             SELECT DISTINCT p.codigo, p.grupo, p.descricao,p.num_fabricante,
             p.num_original, p.outro_cod sku, p.marca, p.ativo, p.tipo, 
             p.class_fiscal, p.origem, p.cst, p.observacoes1 ,p.observacoes2,
-            p.observacoes3, ps.estoque, pp.preco
+            p.observacoes3
             FROM ${dbpublico}.cad_prod p
-            JOIN ${dbestoque}.prod_setor ps ON p.codigo = ps.produto
-            JOIN ${dbpublico}.prod_tabprecos pp ON p.codigo = pp.produto
+         
             WHERE p.CODIGO like ?  OR p.DESCRICAO like ?
             limit 25
             `;
@@ -33,9 +32,6 @@ export class produto {
 
     })
   }
-
-
-
 
 //            busca 1 produto com suas configurações
 //            consulta sql feita pelo codigo ou outro_cod do produto
@@ -75,7 +71,7 @@ let unidades = auxUnidades[0];
   async prodSetorQuery(conexao:any ,codigo: number, estoque:any) {
     return new Promise(async (resolve, reject) => {
       const sql: string = `
-        SELECT ps.setor codigoSetor  , s.nome nome_setor ,ps.produto, ps.estoque, ps.LOCAL1_PRODUTO local1,	ps.LOCAL2_PRODUTO local2,	ps.LOCAL3_PRODUTO local3,	ps.DATA_RECAD data_recad,	ps.LOCAL_PRODUTO local
+        SELECT ps.setor codigo  , s.nome nome ,ps.produto, ps.estoque, ps.LOCAL1_PRODUTO local1,	ps.LOCAL2_PRODUTO local2,	ps.LOCAL3_PRODUTO local3,	ps.DATA_RECAD data_recad,	ps.LOCAL_PRODUTO local
          FROM ${estoque}.prod_setor ps
           JOIN ${estoque}.setores s
          on s.codigo = ps.setor
@@ -154,9 +150,8 @@ let unidades = auxUnidades[0];
   async buscaDoAcerto(conexao:any,req: Request, res: Response, dbestoque:any, dbpublico:any) {
     const parametro = req.params.produto;
     const sql: string = `
-              SELECT p.codigo, p.descricao, ps.estoque, pp.preco
+              SELECT p.codigo, p.descricao, pp.preco
               FROM ${dbpublico}.cad_prod p
-              JOIN ${dbestoque}.prod_setor ps ON p.codigo = ps.produto
               JOIN ${dbpublico}.prod_tabprecos pp ON p.codigo = pp.produto
               WHERE p.CODIGO = ?;
               `;
@@ -191,7 +186,7 @@ let unidades = auxUnidades[0];
     }
 
     try {
-      let result = await queryProd(); // Await the result of queryProd
+      let result:any = await queryProd(); // Await the result of queryProd
       if (result && result.length > 0) { // Check if result is not empty
         const sql = `UPDATE ${db_estoque}.prod_setor 
                                      SET 
@@ -219,16 +214,56 @@ let unidades = auxUnidades[0];
 
 
 
-  async buscaCompleta(conexao:any,req: Request, res: Response) {
-    let sql = `select * from ${db_publico}.cad_prod;`;
-    conexao.query(sql, (err:any, response:any) => {
-      if (err) {
-        throw err;
-      } else {
-        return res.json(response);
-      }
-    })
+  async buscaCompleta( ) {
+
+    return new Promise( async ( resolve, reject )=>{
+
+
+      let sql = `
+      SELECT  
+  p.CODIGO codigo,  
+  COALESCE(  ps.ESTOQUE,0 ) AS  estoque,
+  COALESCE( 
+    ROUND(pp.preco,2 ),
+        0.00 ) as preco,
+  COALESCE( p.GRUPO, 0) as grupo, 
+  p.DESCRICAO descricao, 
+  p.NUM_FABRICANTE num_fabricante,
+  p.NUM_ORIGINAL num_original,
+  p.OUTRO_COD sku,
+  p.MARCA marca,
+  p.ATIVO ativo,
+  p.TIPO tipo,
+  p.CLASS_FISCAL class_fiscal,
+  p.ORIGEM origem,
+  p.CST cst,
+  p.OBSERVACOES1 observacoes1,
+  p.OBSERVACOES2 observacoes2 , 
+  p.OBSERVACOES3 observacoes3 
+       FROM   ${db_publico}.cad_prod p 
+        left join  ${db_estoque}.prod_setor ps on ps.produto = p.codigo
+        left join  ${db_estoque}.setores s on ps.setor = s.codigo
+        left join  ${db_publico}.prod_tabprecos pp on pp.produto = p.codigo
+        left join  ${db_publico}.tab_precos tp on tp.codigo = pp.tabela
+     WHERE 
+      s.padrao_venda = 'X' 
+      and tp.padrao = 'S'
+      and p.ativo = 'S'
+      ;
+      `;
+     await  conn.query(sql, (err:any, result:any) => {
+        if (err) {
+          throw err;
+        } else {
+          resolve(result)
+        }
+      })
+      })
+
+
   }
+
+
   async buscaSetores(conexao:any ,estoque:any, req:Request ,res:Response) {
 
     return new Promise(async (resolve, reject) => {

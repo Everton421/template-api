@@ -1,5 +1,5 @@
 import { conn, db_estoque, db_publico } from "../../database/databaseConfig";
-
+import { response } from "express";
 export class InsereProdutos {
     
 
@@ -8,7 +8,7 @@ export class InsereProdutos {
     async  index( json:any, conexao:any, dbpublico:any , dbestoque:any, res:Response ) {
         if (!json.produto) {
             console.log('Produto não informado');
-            return res.status(500).json({ error: "Produto não informado" });
+            return response.status(500).json({ error: "Produto não informado" });
         }
         
         const sku = json.produto.sku;
@@ -17,14 +17,14 @@ export class InsereProdutos {
         
         if(aux.length > 0 ){
          // console.log("Produto já cadastrado com esse SKU");
-            return res.status(500).json({ err: "Produto já cadastrado com esse SKU" });
+            return response.status(500).json({ err: "Produto já cadastrado com esse SKU" });
         }
 
         const idProd: any = await this.insertProduto(json.produto, conexao, dbpublico);
            
            if(!idProd){
                 console.log('erro ao cadastrar')
-                return  res.status(500).json({err:"erro ao cadastrar produto"})
+                return  response.status(500).json({err:"erro ao cadastrar produto"})
            
             }
 
@@ -34,7 +34,7 @@ export class InsereProdutos {
             }catch(err)
             {
                 console.log(err)
-                return res.status(500).json({err:"erro ao cadastrar tabela de preços"})
+                return response.status(500).json({err:"erro ao cadastrar tabela de preços"})
             }
         
         
@@ -43,7 +43,7 @@ export class InsereProdutos {
                 console.log("unidades ok produto:"+idProd)
             }catch(err)
             {
-                return res.status(500).json({err:"erro ao cadastrar unidade de medida"})
+                return response.status(500).json({err:"erro ao cadastrar unidade de medida"})
             }
 
             try {
@@ -52,18 +52,19 @@ export class InsereProdutos {
 
             }catch(err)
             {
-                return res.status(500).json({err:"erro ao cadastrar setor"})
+                return response.status(500).json({err:"erro ao cadastrar setor"})
             }
 
          
-        return res.status(200).json({"codigo": idProd});
+        return response.status(200).json({"codigo": idProd});
 
     }         
 
 
 
    async insertProduto( produto:any, conexao:any, publico:any ){
-       
+    
+   
         const {
             codigo, 
             grupo ,
@@ -84,10 +85,9 @@ export class InsereProdutos {
 
         return new Promise( async (resolve, reject )=>{
             await conexao.query( ` INSERT INTO ${publico}.cad_prod 
-                (GRUPO,DESCRICAO,NUM_FABRICANTE,NUM_ORIGINAL,OUTRO_COD,APLICACAO,MARCA,ATIVO,TIPO,CLASS_FISCAL
-                    ,ORIGEM,CST,OBSERVACOES1,OBSERVACOES2,OBSERVACOES3)
-                    VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)
-            `,[  grupo ,descricao, numfabricante, num_original ,sku, descricao, marca ,ativo ,tipo ,class_fiscal, origem,cst,observacoes1,observacoes2,observacoes3 ]     
+            (GRUPO, DESCRICAO, NUM_FABRICANTE, NUM_ORIGINAL, OUTRO_COD, APLICACAO, DATA_CADASTRO, MARCA, ATIVO, TIPO, CLASS_FISCAL, ORIGEM, CST, OBSERVACOES1, OBSERVACOES2, OBSERVACOES3)
+            VALUES (?, ?, ?, ?, ?, ?, NOW(), ?, ?, ?, ?, ?, ?, ?, ?, ?)
+        `, [grupo, descricao, ' ', num_original, sku, descricao, marca, ativo, tipo, class_fiscal, origem, cst, observacoes1, observacoes2, observacoes3]    
             , (err:any, result:any)=>{
                     if(err){
                         reject(err.sqlMessage);
