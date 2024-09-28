@@ -237,6 +237,8 @@ let unidades = auxUnidades[0];
   p.CLASS_FISCAL class_fiscal,
   p.ORIGEM origem,
   p.CST cst,
+  p.DATA_CADASTRO data_cadastro,
+  p.DATA_RECAD data_recadastro,
   p.OBSERVACOES1 observacoes1,
   p.OBSERVACOES2 observacoes2 , 
   p.OBSERVACOES3 observacoes3 

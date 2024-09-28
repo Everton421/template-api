@@ -10,6 +10,12 @@ import { Usuario } from "./controllers/usuario/usuario";
 import 'dotenv/config';
 import { Marcas } from "./controllers/produtos/marcas";
 import { Grupo } from "./controllers/produtos/grupo";
+import { Tipo_de_os } from "./controllers/tipo_de_os/tipo_de_os";
+import { Servicos } from "./controllers/serviços/servicos";
+import { Veiculo } from "./controllers/veiculo/veiculo";
+import { Orcamento_service } from "./controllers/orcamento/orcamento_service";
+
+const crypt = require('crypt');
 
 const router = Router();
 
@@ -25,16 +31,10 @@ const router = Router();
       )
     })
 
-     router.post('/teste',(req,res) =>{
-      //return res.json(req.headers)
-      console.log(req.body);
-      if(req.body){
-        return res.status(200)
-      }
-//      console.log(req.headers);
-
-     }) 
-
+ 
+    router.post('/teste', ( req, res )=>{
+      console.log(req.body)
+    })
 
 /*------------------------ rota de login -------------------*/
 function checkToken(req:Request, res:Response, next:NextFunction){
@@ -58,7 +58,6 @@ function checkToken(req:Request, res:Response, next:NextFunction){
 router.post('/auth', async (req:Request, res:Response)=>{
 
   const { nome, senha } = req.body;
-console.log(req.body)
   
   if(!nome){
     res.status(500).json({"error": "usuario não informado"})
@@ -73,7 +72,7 @@ console.log(req.body)
       res.status(500).json({"error": "usuario invalido"})
     }
     if(aux){
-      res.status(200).json({"usuario": aux.nome})
+      res.status(200).json({"codigo": aux.codigo, "nome":aux.nome })
     }
 
   });
@@ -144,18 +143,33 @@ router.post('/acerto', checkToken,async (req:Request, res:Response)=>{
      
 const cliente = new Cliente();
 const fpgt = new formaDePagamamento();
+const tipo_os = new Tipo_de_os();
 
-router.get('/clientes/:cliente',   cliente.busca  );
+router.get('/clientes', cliente.buscaCompleta  );
+
+
 router.get('/offline/clientes',   cliente.buscaCompleta  );
 
 router.get('/formas_Pagamento/', checkToken ,async  (req,res)=>{
   await fpgt.busca(req,res);
 });
 
-router.post('/orcamentos',checkToken,  new controlerOrcamento().cadastra);
-router.put('/orcamentos',checkToken,  new controlerOrcamento().atualizaOrcamento);
-router.get('/orcamentos/diario/:filtro',checkToken,  new controlerOrcamento().buscaOrcamentosDoDia);
+//router.post('/orcamentos',checkToken,  new controlerOrcamento().cadastra);
+//router.put('/orcamentos',checkToken,  new controlerOrcamento().atualizaOrcamento);
+router.get('/orcamentos/diario',checkToken,  new controlerOrcamento().buscaOrcamentosDoDia);
 router.get('/orcamentos/:codigo',checkToken,  new controlerOrcamento().buscaPorCodigo);
+
+router.get('/tipos_os', checkToken , new Tipo_de_os().busca)
+router.get('/offline/tipos_os', checkToken , new Tipo_de_os().busca)
+
+router.get('/servicos/:servico', checkToken, new Servicos().buscaPorAplicacao)
+
+router.get('/offline/servicos', checkToken, new Servicos().busca)
+
+router.get('/usuarios', checkToken, new Usuario().busca);
+
+router.get('/veiculos/:veiculo', checkToken, new Veiculo().busca);
+
 
 /**___________ */
 
@@ -164,6 +178,11 @@ router.get('/offline/produtos',checkToken, async ( req:Request, res:Response ) =
   let aux =  await obj.buscaCompleta()
   res .json (aux);
 });
+
+router.get('/offline/veiculos', checkToken , new Veiculo().buscaTodos)
+router.post('/orcamentos/v1', checkToken , new Orcamento_service().cadastra)
+ 
+
 /**___________ */
 
     export {router} 

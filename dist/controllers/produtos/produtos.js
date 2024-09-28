@@ -1,8 +1,8 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.produto = void 0;
+exports.controllerProduto = void 0;
 const databaseConfig_1 = require("../../database/databaseConfig");
-class produto {
+class controllerProduto {
     //busca varios produtos
     // consulta sql  feita por codigo ou descricao do produto
     async busca(conexao, req, res, dbestoque, dbpublico) {
@@ -204,15 +204,50 @@ class produto {
             res.status(500).json({ err: "erro ao buscar produto" });
         }
     }
-    async buscaCompleta(conexao, req, res) {
-        let sql = `select * from ${databaseConfig_1.db_publico}.cad_prod;`;
-        conexao.query(sql, (err, response) => {
-            if (err) {
-                throw err;
-            }
-            else {
-                return res.json(response);
-            }
+    async buscaCompleta() {
+        return new Promise(async (resolve, reject) => {
+            let sql = `
+      SELECT  
+  p.CODIGO codigo,  
+  COALESCE(  ps.ESTOQUE,0 ) AS  estoque,
+  COALESCE( 
+    ROUND(pp.preco,2 ),
+        0.00 ) as preco,
+  COALESCE( p.GRUPO, 0) as grupo, 
+  p.DESCRICAO descricao, 
+  p.NUM_FABRICANTE num_fabricante,
+  p.NUM_ORIGINAL num_original,
+  p.OUTRO_COD sku,
+  p.MARCA marca,
+  p.ATIVO ativo,
+  p.TIPO tipo,
+  p.CLASS_FISCAL class_fiscal,
+  p.ORIGEM origem,
+  p.CST cst,
+  p.DATA_CADASTRO data_cadastro,
+  p.DATA_RECAD data_recadastro,
+  p.OBSERVACOES1 observacoes1,
+  p.OBSERVACOES2 observacoes2 , 
+  p.OBSERVACOES3 observacoes3 
+       FROM   ${databaseConfig_1.db_publico}.cad_prod p 
+        left join  ${databaseConfig_1.db_estoque}.prod_setor ps on ps.produto = p.codigo
+        left join  ${databaseConfig_1.db_estoque}.setores s on ps.setor = s.codigo
+        left join  ${databaseConfig_1.db_publico}.prod_tabprecos pp on pp.produto = p.codigo
+        left join  ${databaseConfig_1.db_publico}.tab_precos tp on tp.codigo = pp.tabela
+     WHERE 
+      s.padrao_venda = 'X' 
+      and tp.padrao = 'S'
+      and p.ativo = 'S'
+      ;
+      `;
+            await databaseConfig_1.conn.query(sql, (err, result) => {
+                if (err) {
+                    throw err;
+                }
+                else {
+                    resolve(result);
+                }
+            });
         });
     }
     async buscaSetores(conexao, estoque, req, res) {
@@ -232,7 +267,7 @@ class produto {
         });
     }
 }
-exports.produto = produto;
+exports.controllerProduto = controllerProduto;
 /*
  
  
