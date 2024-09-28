@@ -42,7 +42,7 @@ function checkToken(req:Request, res:Response, next:NextFunction){
   const token =  header && header.split(" ")[1]
 
   if(!token){
-    return res.status(401).json({msg: "acesso negado"})
+    return res.status(401).json({msg: "Acesso negado, token não informado! "})
   }
 
   const secret = process.env.SECRET;
@@ -150,7 +150,7 @@ router.get('/clientes', cliente.buscaCompleta  );
 
 router.get('/offline/clientes',   cliente.buscaCompleta  );
 
-router.get('/formas_Pagamento/', checkToken ,async  (req,res)=>{
+router.get('/offline/formas_Pagamento/', checkToken ,async  (req,res)=>{
   await fpgt.busca(req,res);
 });
 

@@ -1,15 +1,20 @@
 import express,{NextFunction, Request,Response} from 'express';
+import swaggerUi from 'swagger-ui-express';
+
 import "express-async-errors";
 import cors from 'cors';
 const https = require('https');
 const fs = require('fs');
 import 'dotenv/config';
-
+import swaggerDocs from './swagger.json';
 
 import { router } from './routes';
 import { conn } from './database/databaseConfig';
 
         const app = express();
+
+        app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(swaggerDocs))
+        
         app.use(express.json());    
         app.use(router)
         app.use(cors());
