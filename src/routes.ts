@@ -1,6 +1,6 @@
 import { Router,Request,Response, NextFunction } from "express";
 import { controllerProduto } from "./controllers/produtos/produtos";
-import { controlerOrcamento } from "./controllers/orcamento/orcamento";
+import { CreateOrcamento } from "./controllers/orcamento/createOrcamento";  
 import { Cliente    } from "./controllers/cliente/cliente";
 import { formaDePagamamento } from "./controllers/formaDePagamamento/formaDePagamamento";
 import { Acerto } from "./controllers/acerto/acerto";
@@ -14,12 +14,13 @@ import { Tipo_de_os } from "./controllers/tipo_de_os/tipo_de_os";
 import { Servicos } from "./controllers/serviços/servicos";
 import { Veiculo } from "./controllers/veiculo/veiculo";
 import { Orcamento_service } from "./controllers/orcamento/orcamento_service";
+import { SelectOrcamento } from "./controllers/orcamento/selectOrcamento";
 
-const crypt = require('crypt');
+  const crypt = require('crypt');
+  const router = Router();
+  export const versao = '/v1'
 
-const router = Router();
-
-    router.get('/', async (req:Request, res:Response)=>{
+    router.get(`${versao}/`, async (req:Request, res:Response)=>{
       await conn.getConnection(
         async (err:Error)=>{
           if(err){
@@ -32,7 +33,7 @@ const router = Router();
     })
 
  
-    router.post('/teste', ( req, res )=>{
+    router.post(`${versao}/teste`, ( req, res )=>{
       console.log(req.body)
     })
 
@@ -55,7 +56,7 @@ function checkToken(req:Request, res:Response, next:NextFunction){
 
 }
 
-router.post('/auth', async (req:Request, res:Response)=>{
+router.post(`${versao}/auth`, async (req:Request, res:Response)=>{
 
   const { nome, senha } = req.body;
   
@@ -77,7 +78,7 @@ router.post('/auth', async (req:Request, res:Response)=>{
 
   });
 
-  router.get('/produtos/:produto',checkToken, async (req: Request, res: Response) => {
+  router.get( `${versao}/produtos/:produto`,checkToken, async (req: Request, res: Response) => {
     const a = new controllerProduto();
     const aux = await a.busca(conn,req,res, db_estoque,db_publico);
     res.json(aux)
@@ -87,7 +88,7 @@ router.post('/auth', async (req:Request, res:Response)=>{
 /* ------------------ rotas acerto -------------------------- */
 //            busca 1 produto com suas configurações
 //            consulta sql feita pelo codigo 
-router.get('/acerto/produto/:produto',checkToken,async(req:Request, res:Response)=>{
+router.get(`${versao}/acerto/produto/:produto`,checkToken,async(req:Request, res:Response)=>{
   const obj = new controllerProduto();
 const aux:any = await obj.buscaDoAcerto( conn ,req,res , db_estoque, db_publico);
  res.json(aux[0])
@@ -96,7 +97,7 @@ const aux:any = await obj.buscaDoAcerto( conn ,req,res , db_estoque, db_publico)
 
 //busca varios produtos
 // consulta sql  feita por codigo ou descricao do produto
-router.get('/acerto/produtos/:produto',checkToken, async (req: Request, res: Response) => {
+router.get(`${versao}/acerto/produtos/:produto` ,checkToken, async (req: Request, res: Response) => {
   const a = new controllerProduto();
   const aux = await a.busca(conn,req,res, db_estoque,db_publico);
   res.json(aux)
@@ -104,13 +105,13 @@ router.get('/acerto/produtos/:produto',checkToken, async (req: Request, res: Res
 
 
 //  busca setores do sistema 
-router.get('/acerto/setores/', checkToken,async (req: Request, res: Response) => {
+router.get(`${versao}/acerto/setores/`, checkToken,async (req: Request, res: Response) => {
   const a = new controllerProduto();
   const aux = await a.buscaSetores(conn,db_estoque, req,res);
   res.json(aux)
 });
 //busca produto no setor
-router.get('/acerto/produtoSetor/:produto', checkToken,async (req: Request, res: Response) => {
+router.get(`${versao}/acerto/produtoSetor/:produto`, checkToken,async (req: Request, res: Response) => {
   const codigo:any  = req.params.produto;
 console.log(codigo)
   const a = new controllerProduto();
@@ -118,7 +119,7 @@ console.log(codigo)
   res.json(aux)
 });
 //busca preco do produto
-router.get('/acerto/produtoPreco/:produto', checkToken,async (req: Request, res: Response) => {
+router.get(`${versao}/acerto/produtoPreco/:produto`, checkToken,async (req: Request, res: Response) => {
   const codigo:any  = req.params.produto;
 console.log(codigo)
   const a = new controllerProduto();
@@ -128,7 +129,7 @@ console.log(codigo)
 
 
 //            recebe acerto de estoque
-router.post('/acerto', checkToken,async (req:Request, res:Response)=>{
+router.post(`${versao}/acerto`, checkToken,async (req:Request, res:Response)=>{
   const json = req.body
   const obj = new Acerto();
   try{
@@ -145,42 +146,43 @@ const cliente = new Cliente();
 const fpgt = new formaDePagamamento();
 const tipo_os = new Tipo_de_os();
 
-router.get('/clientes', cliente.buscaCompleta  );
+router.get(`${versao}/clientes`, cliente.buscaCompleta  );
 
 
-router.get('/offline/clientes',   cliente.buscaCompleta  );
+router.get(`${versao}/offline/clientes`,   cliente.buscaCompleta  );
 
-router.get('/offline/formas_Pagamento/', checkToken ,async  (req,res)=>{
+router.get(`${versao}/offline/formas_Pagamento/`, checkToken ,async  (req,res)=>{
   await fpgt.busca(req,res);
 });
 
-//router.post('/orcamentos',checkToken,  new controlerOrcamento().cadastra);
-//router.put('/orcamentos',checkToken,  new controlerOrcamento().atualizaOrcamento);
-router.get('/orcamentos/diario',checkToken,  new controlerOrcamento().buscaOrcamentosDoDia);
-router.get('/orcamentos/:codigo',checkToken,  new controlerOrcamento().buscaPorCodigo);
-
-router.get('/tipos_os', checkToken , new Tipo_de_os().busca)
-router.get('/offline/tipos_os', checkToken , new Tipo_de_os().busca)
-
-router.get('/servicos/:servico', checkToken, new Servicos().buscaPorAplicacao)
-
-router.get('/offline/servicos', checkToken, new Servicos().busca)
-
-router.get('/usuarios', checkToken, new Usuario().busca);
-
-router.get('/veiculos/:veiculo', checkToken, new Veiculo().busca);
-
-
-/**___________ */
-
-router.get('/offline/produtos',checkToken, async ( req:Request, res:Response ) =>{
+router.get( `${versao}/offline/produtos` ,checkToken, async ( req:Request, res:Response ) =>{
   let obj = new controllerProduto();
   let aux =  await obj.buscaCompleta()
   res .json (aux);
 });
+router.get(`${versao}/offline/veiculos`, checkToken , new Veiculo().buscaTodos)
+router.get(`${versao}/offline/tipos_os`, checkToken , new Tipo_de_os().busca)
+router.get(`${versao}/offline/servicos`, checkToken, new Servicos().busca)
 
-router.get('/offline/veiculos', checkToken , new Veiculo().buscaTodos)
-router.post('/orcamentos/v1', checkToken , new Orcamento_service().cadastra)
+
+
+router.get(`${versao}/tipos_os`, checkToken , new Tipo_de_os().busca)
+
+router.get(`${versao}/servicos/:servico`, checkToken, new Servicos().buscaPorAplicacao)
+
+
+router.get(`${versao}/usuarios`, checkToken, new Usuario().busca);
+
+router.get(`${versao}/veiculos/:veiculo`, checkToken, new Veiculo().busca);
+
+
+/**___________ */
+
+
+router.post(`${versao}/pedidos`, checkToken , new Orcamento_service().cadastra)
+
+router.get(`${versao}/pedidos`, checkToken , new SelectOrcamento().buscaPordata)
+
  
 
 /**___________ */

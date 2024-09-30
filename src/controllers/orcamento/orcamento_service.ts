@@ -1,21 +1,26 @@
 import { Response, Request } from "express";
-import { controlerOrcamento } from "./orcamento";
+import { SelectOrcamento } from "./selectOrcamento";
+import { UpdateOrcamento } from "./updataOrcamento";
+import { CreateOrcamento } from "./createOrcamento";
 
 export class Orcamento_service {
+
     async cadastra(request: Request, response: Response) {
-        const controller = new controlerOrcamento();
+        const select = new SelectOrcamento();
+        const update = new UpdateOrcamento();
+        const create = new CreateOrcamento();
         const dados_orcamentos = request.body;
 
         if (dados_orcamentos.length > 0) {
             // Usando Promise.all para aguardar todas as promessas
             const results = await Promise.all(dados_orcamentos.map(async (i:any) => {
-                const aux: any = await controller.validaOrcamento( i.codigo, i.vendedor );
+                const aux: any = await select.validaOrcamento( i.codigo, i.vendedor );
                 if (aux.length > 0) {
                     console.log('Já existe um orçamento registrado com o código', i.codigo);
-                    await controller.update(i);
+                    await update.update(i);
                     return { codigo: i.codigo, status: 'atualizado' };
                 } else {
-                    const result = await controller.create(i);
+                    const result = await create.create(i);
                     return { codigo: result  , status: 'inserido' };
                 }
             }));
@@ -26,4 +31,15 @@ export class Orcamento_service {
 
         return response.status(400).json({ msg: "Nenhum dado de orçamento fornecido." });
     }
+///////
+////////////////////////////
+///////
+
+    async selecionaPorData(){
+        
+    }
+
+
+
+
 }

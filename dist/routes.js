@@ -35,7 +35,7 @@ function checkToken(req, res, next) {
     const header = req.headers['authorization'];
     const token = header && header.split(" ")[1];
     if (!token) {
-        return res.status(401).json({ msg: "acesso negado" });
+        return res.status(401).json({ msg: "Acesso negado, token não informado! " });
     }
     const secret = process.env.SECRET;
     if (token === secret) {
@@ -124,7 +124,7 @@ const fpgt = new formaDePagamamento_1.formaDePagamamento();
 const tipo_os = new tipo_de_os_1.Tipo_de_os();
 router.get('/clientes', cliente.buscaCompleta);
 router.get('/offline/clientes', cliente.buscaCompleta);
-router.get('/formas_Pagamento/', checkToken, async (req, res) => {
+router.get('/offline/formas_Pagamento/', checkToken, async (req, res) => {
     await fpgt.busca(req, res);
 });
 //router.post('/orcamentos',checkToken,  new controlerOrcamento().cadastra);

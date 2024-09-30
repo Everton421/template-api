@@ -1,0 +1,205 @@
+{
+    "openapi": "3.0.0",
+    "info": {
+        "title": "API",
+        "description": "Integracao aplicacao mobile com o sistema vendas",
+        "contact": {
+            "email": "suporte@intersig.com.br"
+        }
+    },
+    "version": "1.0.0",
+    "servers": [
+        {
+            "url": "http://localhost:3000",
+            "description": "Api"
+        }
+    ],
+    "paths": {
+        "/offline/produtos": {
+            "get": {
+                "summary": "busca produtos",
+                "description": "rota responsavel por buscar todos os dados dos produtos, onde é feito os procedimentos de cadastro no aplicativo.",
+                "tags": ["produtos"],
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "examples": {
+                                "product": {
+                                    "value": [
+                                        {
+                                            "codigo": 2,
+                                            "estoque": 0,
+                                            "preco": 289.28,
+                                            "grupo": 2,
+                                            "descricao": "KIT ROLAMENTO CUBO TRASEIRO",
+                                            "num_fabricante": "7316573929277",
+                                            "num_original": "ALR399365L",
+                                            "sku": "6235145",
+                                            "marca": 148,
+                                            "ativo": "S",
+                                            "tipo": 8,
+                                            "class_fiscal": 24958,
+                                            "origem": "0",
+                                            "cst": "00",
+                                            "data_cadastro": "0000-00-00",
+                                            "data_recadastro": "2024-05-09T18:05:46.000Z",
+                                            "observacoes1": "",
+                                            "observacoes2": "",
+                                            "observacoes3": ""
+                                        }
+                                    ]
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/offline/clientes/?vendedor={codigo_vendedor}": {
+            "get": {
+                "summary": "busca clientes",
+                "description": "rota responsavel por buscar todos os dados dos clientes por vendedor, onde é feito os procedimentos de cadastro no aplicativo.",
+                "tags": ["clientes"],
+                "parameters": [
+                    {
+                        "vendedor": "codigo vendedor",
+                        "in": "query",
+                        "description": "Codigo do vendedor",
+                        "required": true
+                    }
+                ],
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "examples": {
+                                "cliente": {
+                                    "value": [
+                                        {
+                                            "codigo": 1,
+                                            "nome": "JOAO FLAVIO FERNANDES",
+                                            "cnpj": "187.734.009-04",
+                                            "ie": "000000",
+                                            "celular": "(44) 99916-0504",
+                                            "cep": "11111-111",
+                                            "endereco": "1",
+                                            "cidade": "ANGULO",
+                                            "numero": "00",
+                                            "data_cadastro": "0000-00-00",
+                                            "data_recadastro": "2020-10-07T13:32:58.000Z",
+                                            "vendedor": 0
+                                        }
+                                    ]
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/offline/veiculos": {
+            "get": {
+                "summary": "busca veiculos",
+                "description": "rota responsavel por buscar todos os dados dos veiculos, onde é feito os procedimentos de cadastro no aplicativo.",
+                "tags": ["veiculos"],
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "examples": {
+                                "veiculos": {
+                                    "value": [
+                                        {
+                                            "codigo": 1,
+                                            "cliente": 843,
+                                            "placa": "ALG-1548",
+                                            "marca": 1,
+                                            "modelo": 1899,
+                                            "ano": "1900",
+                                            "cor": 16777215,
+                                            "combustivel": "OUTRO"
+                                        }
+                                    ]
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/offline/servicos": {
+            "get": {
+                "summary": "busca servicos",
+                "description": "rota responsavel por buscar todos os dados dos servicos, onde é feito os procedimentos de cadastro no aplicativo.",
+                "tags": ["servicos"],
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "examples": {
+                                "servicos": {
+                                    "value": [
+                                        {
+                                            "codigo": 2,
+                                            "tipo_serv": 3,
+                                            "valor": 40,
+                                            "aplicacao": "SUBSTITUIR CANO SAIDA ESCAPE"
+                                        }
+                                    ]
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/offline/formas_pagamento": {
+            "get": {
+                "summary": "busca formas de pagamento",
+                "description": "rota responsavel por buscar todos os dados das formas de pagamento, onde é feito os procedimentos de cadastro no aplicativo.",
+                "tags": ["formas de pagamento"],
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "examples": {
+                                "formas de pagamento": {
+                                    "value": [
+                                        {
+                                            "codigo": 1,
+                                            "descricao": "A VISTA",
+                                            "desc_maximo": 100,
+                                            "parcelas": 1,
+                                            "intervalo": 30,
+                                            "recebimento": 0
+                                        }
+                                    ]
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/offline/tipos_os": {
+            "get": {
+                "summary": "busca  tipos de os",
+                "description": "rota responsavel por buscar todos os tipos de os, onde é feito os procedimentos de cadastro no aplicativo.",
+                "tags": ["tipos de os"],
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "examples": {
+                                "tipos de os": {
+                                    "value": [
+                                        {
+                                            "codigo": 3,
+                                            "descricao": "MATERIAL PARA REVENDA",
+                                            "exigir_laudo": "N"
+                                        }
+                                    ]
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+}

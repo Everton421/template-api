@@ -11,7 +11,7 @@
     "version":"1.0.0",
     "servers":[
         {
-            "url":"http://localhost:3000",
+            "url":"http://localhost:3000/v1",
             "description":"Api"
         }
     ],
@@ -55,7 +55,7 @@
                     }
                }
             }
-        }  ,
+        } ,
         "/offline/clientes/?vendedor={codigo_vendedor}":{
             "get":{
             "summary": "busca clientes",
@@ -201,7 +201,155 @@
                     }
                }
             }
+        },
+        "/pedidos?data={data}&vendedor={codigo_vendedor}":{
+            "get":{
+            "summary": "busca pedidos",
+             "description":"rota responsavel por buscar pedidos do sistema com base na data de alteração e no vendedor informado.",
+             
+             "tags":["pedidos"],
+             "parameters":[
+                {
+                    "data":"data ",
+                    "in":"query",
+                    "name":"data",
+                    "description":"data ultima alteracao",
+                    "required":true
+                },
+                {
+                    "vendedor":"vendedor ",
+                    "in":"query",
+                    "name":"vendedor",
+                    "description":"Codigo do vendedor",
+                    "required":true
+                }
+             ],
+             "requestBody":{
+                    "content":{
+                        "application/json":{
+                            "examples":{
+                                "pedidos":{
+                                    "value": [
+                                        {
+                                            "cliente": {
+                                                "codigo": 3,
+                                                "nome": "ACP AUTO CABINES PARANA",
+                                                "cnpj": "11.556.583/0001-58",
+                                                "celular": ""
+                                            },
+                                            "codigo": 4,
+                                            "total_geral": 66.76,
+                                            "total_produtos": 26.76,
+                                            "quantidade_parcelas": 1,
+                                            "forma_pagamento": 0,
+                                            "contato": "react-native/mobile 4",
+                                            "data_recadastro": "2024-09-30T17:21:29.000Z",
+                                            "data_cadastro": "2024-09-30T03:00:00.000Z",
+                                            "produtos": [
+                                                {
+                                                    "pedido": 4,
+                                                    "codigo": 7,
+                                                    "descricao": "LUBRIFICANTE FREIO DOT4 500ML",
+                                                    "quantidade": 1,
+                                                    "preco": 26.76,
+                                                    "desconto": 0,
+                                                    "total": 26.76
+                                                }
+                                            ],
+                                            "parcelas": [
+                                                {
+                                                    "pedido": 4,
+                                                    "parcela": 1,
+                                                    "valor": 66.76,
+                                                    "vencimento": "2024-09-30"
+                                                }
+                                            ],
+                                            "servicos": [
+                                                {
+                                                    "pedido": 4,
+                                                    "aplicacao": "SUBSTITUIR LONA FREIO DIANTEIRO",
+                                                    "quantidade": 1,
+                                                    "desconto": 0,
+                                                    "valor": 40
+                                                }
+                                            ]
+                                        }
+                                    ]
+                                }
+                            }
+                        }
+                    }
+               }
+            }
+        } ,
+
+        "/pedidos":{
+            "post":{
+            "summary": "cria/atualiza um pedido",
+             "description":"rota responsavel por validar a existência de um pedido, caso exista é feita a atualização caso contrario é criado o pedido.",
+             
+             "tags":["pedidos"],
+         
+             "requestBody":{
+                    "content":{
+                        "application/json":{
+                            "examples":{
+                                "pedidos":{
+                                    "value": {
+                                             "cliente": {
+                                                "codigo": 3,
+                                                "nome": "ACP AUTO CABINES PARANA",
+                                                "cnpj": "11.556.583/0001-58",
+                                                "celular": ""
+                                            },
+                                            "codigo": 4,
+                                            "total_geral": 66.76,
+                                            "total_produtos": 26.76,
+                                            "quantidade_parcelas": 1,
+                                            "forma_pagamento": 0,
+                                            "contato": "react-native/mobile 4",
+                                            "data_recadastro": "2024-09-30T17:21:29.000Z",
+                                            "data_cadastro": "2024-09-30T03:00:00.000Z",
+                                            "produtos": [
+                                                {
+                                                    "pedido": 4,
+                                                    "codigo": 7,
+                                                    "descricao": "LUBRIFICANTE FREIO DOT4 500ML",
+                                                    "quantidade": 1,
+                                                    "preco": 26.76,
+                                                    "desconto": 0,
+                                                    "total": 26.76
+                                                }
+                                            ],
+                                            "parcelas": [
+                                                {
+                                                    "pedido": 4,
+                                                    "parcela": 1,
+                                                    "valor": 66.76,
+                                                    "vencimento": "2024-09-30"
+                                                }
+                                            ],
+                                            "servicos": [
+                                                {
+                                                    "pedido": 4,
+                                                    "aplicacao": "SUBSTITUIR LONA FREIO DIANTEIRO",
+                                                    "quantidade": 1,
+                                                    "desconto": 0,
+                                                    "valor": 40
+                                                }
+                                            ]
+                                        }
+                                    
+                                }
+                            }
+                        }
+                    }
+               }
+            }
         } 
+        
+
+
    
     } 
  
