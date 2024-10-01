@@ -36,6 +36,7 @@ export class CreateOrcamento {
             tipo,
             vendedor,
             data_cadastro,
+            data_recadastro,
             veiculo,
             tipo_os,
             contato,
@@ -66,6 +67,11 @@ export class CreateOrcamento {
         if (!data_cadastro) {
             data_cadastro = dataAtual;
         }
+
+        if (!data_recadastro) {
+            data_recadastro = dataAtual;
+        }
+
         if (!contato) {
             contato = '';
         }
@@ -97,9 +103,9 @@ export class CreateOrcamento {
 
         await conn.query(
             `INSERT INTO ${db_vendas}.cad_orca ` +
-            `(cliente, cod_site, total_produtos, forma_pagamento, tipo,  DESC_PROD, TOTAL_GERAL, DATA_CADASTRO, SITUACAO,VENDEDOR,CONTATO , DATA_INICIO,DATA_PEDIDO, DATA_APROV, QTDE_PARCELAS, OBSERVACOES,OBSERVACOES2)  
-                VALUES ( ? ,?, ?, ?, ?, ?, ?, ? , ? , ? ,?, ?, ?, ?, ?, ?, ?)`,
-            [codigo_cliente, codigo, total_produtos, forma_pagamento, tipo, descontos, total_geral, data_cadastro, situacao, vendedor, contato, data_cadastro, data_cadastro, data_cadastro, quantidade_parcelas, observacoes, observacoes2],
+            `(cliente, cod_site, total_produtos, forma_pagamento, tipo,  DESC_PROD, TOTAL_GERAL, DATA_CADASTRO, SITUACAO,VENDEDOR,CONTATO , DATA_INICIO,DATA_PEDIDO, DATA_APROV, QTDE_PARCELAS, OBSERVACOES,OBSERVACOES2, DATA_RECAD)  
+                VALUES ( ? ,?, ?, ?, ?, ?, ?, ? , ? , ? ,?, ?, ?, ?, ?, ?, ?, ?)`,
+            [codigo_cliente, codigo, total_produtos, forma_pagamento, tipo, descontos, total_geral, data_cadastro, situacao, vendedor, contato, data_cadastro, data_cadastro, data_cadastro, quantidade_parcelas, observacoes, observacoes2, data_recadastro],
             (err: any, result: any) => {
                 if (err) {
                     console.log(err)

@@ -35,6 +35,7 @@ export class UpdateOrcamento{
             tipo,
             vendedor,
             data_cadastro,
+            data_recadastro,
             veiculo,
             tipo_os,
             contato,
@@ -70,6 +71,11 @@ export class UpdateOrcamento{
         if (!data_cadastro) {
             data_cadastro = dataAtual;
         }
+
+        if (!data_recadastro) {
+            data_recadastro = dataAtual;
+        }
+
         if (!contato) {
             contato = '';
         }
@@ -129,6 +135,7 @@ export class UpdateOrcamento{
                     forma_pagamento = ${forma_pagamento},
                     observacoes = '${observacoes}',
                     data_cadastro = '${data_cadastro}',
+                    data_recadastro = '${data_recadastro}',
                     situacao =  '${situacao}'
                     where codigo = ${codigo}
                 `
