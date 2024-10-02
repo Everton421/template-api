@@ -217,7 +217,7 @@ export class SelectOrcamento{
                co.data_cadastro,
                co.vendedor,
                co.data_recad data_recadastro,
-               co.observacoes,
+              CAST( co.observacoes AS char ) observacoes ,
                co.desc_serv,
                co.desc_prod ,
                co.veiculo veiculo,
