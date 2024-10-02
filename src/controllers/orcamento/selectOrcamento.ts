@@ -239,7 +239,8 @@ export class SelectOrcamento{
                co.desc_serv,
                co.desc_prod ,
                co.veiculo veiculo,
-               co.tipo_os 
+               co.tipo_os,
+               co.tipo
              from ${db_vendas}.cad_orca co
                             join ${db_publico}.cad_clie cli on cli.codigo = co.cliente
                             where co.data_recad  >= '${param_data}' and co.vendedor = ${vendedor}
@@ -319,10 +320,11 @@ export class SelectOrcamento{
                          "vendedor"             : i.vendedor,
                          "data_recadastro"      : i.data_recadastro,
                          "data_cadastro"        : i.data_cadastro,
-                         "veiculo"              :i.veiculo,
-                         "observacoes"          :i.observacoes,
-                         "tipo_os"              :i.tipo_os,
-                         "descontos"            :descontos,
+                         "veiculo"              : i.veiculo,
+                         "observacoes"          : i.observacoes,
+                         "tipo_os"              : i.tipo_os,
+                         "tipo"                 : tipo,
+                         "descontos"            : descontos,
                          "produtos"             : produtos,
                          "parcelas"             : parcelas,
                          "servicos"             : servicos
