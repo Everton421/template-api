@@ -85,6 +85,14 @@ export class SelectOrcamento{
     async buscaPordata(request: Request, response: Response) {
        
         
+        function formatarData(data: string): string | null {
+            const regex = /^\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2}$/;
+            if (!regex.test(data)) {
+                return null;
+            }
+            return data;
+        }
+
         function obterDataAtualSemHoras() {
             const dataAtual = new Date();
             const dia = String(dataAtual.getDate()).padStart(2, '0');
@@ -92,55 +100,24 @@ export class SelectOrcamento{
             const ano = dataAtual.getFullYear();
             return `${ano}-${mes}-${dia} 00-00-00`;
         }
-        
-        function obterDataHora(data) {
-            // Converte a string no formato "YYYY-MM-DD HH-MM-SS" para um objeto Date
-            const partes = data.split(' ');
-            const dataParte = partes[0].split('-');
-            const horaParte = partes[1].split('-');
-        
-            const ano = parseInt(dataParte[0], 10);
-            const mes = parseInt(dataParte[1], 10) - 1; // Mês começa em 0
-            const dia = parseInt(dataParte[2], 10);
-            const hora = parseInt(horaParte[0], 10);
-            const minutos = parseInt(horaParte[1], 10);
-            const segundos = parseInt(horaParte[2], 10);
-        
-            const dataObj = new Date(ano, mes, dia, hora, minutos, segundos);
-            return `${ano}-${String(mes + 1).padStart(2, '0')}-${String(dia).padStart(2, '0')} ${String(hora).padStart(2, '0')}-${String(minutos).padStart(2, '0')}-${String(segundos).padStart(2, '0')}`;
-        }
-        function obterData (data) {
-            // Converte a string no formato "YYYY-MM-DD HH-MM-SS" para um objeto Date
-            const partes = data.split(' ');
-            const dataParte = partes[0].split('-');
-            const horaParte = partes[1].split('-');
-        
-            const ano = parseInt(dataParte[0], 10);
-            const mes = parseInt(dataParte[1], 10) - 1; // Mês começa em 0
-            const dia = parseInt(dataParte[2], 10);
-            const hora = parseInt(horaParte[0], 10);
-            const minutos = parseInt(horaParte[1], 10);
-            const segundos = parseInt(horaParte[2], 10);
-        
-            const dataObj = new Date(ano, mes, dia, hora, minutos, segundos);
-            return `${ano}-${String(mes + 1).padStart(2, '0')}-${String(dia).padStart(2, '0')}`;
-        }
 
-        let vendedor = request.query.vendedor;
-        
+    
+        const vendedor = request.query.vendedor;
         let param_data;
-        
-            if(!vendedor){
-                return response.status(400).json({"erro":"É necessario informar o vendedor!"})
-            }
-
+    
+        if (!vendedor) {
+            return response.status(400).json({ "erro": "É necessário informar o vendedor!" });
+        }
+    
         if (!request.query.data) {
             param_data = obterDataAtualSemHoras();
         } else {
-            const dataConsulta = request.query.data;
-            param_data = obterDataHora(dataConsulta);
+            param_data = formatarData(request.query.data);
+            if (!param_data) {
+                return response.status(400).json({ "erro": "Data deve estar no formato YYYY-MM-DD HH-MM-SS!" });
+            }
         }
-
+    
 
         let dados: any;
         let produtosOrcamento: any = [];
@@ -300,8 +277,8 @@ export class SelectOrcamento{
                         }
                         
                             const descontos = ( i.desc_prod + i.desc_serv);
-                            const data_cadastro = obterData(i.data_cadastro);
-                            const data_recadastro = obterDataHora(i.data_recadastro);
+                         //   const data_cadastro = obterData(i.data_cadastro);
+                         //   const data_recadastro = obterDataHora(i.data_recadastro);
 
                            let  data = {
                             "cliente": {
@@ -323,7 +300,7 @@ export class SelectOrcamento{
                          "veiculo"              : i.veiculo,
                          "observacoes"          : i.observacoes,
                          "tipo_os"              : i.tipo_os,
-                         "tipo"                 : tipo,
+                         "tipo"                 : i.tipo,
                          "descontos"            : descontos,
                          "produtos"             : produtos,
                          "parcelas"             : parcelas,
