@@ -85,7 +85,7 @@ export class SelectOrcamento{
     async buscaPordata(request: Request, response: Response) {
        
         
-        function obterDataAtual() {
+        function obterDataAtualSemHoras() {
             const dataAtual = new Date();
             const dia = String(dataAtual.getDate()).padStart(2, '0');
             const mes = String(dataAtual.getMonth() + 1).padStart(2, '0');
@@ -93,7 +93,7 @@ export class SelectOrcamento{
             return `${ano}-${mes}-${dia} 00-00-00`;
         }
         
-        function obterData(data) {
+        function obterDataHora(data) {
             // Converte a string no formato "YYYY-MM-DD HH-MM-SS" para um objeto Date
             const partes = data.split(' ');
             const dataParte = partes[0].split('-');
@@ -109,6 +109,23 @@ export class SelectOrcamento{
             const dataObj = new Date(ano, mes, dia, hora, minutos, segundos);
             return `${ano}-${String(mes + 1).padStart(2, '0')}-${String(dia).padStart(2, '0')} ${String(hora).padStart(2, '0')}-${String(minutos).padStart(2, '0')}-${String(segundos).padStart(2, '0')}`;
         }
+        function obterData (data) {
+            // Converte a string no formato "YYYY-MM-DD HH-MM-SS" para um objeto Date
+            const partes = data.split(' ');
+            const dataParte = partes[0].split('-');
+            const horaParte = partes[1].split('-');
+        
+            const ano = parseInt(dataParte[0], 10);
+            const mes = parseInt(dataParte[1], 10) - 1; // Mês começa em 0
+            const dia = parseInt(dataParte[2], 10);
+            const hora = parseInt(horaParte[0], 10);
+            const minutos = parseInt(horaParte[1], 10);
+            const segundos = parseInt(horaParte[2], 10);
+        
+            const dataObj = new Date(ano, mes, dia, hora, minutos, segundos);
+            return `${ano}-${String(mes + 1).padStart(2, '0')}-${String(dia).padStart(2, '0')}`;
+        }
+
         let vendedor = request.query.vendedor;
         
         let param_data;
@@ -118,10 +135,10 @@ export class SelectOrcamento{
             }
 
         if (!request.query.data) {
-            param_data = obterDataAtual();
+            param_data = obterDataAtualSemHoras();
         } else {
             const dataConsulta = request.query.data;
-            param_data = obterData(dataConsulta);
+            param_data = obterDataHora(dataConsulta);
         }
 
 
@@ -213,6 +230,7 @@ export class SelectOrcamento{
                 cli.celular celular,
                co.qtde_parcelas quantidade_parcelas, 
                co.total_produtos total_produtos,
+               co.total_servicos total_servicos,
                cli.nome,
                co.data_cadastro,
                co.vendedor,
@@ -281,6 +299,8 @@ export class SelectOrcamento{
                         }
                         
                             const descontos = ( i.desc_prod + i.desc_serv);
+                            const data_cadastro = obterData(i.data_cadastro);
+                            const data_recadastro = obterDataHora(i.data_recadastro);
 
                            let  data = {
                             "cliente": {
@@ -292,6 +312,7 @@ export class SelectOrcamento{
                          "codigo"               : i.orcamento,
                          "total_geral"          : i.total_geral,
                          "total_produtos"       : i.total_produtos,
+                         "total_servicos"       : i.total_servicos,
                          "quantidade_parcelas"  : i.quantidade_parcelas,
                          "forma_pagamento"      : i.forma_pagamento,
                          "contato"              : i.contato,
