@@ -216,9 +216,12 @@ export class SelectOrcamento{
                cli.nome,
                co.data_cadastro,
                co.vendedor,
-               co.data_recad data_recadastro
-
-             
+               co.data_recad data_recadastro,
+               co.observacoes,
+               co.desc_serv,
+               co.desc_prod ,
+               co.veiculo veiculo,
+               co.tipo_os 
              from ${db_vendas}.cad_orca co
                             join ${db_publico}.cad_clie cli on cli.codigo = co.cliente
                             where co.data_recad  >= '${param_data}' and co.vendedor = ${vendedor}
@@ -276,7 +279,8 @@ export class SelectOrcamento{
                         if (servicos.length === 0) {
                             servicos = [];
                         }
-        
+                        
+                            const descontos = ( i.desc_prod + i.desc_serv);
 
                            let  data = {
                             "cliente": {
@@ -285,18 +289,23 @@ export class SelectOrcamento{
                                 "cnpj": i.cnpj,
                                 "celular": i.celular,
                             },
-                         "codigo": i.orcamento,
-                         "total_geral": i.total_geral,
-                         "total_produtos": i.total_produtos,
-                         "quantidade_parcelas": i.quantidade_parcelas,
-                         "forma_pagamento": i.forma_pagamento,
-                         "contato": i.contato,
-                         "vendedor": i.vendedor,
-                         "data_recadastro": i.data_recadastro,
-                         "data_cadastro": i.data_cadastro,
-                         "produtos" : produtos,
-                         "parcelas" : parcelas,
-                         "servicos" : servicos
+                         "codigo"               : i.orcamento,
+                         "total_geral"          : i.total_geral,
+                         "total_produtos"       : i.total_produtos,
+                         "quantidade_parcelas"  : i.quantidade_parcelas,
+                         "forma_pagamento"      : i.forma_pagamento,
+                         "contato"              : i.contato,
+                         "vendedor"             : i.vendedor,
+                         "data_recadastro"      : i.data_recadastro,
+                         "data_cadastro"        : i.data_cadastro,
+                         "veiculo"              :i.veiculo,
+                         "observacoes"          :i.observacoes,
+                         "tipo_os"              :i.tipo_os,
+                         "descontos"            :descontos,
+                         "produtos"             : produtos,
+                         "parcelas"             : parcelas,
+                         "servicos"             : servicos
+
                      }
 
 
