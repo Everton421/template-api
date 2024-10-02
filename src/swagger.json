@@ -202,7 +202,7 @@
                }
             }
         },
-        "/pedidos?data={data}&vendedor={codigo_vendedor}":{
+        "/pedidos":{
             "get":{
             "summary": "busca pedidos",
              "description":"rota responsavel por buscar pedidos do sistema com base na data de alteração e no vendedor informado.",
@@ -212,7 +212,7 @@
                 {
                     "data":"data ",
                     "in":"query",
-                    "name":"data",
+                    "name":"2024-09-30 15:00:00",
                     "description":"data ultima alteracao",
                     "required":true
                 },
