@@ -135,7 +135,7 @@ export class UpdateOrcamento{
                     forma_pagamento = ${forma_pagamento},
                     observacoes = '${observacoes}',
                     data_cadastro = '${data_cadastro}',
-                    data_recadastro = '${data_recadastro}',
+                    data_recad = '${data_recadastro}',
                     situacao =  '${situacao}'
                     where codigo = ${codigo}
                 `
