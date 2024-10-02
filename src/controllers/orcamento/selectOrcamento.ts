@@ -101,7 +101,26 @@ export class SelectOrcamento{
             return `${ano}-${mes}-${dia} 00-00-00`;
         }
 
+        function dataHora ( data   ) {
+            const dia = String(data.getDate()).padStart(2, '0');
+            const mes = String(data.getMonth() + 1).padStart(2, '0');
+            const ano = data.getFullYear();
+            const horas = String(data.getHours()).padStart(2, '0');
+            const minutos = String(data.getMinutes()).padStart(2, '0');
+            const segundos = String(data.getSeconds()).padStart(2, '0');
+            return `${ano}-${mes}-${dia} ${horas}:${minutos}:${segundos}`;
+        }
     
+        function  formatadataAtual ( data   ) {
+            const dia = String(data.getDate()).padStart(2, '0');
+            const mes = String(data.getMonth() + 1).padStart(2, '0');
+            const ano = data.getFullYear();
+            const horas = String(data.getHours()).padStart(2, '0');
+            const minutos = String(data.getMinutes()).padStart(2, '0');
+            const segundos = String(data.getSeconds()).padStart(2, '0');
+            return `${ano}-${mes}-${dia}`;
+        }
+        
         const vendedor = request.query.vendedor;
         let param_data;
     
@@ -124,75 +143,7 @@ export class SelectOrcamento{
 
 
 
-        async function buscaProdutosDoOrcamento(codigo_orcamento: any) {
-            let sql = `
-                             select 
-                              po.orcamento pedido , 
-                              po.produto codigo,
-                              cp.descricao,
-                              po.fator_qtde as quantidade,
-                              po.unitario as preco,
-                              po.desconto,
-                              po.total_liq as total  
-                                  from ${db_vendas}.pro_orca po
-                                  join ${db_publico}.cad_prod cp on cp.codigo = po.produto
-                                  where orcamento = ?  ;`
-
-            return new Promise((resolve, reject) => {
-
-                conn.query(sql, [codigo_orcamento], (err, result) => {
-                    if (err) {
-                        console.log(err);
-                        reject(err);
-                    } else {
-                        resolve(result);
-                        // console.log(result);
-                    }
-                })
-            })
-        }
-
-        
-        async function servicosDoOrcamento(codigo_orcamento: any) {
-            let sql = `
-                             select   so.orcamento pedido, cs.aplicacao ,so.quantidade , so.desconto, so.unitario valor 
-                                  from ${db_vendas}.ser_orca so 
-                                  join ${db_publico}.cad_serv cs 
-                                  on cs.codigo = so.servico
-                                  where so.orcamento = ?  ;`
-
-            return new Promise((resolve, reject) => {
-
-                conn.query(sql, [codigo_orcamento], (err, result) => {
-                    if (err) {
-                        console.log(err);
-                        reject(err);
-                    } else {
-                        resolve(result);
-                        // console.log(result);
-                    }
-                })
-            })
-        }
-
-        async function parcelasDoOrcamento(codigo_orcamento: any) {
-            let sql = `
-                             select   orcamento pedido, parcela, valor, DATE_FORMAT(vencimento, '%Y-%m-%d') as vencimento    from ${db_vendas}.par_orca where orcamento = ?  ;`
-
-            return new Promise((resolve, reject) => {
-
-                conn.query(sql, [codigo_orcamento], (err, result) => {
-                    if (err) {
-                        console.log(err);
-                        reject(err);
-                    } else {
-                        resolve(result);
-                        // console.log(result);
-                    }
-                })
-            })
-        }
-
+     
 
 
         const sql = ` SELECT 
@@ -253,13 +204,11 @@ export class SelectOrcamento{
                         } catch (erro) {
                             console.log(`erro ao buscar produtos ${erro}`)
                         }
-        
                         try {
                             parcelas = await parcelasDoOrcamento(i.orcamento);
                         } catch (erro) {
                             console.log(`erro ao buscar produtos ${erro}`)
                         }
-                      
                         try {
                             servicos = await servicosDoOrcamento(i.orcamento);
                         } catch (erro) {
@@ -268,7 +217,6 @@ export class SelectOrcamento{
                         if (produtos.length === 0) {
                             produtos = [];
                         }
-        
                         if (parcelas.length === 0) {
                             parcelas = [];
                         }
@@ -277,8 +225,8 @@ export class SelectOrcamento{
                         }
                         
                             const descontos = ( i.desc_prod + i.desc_serv);
-                         //   const data_cadastro = obterData(i.data_cadastro);
-                         //   const data_recadastro = obterDataHora(i.data_recadastro);
+                        const data_cadastro =  formatadataAtual(i.data_cadastro);
+                         const data_recadastro = dataHora(i.data_recadastro);
 
                            let  data = {
                             "cliente": {
@@ -295,8 +243,8 @@ export class SelectOrcamento{
                          "forma_pagamento"      : i.forma_pagamento,
                          "contato"              : i.contato,
                          "vendedor"             : i.vendedor,
-                         "data_recadastro"      : i.data_recadastro,
-                         "data_cadastro"        : i.data_cadastro,
+                         "data_recadastro"      : data_recadastro,
+                         "data_cadastro"        : data_cadastro,
                          "veiculo"              : i.veiculo,
                          "observacoes"          : i.observacoes,
                          "tipo_os"              : i.tipo_os,
@@ -315,7 +263,75 @@ export class SelectOrcamento{
                     await Promise.all(promises);
                 }
 
-   
+                async function buscaProdutosDoOrcamento(codigo_orcamento: any) {
+                    let sql = `
+                                     select 
+                                      po.orcamento pedido , 
+                                      po.produto codigo,
+                                      cp.descricao,
+                                      po.fator_qtde as quantidade,
+                                      po.unitario as preco,
+                                      po.desconto,
+                                      po.total_liq as total  
+                                          from ${db_vendas}.pro_orca po
+                                          join ${db_publico}.cad_prod cp on cp.codigo = po.produto
+                                          where orcamento = ?  ;`
+        
+                    return new Promise((resolve, reject) => {
+        
+                        conn.query(sql, [codigo_orcamento], (err, result) => {
+                            if (err) {
+                                console.log(err);
+                                reject(err);
+                            } else {
+                                resolve(result);
+                                // console.log(result);
+                            }
+                        })
+                    })
+                }
+        
+                
+                async function servicosDoOrcamento(codigo_orcamento: any) {
+                    let sql = `
+                                     select   so.orcamento pedido, cs.aplicacao ,so.quantidade , so.desconto, so.unitario valor 
+                                          from ${db_vendas}.ser_orca so 
+                                          join ${db_publico}.cad_serv cs 
+                                          on cs.codigo = so.servico
+                                          where so.orcamento = ?  ;`
+        
+                    return new Promise((resolve, reject) => {
+        
+                        conn.query(sql, [codigo_orcamento], (err, result) => {
+                            if (err) {
+                                console.log(err);
+                                reject(err);
+                            } else {
+                                resolve(result);
+                                // console.log(result);
+                            }
+                        })
+                    })
+                }
+        
+                async function parcelasDoOrcamento(codigo_orcamento: any) {
+                    let sql = `
+                                     select   orcamento pedido, parcela, valor, DATE_FORMAT(vencimento, '%Y-%m-%d') as vencimento    from ${db_vendas}.par_orca where orcamento = ?  ;`
+        
+                    return new Promise((resolve, reject) => {
+        
+                        conn.query(sql, [codigo_orcamento], (err, result) => {
+                            if (err) {
+                                console.log(err);
+                                reject(err);
+                            } else {
+                                resolve(result);
+                                // console.log(result);
+                            }
+                        })
+                    })
+                }
+        
         
                 response.json(dados_orcamentos)
             }
