@@ -248,8 +248,9 @@ let unidades = auxUnidades[0];
         left join  ${db_publico}.prod_tabprecos pp on pp.produto = p.codigo
         left join  ${db_publico}.tab_precos tp on tp.codigo = pp.tabela
      WHERE 
-      s.padrao_venda = 'X' 
-      and tp.padrao = 'S'
+     -- s.padrao_venda = 'X' 
+     -- and
+       tp.padrao = 'S'
       and p.ativo = 'S'
       ;
       `;
