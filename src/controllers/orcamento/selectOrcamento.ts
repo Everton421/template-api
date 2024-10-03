@@ -236,7 +236,7 @@ export class SelectOrcamento{
                                 "celular": i.celular,
                             },
                          "codigo"               : i.orcamento,
-                         "codigo_site"          : i.codigo_site, 
+                         "codigo_site"          : i.cod_site, 
                          "total_geral"          : i.total_geral,
                          "total_produtos"       : i.total_produtos,
                          "total_servicos"       : i.total_servicos,
