@@ -148,7 +148,7 @@ export class SelectOrcamento{
 
         const sql = ` SELECT 
                co.codigo as orcamento,
-               co.codigo_site,
+               co.cod_site,
                co.total_geral,
                cli.codigo as codigo_cliente,
                co.forma_pagamento,
