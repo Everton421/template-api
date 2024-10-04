@@ -216,6 +216,18 @@ let unidades = auxUnidades[0];
 
   async buscaCompleta( ) {
 
+    
+    function dataHora ( data   ) {
+      const dia = String(data.getDate()).padStart(2, '0');
+      const mes = String(data.getMonth() + 1).padStart(2, '0');
+      const ano = data.getFullYear();
+      const horas = String(data.getHours()).padStart(2, '0');
+      const minutos = String(data.getMinutes()).padStart(2, '0');
+      const segundos = String(data.getSeconds()).padStart(2, '0');
+      return `${ano}-${mes}-${dia} ${horas}:${minutos}:${segundos}`;
+  }
+
+
     return new Promise( async ( resolve, reject )=>{
 
 
@@ -258,6 +270,7 @@ let unidades = auxUnidades[0];
         if (err) {
           throw err;
         } else {
+
           resolve(result)
         }
       })

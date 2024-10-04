@@ -1,111 +1,14 @@
 import { Request, Response, request, response } from "express";
 import { conn, db_vendas, db_estoque, db_publico } from "../../database/databaseConfig";
+import { SelectOrcamento } from "./selectOrcamento";
 
 
 export class UpdateOrcamento{
-    async update(orcamento:any) {
+   
+   
+    async update(orcamento:any, codigoOrcamento:number ) {
 
-        function converterData(data: string): string {
-            const [dia, mes, ano] = data.split('/');
-            return `${ano}/${mes}/${dia}`;
-        }
-
-        function obterDataAtual() {
-            const dataAtual = new Date();
-            const dia = String(dataAtual.getDate()).padStart(2, '0');
-            const mes = String(dataAtual.getMonth() + 1).padStart(2, '0');
-            const ano = dataAtual.getFullYear();
-            return `${ano}-${mes}-${dia}`;
-        }
-
-        const dataAtual = obterDataAtual();
-
-
-        let {
-            codigo,
-            forma_pagamento,
-            descontos,
-            observacoes,
-            observacoes2,
-            quantidade_parcelas,
-            total_geral,
-            total_produtos,
-            totalSemDesconto,
-            situacao,
-            tipo,
-            vendedor,
-            data_cadastro,
-            data_recadastro,
-            veiculo,
-            tipo_os,
-            contato,
-            just_ipi,
-            just_icms,
-            just_subst,
-            codigo_cliente,
-            descontos_produto
-        } = orcamento;
-
-
-        const servicos = orcamento.servicos;
-        const parcelas = orcamento.parcelas;
-        const produtos = orcamento.produtos;
-
-
-        if (!situacao) {
-            situacao = 'EA';
-        }
-        if (!quantidade_parcelas) {
-            quantidade_parcelas = 0;
-        }
-
-        if (!vendedor) {
-            vendedor = 1;
-        }
-        if (!tipo_os) {
-            tipo_os = 0;
-        }
-        if (!veiculo) {
-            veiculo = 0;
-        }
-        if (!data_cadastro) {
-            data_cadastro = dataAtual;
-        }
-
-        if (!data_recadastro) {
-            data_recadastro = dataAtual;
-        }
-
-        if (!contato) {
-            contato = '';
-        }
-        if (!observacoes) {
-            observacoes = '';
-        }
-        if (!observacoes2) {
-            observacoes2 = '';
-        }
-        if (!just_ipi) {
-            just_ipi = '';
-        }
-        if (!just_icms) {
-            just_icms = '';
-        }
-        if (!just_subst) {
-            just_subst = '';
-        }
-        if (!forma_pagamento) {
-            forma_pagamento = 0
-        }
-        if (!descontos) {
-            descontos = 0
-        }
-        if (!descontos_produto) {
-            descontos_produto = 0
-        }
-
-
-
+       /////funções  
         async function buscaOrcamento(codigo: number) {
             return new Promise((resolve, reject) => {
                 const sql = ` select *  from ${db_vendas}.cad_orca where codigo = ? `
@@ -119,24 +22,23 @@ export class UpdateOrcamento{
                 })
             })
         }
-
-        async function updateCad_orca() {
+        async function updateCad_orca( orcamento:any, codigo:number ) {
             return new Promise(async (resolve, reject) => {
                 let sql = `
                     UPDATE ${db_vendas}.cad_orca  
                     set 
-                    cliente = ${codigo_cliente},
-                    total_geral = ${total_geral} ,
-                    total_produtos = ${total_produtos} ,
-                    tipo_os = ${tipo_os},
-                    qtde_parcelas = ${quantidade_parcelas} ,
-                    contato = '${contato}',
-                    veiculo = ${veiculo},
-                    forma_pagamento = ${forma_pagamento},
-                    observacoes = '${observacoes}',
-                    data_cadastro = '${data_cadastro}',
-                    data_recad = '${data_recadastro}',
-                    situacao =  '${situacao}'
+                    cliente         =  ${orcamento.codigo_cliente},
+                    total_geral     =  ${orcamento.total_geral} ,
+                    total_produtos  =  ${orcamento.total_produtos} ,
+                    tipo_os         =  ${orcamento.tipo_os},
+                    qtde_parcelas   =  ${orcamento.quantidade_parcelas} ,
+                    contato         = '${orcamento.contato}',
+                    veiculo         =  ${orcamento.veiculo},
+                    forma_pagamento =  ${orcamento.forma_pagamento},
+                    observacoes     = '${orcamento.observacoes}',
+                    data_cadastro   = '${orcamento.data_cadastro}',
+                    data_recad      = '${orcamento.data_recadastro}',
+                    situacao        = '${orcamento.situacao}'
                     where codigo = ${codigo}
                 `
                 console.log( sql )
@@ -151,9 +53,6 @@ export class UpdateOrcamento{
                 })
             })
         }
-
-
-
         async function deletePro_orca(codigo: number) {
             return new Promise((resolve, reject) => {
 
@@ -304,7 +203,6 @@ export class UpdateOrcamento{
 
         }
 
-
         async function insertPar_orca(codigo: any, parcelas: any) {
             parcelas.forEach((p: any) => {
 
@@ -367,6 +265,115 @@ export class UpdateOrcamento{
                 })
             })
         }
+        function converterData(data: string): string {
+            const [dia, mes, ano] = data.split('/');
+            return `${ano}/${mes}/${dia}`;
+        }
+
+        function obterDataAtual() {
+            const dataAtual = new Date();
+            const dia = String(dataAtual.getDate()).padStart(2, '0');
+            const mes = String(dataAtual.getMonth() + 1).padStart(2, '0');
+            const ano = dataAtual.getFullYear();
+            return `${ano}-${mes}-${dia}`;
+        }
+
+        const select = new SelectOrcamento();
+
+
+  
+
+        const dataAtual = obterDataAtual();
+
+
+        let {
+            forma_pagamento,
+            descontos,
+            observacoes,
+            observacoes2,
+            quantidade_parcelas,
+            total_geral,
+            total_produtos,
+            totalSemDesconto,
+            situacao,
+            tipo,
+            vendedor,
+            data_cadastro,
+            data_recadastro,
+            veiculo,
+            tipo_os,
+            contato,
+            just_ipi,
+            just_icms,
+            just_subst,
+            codigo_cliente,
+            descontos_produto
+        } = orcamento;
+
+
+
+        
+
+        const servicos = orcamento.servicos;
+        const parcelas = orcamento.parcelas;
+        const produtos = orcamento.produtos;
+
+
+        if (!situacao) {
+            situacao = 'EA';
+        }
+        if (!quantidade_parcelas) {
+            quantidade_parcelas = 0;
+        }
+
+        if (!vendedor) {
+            vendedor = 1;
+        }
+        if (!tipo_os) {
+            tipo_os = 0;
+        }
+        if (!veiculo) {
+            veiculo = 0;
+        }
+        if (!data_cadastro) {
+            data_cadastro = dataAtual;
+        }
+
+        if (!data_recadastro) {
+            data_recadastro = dataAtual;
+        }
+
+        if (!contato) {
+            contato = '';
+        }
+        if (!observacoes) {
+            observacoes = '';
+        }
+        if (!observacoes2) {
+            observacoes2 = '';
+        }
+        if (!just_ipi) {
+            just_ipi = '';
+        }
+        if (!just_icms) {
+            just_icms = '';
+        }
+        if (!just_subst) {
+            just_subst = '';
+        }
+        if (!forma_pagamento) {
+            forma_pagamento = 0
+        }
+        if (!descontos) {
+            descontos = 0
+        }
+        if (!descontos_produto) {
+            descontos_produto = 0
+        }
+
+
+
+  
         //console.log(request.body)
 
         let aux: any;
@@ -376,7 +383,7 @@ export class UpdateOrcamento{
 
       
             try {
-                statusAtualizacao = await updateCad_orca();
+                statusAtualizacao = await updateCad_orca(orcamento,codigoOrcamento );
             } catch (err) {
                 console.log(err);
                /// return response.status(500).json({ "msg": err });
@@ -384,10 +391,10 @@ export class UpdateOrcamento{
 
             if (statusAtualizacao) {
                 
-                const validaProdutos:any = await buscaProdutosDoOrcamento( codigo )
+                const validaProdutos:any = await buscaProdutosDoOrcamento( codigoOrcamento )
                 if( validaProdutos.length > 0 ){
                     try {
-                        statusDeletePro_orca = await deletePro_orca(codigo);
+                        statusDeletePro_orca = await deletePro_orca(codigoOrcamento);
                     } catch (err) {
                         console.log(err);
                     //  return response.status(500).json({ "msg": err });
@@ -396,7 +403,7 @@ export class UpdateOrcamento{
                     if (produtos.length > 0) {
                         if (statusDeletePro_orca) {
                             try {
-                                await insertPro_orca(codigo, produtos);
+                                await insertPro_orca(codigoOrcamento, produtos);
                             } catch (err) {
                                 console.log(err)
                             }
@@ -406,12 +413,12 @@ export class UpdateOrcamento{
 
 
 
-              const validaServicos:any = await buscaServicosDoOrcamento( codigo )
+              const validaServicos:any = await buscaServicosDoOrcamento( codigoOrcamento )
               
               if( validaServicos.length > 0 ){
                
                 try {
-                    await deleteSer_orca(codigo)
+                    await deleteSer_orca(codigoOrcamento)
                 } catch (e) {
                     console.log(e);
                 }
@@ -419,19 +426,19 @@ export class UpdateOrcamento{
                 if (servicos.length > 0) {
 
                     try {
-                        await insertSer_orca(codigo, servicos);
+                        await insertSer_orca(codigoOrcamento, servicos);
                     } catch (e) { console.log(` erro ao inserir os servicos`, e) }
 
                 }
             }
 
-              const validaParcelas:any = await buscaParcelasDoOrcamento( codigo )
+              const validaParcelas:any = await buscaParcelasDoOrcamento( codigoOrcamento )
 
            if( validaParcelas.length > 0 ){
 
                 if(statusAtualizacao ){
                     try{
-                        statusDeletePar_orca = await deletePar_orca(codigo);
+                        statusDeletePar_orca = await deletePar_orca(codigoOrcamento);
                         }catch(err){
                             console.log(err);
                             return response.status(500).json({"msg":err});
@@ -440,7 +447,7 @@ export class UpdateOrcamento{
 
                 if(statusDeletePar_orca){
                   try{
-                     await insertPar_orca (codigo, parcelas);
+                     await insertPar_orca (codigoOrcamento, parcelas);
                   }catch(err){
                       console.log(err)
                       return response.status(500).json({"msg":err});

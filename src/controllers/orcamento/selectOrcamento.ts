@@ -64,10 +64,32 @@ export class SelectOrcamento{
 
     }
 
-    async validaOrcamento( codigo: number, vendedor:number ) {
+    async validaOrcamento( codigo: any, vendedor:number ) {
         return new Promise(async (resolve, reject) => {
 
-            const sql = ` select * from ${db_vendas}.cad_orca where COD_SITE = ${codigo} and vendedor = ${vendedor} `
+            const code = parseInt(codigo)
+
+            const sql = ` select * from ${db_vendas}.cad_orca where COD_SITE = ${code} and vendedor = ${vendedor} `
+            conn.query(sql, (err, result) => {
+                if (err) {
+                    console.log(err)
+                    reject(err)
+                } else {
+                    // console.log(result)
+                    resolve(result);
+                }
+            })
+
+        })
+    }
+     
+
+    async buscaOrcamentoCod_site( codigo: any, vendedor:number ) {
+        return new Promise(async (resolve, reject) => {
+
+            const code = parseInt(codigo)
+
+            const sql = ` select codigo from ${db_vendas}.cad_orca where COD_SITE = ${code} and vendedor = ${vendedor} `
             conn.query(sql, (err, result) => {
                 if (err) {
                     console.log(err)
@@ -101,7 +123,7 @@ export class SelectOrcamento{
             return `${ano}-${mes}-${dia} 00-00-00`;
         }
 
-        function dataHora ( data   ) {
+        function dataHora ( data:any  ) {
             const dia = String(data.getDate()).padStart(2, '0');
             const mes = String(data.getMonth() + 1).padStart(2, '0');
             const ano = data.getFullYear();
@@ -111,7 +133,7 @@ export class SelectOrcamento{
             return `${ano}-${mes}-${dia} ${horas}:${minutos}:${segundos}`;
         }
     
-        function  formatadataAtual ( data   ) {
+        function  formatadataAtual ( data:any   ) {
             const dia = String(data.getDate()).padStart(2, '0');
             const mes = String(data.getMonth() + 1).padStart(2, '0');
             const ano = data.getFullYear();

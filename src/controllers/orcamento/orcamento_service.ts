@@ -9,20 +9,38 @@ export class Orcamento_service {
         const select = new SelectOrcamento();
         const update = new UpdateOrcamento();
         const create = new CreateOrcamento();
+
+        function dataHora ( data:any  ) {
+            const dia = String(data.getDate()).padStart(2, '0');
+            const mes = String(data.getMonth() + 1).padStart(2, '0');
+            const ano = data.getFullYear();
+            const horas = String(data.getHours()).padStart(2, '0');
+            const minutos = String(data.getMinutes()).padStart(2, '0');
+            const segundos = String(data.getSeconds()).padStart(2, '0');
+            return `${ano}-${mes}-${dia} ${horas}:${minutos}:${segundos}`;
+        }
+
+
+
         const dados_orcamentos = request.body;
 
         if (dados_orcamentos.length > 0) {
             // Usando Promise.all para aguardar todas as promessas
             const results = await Promise.all(dados_orcamentos.map(async (i:any) => {
                 const aux: any = await select.validaOrcamento( i.codigo, i.vendedor );
-                if (aux.length > 0) {
-                    console.log('Já existe um orçamento registrado com o código', i.codigo);
-                    await update.update(i);
-                    return { codigo: i.codigo, status: 'atualizado' };
-                } else {
-                    const result = await create.create(i);
-                    return { codigo: result  , status: 'inserido' };
-                }
+
+                    const dataRecadastroSistema = dataHora(aux[0].DATA_RECAD);
+                 
+
+                     if (aux.length > 0) {
+                         if(i.data_recadastro >  dataRecadastroSistema){
+                             await update.update(i, aux[0].CODIGO );
+                             return { codigo: aux[0].codigo, status: 'atualizado' };
+                         }
+                     } else {
+                      const result = await create.create(i);
+                      return { codigo: result  , status: 'inserido' };
+                     }
             }));
 
             // Responde após todos os orçamentos terem sido processados
