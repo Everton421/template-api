@@ -29,25 +29,35 @@ export class Orcamento_service {
             const results = await Promise.all(dados_orcamentos.map(async (i:any) => {
                 const aux: any = await select.validaOrcamento( i.codigo, i.vendedor );
 
-                    const dataRecadastroSistema = dataHora(aux[0].DATA_RECAD);
-                 
 
-                     if (aux.length > 0) {
-                         if(i.data_recadastro >  dataRecadastroSistema){
-                             await update.update(i, aux[0].CODIGO );
-                             return { codigo: aux[0].codigo, status: 'atualizado' };
-                         }
-                     } else {
-                      const result = await create.create(i);
-                      return { codigo: result  , status: 'inserido' };
-                     }
+                      if (aux.length > 0) {
+                           const dataRecadastroSistema = dataHora(aux[0].DATA_RECAD);
+                           console.log(`Orcamento ${i.codigo} encontrado, verificando atualizacao!`)
+
+                          if(i.data_recadastro >  dataRecadastroSistema){
+                            try{
+                               await update.update(i, aux[0].CODIGO );
+                                  console.log(`Orcamento ${i.codigo} atualizado com sucesso!`)
+                                 return { codigo: aux[0].codigo, status: 'atualizado' };
+                                }catch(e){ console.log("Erro ao atualizar orcamento ", i.codigo)} 
+                            }else{
+                                    console.log(`Orcamento  ${i.codigo} nao teve atualizacao`)
+                            }
+                          } else {
+                            try{
+                             const result = await create.create(i);
+                              return { codigo: result  , status: 'inserido' };
+                            }catch(e){ console.log(`Erro ao gravar o orcamento`)}
+                            }
             }));
 
             // Responde após todos os orçamentos terem sido processados
             return response.status(200).json({ results });
+        }else{
+            return response.status(400).json({ msg: "Nenhum dado de orçamento fornecido." });
+
         }
 
-        return response.status(400).json({ msg: "Nenhum dado de orçamento fornecido." });
     }
 ///////
 ////////////////////////////

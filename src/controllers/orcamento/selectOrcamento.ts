@@ -319,7 +319,11 @@ export class SelectOrcamento{
                 
                 async function servicosDoOrcamento(codigo_orcamento: any) {
                     let sql = `
-                                     select   so.orcamento pedido, cs.aplicacao ,so.quantidade , so.desconto, so.unitario valor 
+                                     select  
+                                     cs.codigo, so.orcamento pedido, 
+                                     cs.aplicacao ,so.quantidade ,
+                                      so.desconto, so.unitario valor,
+                                        ( (so.quantidade * so.unitario) - desconto ) as total 
                                           from ${db_vendas}.ser_orca so 
                                           join ${db_publico}.cad_serv cs 
                                           on cs.codigo = so.servico
