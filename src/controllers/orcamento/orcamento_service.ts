@@ -63,8 +63,84 @@ export class Orcamento_service {
 ////////////////////////////
 ///////
 
-    async selecionaPorData(){
-        
+    async selecionaPorData( request: Request, response: Response ){
+        const select = new SelectOrcamento();
+       
+        let queryData:any = request.query.data;
+        let vendedor = request.query.vendedor;
+
+        const dados_orcamentos:any  = await select.buscaPordata( queryData, vendedor);
+
+        let produtos:any = [];
+        let servicos:any = [];
+        let parcelas:any = [];
+
+        let orcamentos_registrados:any=[];
+
+        if( dados_orcamentos.length > 0 ){
+      
+        const promises  = dados_orcamentos.map( async ( i:any )=>{
+                
+                    try {
+                      produtos = await  select.buscaProdutosDoOrcamento(i.orcamento);   
+                      if(produtos.length === 0 ) produtos = [];
+                    } catch (error) {
+                            console.log('erro ao buscar os produtos do orcamento ', i.orcamento);
+                    }
+                    try {
+                        servicos = await select.buscaServicosDoOrcamento(i.orcamento);
+                        if (servicos.length === 0 ) servicos = [];
+                    } catch (error) {
+                        console.log('erro ao buscar os servicos do orcamento ', i.orcamento);
+                    }try {
+                        parcelas = await select.buscaParcelasDoOrcamento(i.orcamento);
+                        if (parcelas.length === 0 ) parcelas = [];
+                    } catch (error) {
+                        console.log('erro ao buscar os servicos do orcamento ', i.orcamento);
+                    }
+
+
+
+                const descontos = ( i.desc_prod + i.desc_serv);
+                const data_cadastro =  select.formatadataAtual(i.data_cadastro);
+                const data_recadastro = select.dataHora(i.data_recadastro);
+
+                let  data = {
+                    "cliente": {
+                        "codigo":  i.codigo_cliente,
+                        "nome":  i.nome,
+                        "cnpj": i.cnpj,
+                        "celular": i.celular,
+                             },
+                    "codigo"               : i.orcamento,
+                    "codigo_site"          : i.cod_site, 
+                    "situacao"             : i.situacao,
+                    "total_geral"          : i.total_geral,
+                    "total_produtos"       : i.total_produtos,
+                    "total_servicos"       : i.total_servicos,
+                    "quantidade_parcelas"  : i.quantidade_parcelas,
+                    "forma_pagamento"      : i.forma_pagamento,
+                    "contato"              : i.contato,
+                    "vendedor"             : i.vendedor,
+                    "data_recadastro"      : data_recadastro,
+                    "data_cadastro"        : data_cadastro,
+                    "veiculo"              : i.veiculo,
+                    "observacoes"          : i.observacoes,
+                    "tipo_os"              : i.tipo_os,
+                    "tipo"                 : i.tipo,
+                    "descontos"            : descontos,
+                    "produtos"             : produtos,
+                    "parcelas"             : parcelas,
+                    "servicos"             : servicos
+                }
+                console.log(data)
+
+                orcamentos_registrados.push(data);
+            })
+            await Promise.all(promises);
+        }
+
+            return response.status(200).json(orcamentos_registrados);
     }
 
 

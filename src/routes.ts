@@ -181,7 +181,7 @@ router.get(`${versao}/veiculos/:veiculo`, checkToken, new Veiculo().busca);
 
 router.post(`${versao}/pedidos`, checkToken , new Orcamento_service().cadastra)
 
-router.get(`${versao}/pedidos`, checkToken , new SelectOrcamento().buscaPordata)
+router.get(`${versao}/pedidos`, checkToken , new Orcamento_service().selecionaPorData)
 
  
 
