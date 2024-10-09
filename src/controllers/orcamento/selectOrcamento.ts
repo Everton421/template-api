@@ -232,7 +232,7 @@ export class SelectOrcamento{
                         try {
                             parcelas = await parcelasDoOrcamento(i.orcamento);
                         } catch (erro) {
-                            console.log(`erro ao buscar produtos ${erro}`)
+                            console.log(`erro ao buscar parcelas ${erro}`)
                         }
                         try {
                             servicos = await servicosDoOrcamento(i.orcamento);
@@ -302,7 +302,7 @@ export class SelectOrcamento{
                                       po.total_liq as total  
                                           from ${db_vendas}.pro_orca po
                                           join ${db_publico}.cad_prod cp on cp.codigo = po.produto
-                                          where orcamento = ?  ;`
+                                          where po.orcamento = ?  ;`
         
                     return new Promise((resolve, reject) => {
         
