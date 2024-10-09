@@ -217,7 +217,7 @@ let unidades = auxUnidades[0];
   async buscaCompleta( ) {
 
     
-    function dataHora ( data   ) {
+    function dataHora ( data:any  ) {
       const dia = String(data.getDate()).padStart(2, '0');
       const mes = String(data.getMonth() + 1).padStart(2, '0');
       const ano = data.getFullYear();

@@ -149,11 +149,13 @@ export class SelectOrcamento{
         if (!vendedor) {
             return response.status(400).json({ "erro": "É necessário informar o vendedor!" });
         }
-    
-        if (!request.query.data) {
+        
+            let queryData:any = request.query.data;
+
+        if (!queryData) {
             param_data = obterDataAtualSemHoras();
         } else {
-            param_data = formatarData(request.query.data);
+            param_data = formatarData(queryData);
             if (!param_data) {
                 return response.status(400).json({ "erro": "Data deve estar no formato YYYY-MM-DD HH-MM-SS!" });
             }
@@ -218,7 +220,7 @@ export class SelectOrcamento{
                  
                 if (result.length > 0) {
                     
-                   const promises  =  result.map( async ( i ) =>{
+                   const promises  =  result.map( async ( i:any ) =>{
                         
                   
                     

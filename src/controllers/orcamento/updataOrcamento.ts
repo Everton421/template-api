@@ -8,6 +8,14 @@ export class UpdateOrcamento{
    
     async update(orcamento:any, codigoOrcamento:number ) {
 
+        console.log('')
+        console.log('')
+
+        console.log(orcamento)
+
+        console.log('')
+        console.log('')
+
        /////funções  
         async function buscaOrcamento(codigo: number) {
             return new Promise((resolve, reject) => {
@@ -30,6 +38,7 @@ export class UpdateOrcamento{
                     cliente         =  ${orcamento.codigo_cliente},
                     total_geral     =  ${orcamento.total_geral} ,
                     total_produtos  =  ${orcamento.total_produtos} ,
+                    total_servicos  =  ${orcamento.total_servicos} ,
                     tipo_os         =  ${orcamento.tipo_os},
                     qtde_parcelas   =  ${orcamento.quantidade_parcelas} ,
                     contato         = '${orcamento.contato}',
@@ -126,13 +135,34 @@ export class UpdateOrcamento{
 
         async function insertSer_orca(codigo: number, servicos: any) {
 
-            for (let i = 0; i < servicos.length; i++) {
+            for (let i = 0; i <= servicos.length; i++) {
                 if (servicos[i] == undefined) {
                     servicos[i] = 1;
                     break;
                 }
 
                 let j = i + 1;
+
+                console.log(  
+                    ` INSERT INTO ${db_vendas}.ser_orca 
+                    (
+                      ORCAMENTO ,
+                      SEQUENCIA, 
+                      SERVICO,
+                      QUANTIDADE,
+                      UNITARIO,
+                      DESCONTO,
+                      PRECO_TABELA )
+                    VALUES ( 
+                    ${codigo},
+                     ${j},
+                      ${servicos[i].codigo}, 
+                      ${servicos[i].quantidade},
+                      ${servicos[i].valor}, 
+                      ${servicos[i].desconto},
+                      ${servicos[i].valor}  ) `)
+
+
                 conn.query(
                     ` INSERT INTO ${db_vendas}.ser_orca 
                     (
@@ -143,7 +173,14 @@ export class UpdateOrcamento{
                       UNITARIO,
                       DESCONTO,
                       PRECO_TABELA )
-                    VALUES ( ?, ?, ?, ?, ?, ?, ?  ) `,
+                    VALUES ( 
+                    ?,
+                     ?,
+                      ?, 
+                      ?,
+                       ?, 
+                       ?,
+                        ?  ) `,
                     [
                          codigo,
                          j,
