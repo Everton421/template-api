@@ -147,7 +147,7 @@ export class SelectOrcamento{
     }
      
     async   buscaProdutosDoOrcamento(codigo_orcamento: any) {
-        let sql = `
+        let sql  = `
                  select 
                   po.orcamento pedido , 
                   po.produto codigo,
@@ -157,22 +157,21 @@ export class SelectOrcamento{
                   po.desconto,
                   po.total_liq as total  
                       from ${db_vendas}.pro_orca po
-                      join ${db_publico}.cad_prod cp on cp.codigo = po.produto
-                      where po.orcamento = ${codigo_orcamento}  ;`
-                      console.log(sql)
+                     left join ${db_publico}.cad_prod cp on cp.codigo = po.produto
+                      where po.orcamento = ${codigo_orcamento} ;`
 
-return new Promise((resolve, reject) => {
-    conn.query(sql , (err, result) => {
-        if (err) {
-            console.log(err);
-            reject(err);
-        } else {
-            resolve(result);
-            // console.log(result);
-        }
-    })
-})
+            return new Promise( async (resolve, reject) => {
+               await conn.query(sql , (err, result) => {
+                    if (err) {
+                        console.log(err);
+                        reject(err);
+                    } else {
+                        resolve(result);
+                    }
+                })
+            })
     }
+ 
 
     async  buscaServicosDoOrcamento(codigo_orcamento: any) {
         let sql = `
@@ -186,9 +185,9 @@ return new Promise((resolve, reject) => {
                               on cs.codigo = so.servico
                               where so.orcamento = ?  ;`
 
-        return new Promise((resolve, reject) => {
+        return new Promise( async (resolve, reject) => {
 
-            conn.query(sql, [codigo_orcamento], (err, result) => {
+            await conn.query(sql, [codigo_orcamento], (err, result) => {
                 if (err) {
                     console.log(err);
                     reject(err);
@@ -204,9 +203,9 @@ return new Promise((resolve, reject) => {
         let sql = `
                          select   orcamento pedido, parcela, valor, DATE_FORMAT(vencimento, '%Y-%m-%d') as vencimento    from ${db_vendas}.par_orca where orcamento = ?  ;`
 
-        return new Promise((resolve, reject) => {
+        return new Promise( async (resolve, reject) => {
 
-            conn.query(sql, [codigo_orcamento], (err, result) => {
+           await conn.query(sql, [codigo_orcamento], (err, result) => {
                 if (err) {
                     console.log(err);
                     reject(err);
@@ -299,7 +298,7 @@ return new Promise((resolve, reject) => {
                co.tipo_os,
                co.tipo
              from ${db_vendas}.cad_orca co
-                            join ${db_publico}.cad_clie cli on cli.codigo = co.cliente
+                           left join ${db_publico}.cad_clie cli on cli.codigo = co.cliente
                             where co.data_recad  >= '${param_data}' and co.vendedor = ${vendedor}
                             ;
                         `;

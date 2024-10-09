@@ -71,34 +71,36 @@ export class Orcamento_service {
 
         const dados_orcamentos:any  = await select.buscaPordata( queryData, vendedor);
 
-        let produtos:any = [];
-        let servicos:any = [];
-        let parcelas:any = [];
+ 
 
         let orcamentos_registrados:any=[];
 
         if( dados_orcamentos.length > 0 ){
       
         const promises  = dados_orcamentos.map( async ( i:any )=>{
+            let produtos: any = [];
+            let servicos: any = [];
+            let parcelas: any = [];
                 
-                    try {
-                      produtos = await  select.buscaProdutosDoOrcamento(i.orcamento);   
-                      if(produtos.length === 0 ) produtos = [];
-                    } catch (error) {
-                            console.log('erro ao buscar os produtos do orcamento ', i.orcamento);
-                    }
                     try {
                         servicos = await select.buscaServicosDoOrcamento(i.orcamento);
                         if (servicos.length === 0 ) servicos = [];
                     } catch (error) {
                         console.log('erro ao buscar os servicos do orcamento ', i.orcamento);
-                    }try {
+                    }
+                    try {
                         parcelas = await select.buscaParcelasDoOrcamento(i.orcamento);
                         if (parcelas.length === 0 ) parcelas = [];
                     } catch (error) {
                         console.log('erro ao buscar os servicos do orcamento ', i.orcamento);
                     }
-
+                    try {
+                        produtos = await  select.buscaProdutosDoOrcamento(i.orcamento);   
+                       //if(produtos.length === 0 ) produtos = [];
+ 
+                     } catch (error) {
+                             console.log('erro ao buscar os produtos do orcamento ', i.orcamento );
+                     }
 
 
                 const descontos = ( i.desc_prod + i.desc_serv);
@@ -133,13 +135,14 @@ export class Orcamento_service {
                     "parcelas"             : parcelas,
                     "servicos"             : servicos
                 }
-                console.log(data)
+                 
 
                 orcamentos_registrados.push(data);
             })
             await Promise.all(promises);
         }
-
+//        console.log(produtos)
+     
             return response.status(200).json(orcamentos_registrados);
     }
 
