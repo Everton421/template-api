@@ -13,11 +13,24 @@ import { conn } from './database/databaseConfig';
 
         const app = express();
 
+        // Configuração do CORS
+            const corsOptions = {
+                origin: '*', // Permitir todas as origens. Para maior segurança, considere especificar as origens permitidas.
+                methods: 'GET,OPTIONS,PATCH,DELETE,POST,PUT',
+                allowedHeaders: ['X-CSRF-Token', 'X-Requested-With', 'Accept', 'Accept-Version', 'Content-Length', 'Content-MD5', 'Content-Type', 'Date', 'X-Api-Version', 'Authorization'],
+                credentials: true, // Permitir credenciais
+            };
+
+
+        
         app.use(`${versao}/api-docs`, swaggerUi.serve, swaggerUi.setup(swaggerDocs))
         
+
         app.use(express.json());    
         app.use(router)
-        app.use(cors());
+
+
+        app.use(cors( corsOptions));
         app.use(
                 (err:Error, req:Request, res:Response, next:NextFunction)=>{
                     if(err instanceof Error){
