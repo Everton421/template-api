@@ -25,12 +25,11 @@ import { conn } from './database/databaseConfig';
         
         app.use(`${versao}/api-docs`, swaggerUi.serve, swaggerUi.setup(swaggerDocs))
         
-
+        app.use(cors( corsOptions));
         app.use(express.json());    
         app.use(router)
 
 
-        app.use(cors( corsOptions));
         app.use(
                 (err:Error, req:Request, res:Response, next:NextFunction)=>{
                     if(err instanceof Error){
