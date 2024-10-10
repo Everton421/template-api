@@ -219,7 +219,6 @@ export class SelectOrcamento{
 
 
     async buscaPordata( queryData:any, vendedor:any ) {
-       
         
         function formatarData(data: string): string | null {
             const regex = /^\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2}$/;
@@ -315,8 +314,52 @@ export class SelectOrcamento{
         })
     }) 
 
- 
+    }
 
+
+    async buscaTodos(  ) {
+        
+
+        const sql = ` SELECT 
+               co.codigo as orcamento,
+               co.cod_site,
+               co.total_geral,
+               cli.codigo as codigo_cliente,
+               co.forma_pagamento,
+               co.contato,
+               co.situacao,
+               cli.nome , 
+                cli.cpf cnpj,
+                cli.celular celular,
+               co.qtde_parcelas quantidade_parcelas, 
+               co.total_produtos total_produtos,
+               co.total_servicos total_servicos,
+               cli.nome,
+               co.data_cadastro,
+               co.vendedor,
+               co.data_recad data_recadastro,
+              CAST( co.observacoes AS char ) observacoes ,
+               co.desc_serv,
+               co.desc_prod ,
+               co.veiculo veiculo,
+               co.tipo_os,
+               co.tipo
+             from ${db_vendas}.cad_orca co
+                           left join ${db_publico}.cad_clie cli on cli.codigo = co.cliente
+                            ;
+                        `;
+
+      return new Promise( async ( resolve, reject )=>{
+
+        await conn.query(sql,   async (err, result) => {
+            if (err) {
+                console.log(err);
+                reject(err)
+            } else {
+           resolve(result)
+            }
+        })
+    }) 
 
     }
 

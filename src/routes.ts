@@ -26,8 +26,8 @@ import { SelectOrcamento } from "./controllers/orcamento/selectOrcamento";
           if(err){
               return res.status(500).json({"erro": "falha ao se conectar ao banco de dados1 "})
           }else{
-            res.header("Access-Control-Allow-Origin", "*");
-            res.header("Access-Control-Allow-Headers", "Origin, X-Request-Width, Content-Type, Accept");
+          //  res.header("Access-Control-Allow-Origin", "*");
+          //  res.header("Access-Control-Allow-Headers", "Origin, X-Request-Width, Content-Type, Accept");
             return  res.json({"ok":true});
           }
         }
@@ -184,6 +184,7 @@ router.get(`${versao}/veiculos/:veiculo`, checkToken, new Veiculo().busca);
 router.post(`${versao}/pedidos`, checkToken , new Orcamento_service().cadastra)
 
 router.get(`${versao}/pedidos`, checkToken , new Orcamento_service().selecionaPorData)
+router.get(`${versao}/pedidos/todos`, checkToken , new Orcamento_service().selecionaTodos)
 
  
 

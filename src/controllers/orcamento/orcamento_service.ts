@@ -146,7 +146,13 @@ export class Orcamento_service {
             return response.status(200).json(orcamentos_registrados);
     }
 
+    async selecionaTodos( request: Request, response: Response ){
+        const select = new SelectOrcamento();
+    
+            let dados = await select.buscaTodos();
+            return response.status(200).json(dados);
 
+    }
 
 
 }
