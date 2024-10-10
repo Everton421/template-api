@@ -15,18 +15,17 @@ import { conn } from './database/databaseConfig';
 
         // Configuração do CORS
             const corsOptions = {
-                
-                //origin: '*', // Permitir todas as origens. Para maior segurança, considere especificar as origens permitidas.
+                origin: '*', // Permitir todas as origens. Para maior segurança, considere especificar as origens permitidas.
                 methods: 'GET,OPTIONS,PATCH,DELETE,POST,PUT',
                 allowedHeaders: ['X-CSRF-Token', 'X-Requested-With', 'Accept', 'Accept-Version', 'Content-Length', 'Content-MD5', 'Content-Type', 'Date', 'X-Api-Version', 'Authorization'],
                 credentials: true, // Permitir credenciais
             };
 
 
+            app.use(cors( corsOptions));
         
         app.use(`${versao}/api-docs`, swaggerUi.serve, swaggerUi.setup(swaggerDocs))
         
-        app.use(cors( corsOptions));
         app.use(express.json());    
         app.use(router)
 
