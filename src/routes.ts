@@ -185,6 +185,7 @@ router.post(`${versao}/pedidos`, checkToken , new Orcamento_service().cadastra)
 
 router.get(`${versao}/pedidos`, checkToken , new Orcamento_service().selecionaPorData)
 router.get(`${versao}/pedidos/todos`, checkToken , new Orcamento_service().selecionaTodos)
+router.get(`${versao}/pedidos/:codigo`, checkToken , new Orcamento_service().selecionaPorCodigo)
 
  
 
