@@ -35,19 +35,29 @@ export class Orcamento_service {
                            console.log(`Orcamento ${i.codigo} encontrado, verificando atualizacao!`)
 
                           if(i.data_recadastro >  dataRecadastroSistema){
+                           
                             try{
-                               await update.update(i, aux[0].CODIGO );
+                               
+                                await update.update(i, aux[0].CODIGO );
                                   console.log(`Orcamento ${i.codigo} atualizado com sucesso!`)
-                                 return { codigo: aux[0].codigo, status: 'atualizado' };
+                                  return { codigo: aux[0].CODIGO,codigo_site: aux[0].COD_SITE, status: 'atualizado' };
                                 }catch(e){ console.log("Erro ao atualizar orcamento ", i.codigo)} 
+                                
                             }else{
                                     console.log(`Orcamento  ${i.codigo} nao teve atualizacao`)
                             }
                           } else {
+                            
+                            let dados:any;
+                            let resultInsertOrder:any;
+
                             try{
-                             const result = await create.create(i);
-                              return { codigo: result  , status: 'inserido' };
-                            }catch(e){ console.log(`Erro ao gravar o orcamento`)}
+                                  resultInsertOrder   = await create.create(i);
+                                  return { codigo: resultInsertOrder  , codigo_site: i.codigo ,   status: 'inserido' };
+                                
+                                }catch(e){ console.log(`Erro ao gravar o orcamento`+ e)  }
+                                
+
                             }
             }));
 

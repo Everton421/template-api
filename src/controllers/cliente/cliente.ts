@@ -92,7 +92,6 @@ import { conn, db_publico } from "../../database/databaseConfig";
                     ;
                 ` ;
         
-
                     const param = `%${queryVendedor}%`
                 await conn.query(sql ,(err, result)=>{
                         if(err){
@@ -103,5 +102,43 @@ import { conn, db_publico } from "../../database/databaseConfig";
                 })
             })
         }
+        async buscaPorDescricao(req: Request, res:Response){
 
+            return new Promise( async (resolve,reject)=>{
+
+                const reqParam = req.params.cliente;
+
+            let sql = `
+                   SELECT 
+                  CODIGO AS codigo,
+                    NOME AS nome,
+                    CPF AS cnpj,
+                    RG AS ie,
+                    CELULAR AS celular,
+                    CEP AS cep,
+                    ENDERECO AS endereco,
+                    CIDADE AS cidade,
+                    NUMERO AS numero ,
+                    DATA_CADASTRO as data_cadastro,
+                    DATA_RECAD  as data_recadastro,
+                    VENDEDOR as vendedor
+   
+                   FROM ${db_publico}.cad_clie c
+                     WHERE c.ATIVO = 'S' and 
+                    ( nome like ? or codigo like ? or cpf like ? )
+                       order by VENDEDOR
+                     
+                    ;
+                ` ;
+        
+                    const param = `%${reqParam}%`
+                await conn.query(sql ,[param,param,param ],(err, result)=>{
+                        if(err){
+                            console.log(err)
+                        }else{
+                         resolve( res.json(result));
+                        }
+                })
+            })
+        }
     } 

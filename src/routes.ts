@@ -148,7 +148,7 @@ const cliente = new Cliente();
 const fpgt = new formaDePagamamento();
 const tipo_os = new Tipo_de_os();
 
-router.get(`${versao}/clientes`, cliente.buscaCompleta  );
+router.get(`${versao}/clientes/:cliente`, cliente.buscaPorDescricao  );
 
 
 router.get(`${versao}/offline/clientes`,   cliente.buscaCompleta  );

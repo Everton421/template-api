@@ -401,6 +401,7 @@ export class SelectOrcamento{
                 console.log(err);
                 reject(err)
             } else {
+             //   console.log(result)
            resolve(result)
             }
         })
