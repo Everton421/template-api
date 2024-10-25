@@ -17,7 +17,7 @@ export interface Produto
         data_recadastro:string, 
         observacoes1:string,  
         observacoes2:string, 
-         observacoes3:string, 
-         tipo:number 
+        observacoes3:string, 
+        tipo:number 
         
 } 

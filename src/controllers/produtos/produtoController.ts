@@ -49,7 +49,6 @@ export class ProdutoController{
      } 
 
     let produtos:Produto[]
-    
         try{
             produtos =   await   select.buscaPorCodigoDescricao(empresa, codigo, descricao )
                 
@@ -63,6 +62,31 @@ export class ProdutoController{
             return res.status(500).json({ erro: "Erro ao buscar produtos." });
         }
   }
+
+
+  async buscaGeral(req:Request,res:Response){
+    let empresa   = req.query.cnpj 
+   let select = new Select_produtos();
+
+     if(!empresa){
+        return res.json(400).json({erro:"É necessario informar a empresa "});   
+     } 
+ 
+    let produtos:Produto[]
+        try{
+            produtos =   await   select.buscaGeral(empresa  )
+                
+      if (produtos.length === 0) {
+        return res.status(404).json({ erro: "Nenhum produto encontrado." });
+      }
+      return res.status(200).json(produtos);
+
+        }catch(e){ 
+              console.error(e);
+            return res.status(500).json({ erro: "Erro ao buscar produtos." });
+        }
+  }
+
 
 }
 

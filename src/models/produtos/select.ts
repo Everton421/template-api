@@ -34,4 +34,15 @@ async buscaPorCodigoDescricao(empresa:any, codigo:number, descricao:string){
 }
 
 
+async   buscaGeral(empresa:any )   {
+    return new Promise <Produto[]> ( async ( resolve , reject ) =>{
+    let sql = ` select * from ${empresa}.produtos  `
+        await conn.query(sql,  (err, result:Produto[] )=>{
+            if (err)  reject(err); 
+              resolve(result)
+        })
+     })
+}
+
+
 }

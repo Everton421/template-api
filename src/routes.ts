@@ -5,6 +5,7 @@ import 'dotenv/config';
 import { checkToken } from "./middleware/cheqtoken";
 import { Select_produtos } from "./models/produtos/select";
 import { ProdutoController } from "./controllers/produtos/produtoController";
+import { ClienteController } from "./controllers/cliente/clienteController";
 
   const crypt = require('crypt');
   const router = Router();
@@ -30,7 +31,10 @@ import { ProdutoController } from "./controllers/produtos/produtoController";
  //   })
  
 //router.get(`${versao}/pedidos/:codigo`, checkToken , new Orcamento_service().selecionaPorCodigo)
- router.get(`${versao}/teste`,   new ProdutoController().buscaPorCodigo  )
+ router.get(`${versao}/teste`,   new ProdutoController().buscaPorCodigo )
+ router.get(`${versao}/produtos/geral`,   new ProdutoController().buscaGeral )
+ router.get(`${versao}/clientes/geral`,   new ClienteController().buscaGeral )
+
 
  
 
