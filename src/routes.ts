@@ -1,11 +1,18 @@
 import { Router,Request,Response, NextFunction } from "express";
-import { conn,conn2,db_estoque, db_estoque2, db_publico, db_publico2 } from "./database/databaseConfig";
+import { conn  } from "./database/databaseConfig";
 import 'dotenv/config';
 //import { Orcamento_service } from "./controllers/orcamento/orcamento_service";
 import { checkToken } from "./middleware/cheqtoken";
 import { Select_produtos } from "./models/produtos/select";
 import { ProdutoController } from "./controllers/produtos/produtoController";
 import { ClienteController } from "./controllers/cliente/clienteController";
+import { CreateEmpresa } from "./controllers/empresa/empresaController";
+import { Login } from "./controllers/login/login";
+import { UsuariosController } from "./controllers/usuariosController/usuariosController";
+import { pedidoController } from "./controllers/pedido/pedidoController";
+import { ServicosController } from "./controllers/servicos/servicosController";
+import { FormasController } from "./controllers/formas_pagamento/formasController";
+import { TipoOsController } from "./controllers/tipos_os/tipoOsController";
 
   const crypt = require('crypt');
   const router = Router();
@@ -17,8 +24,6 @@ import { ClienteController } from "./controllers/cliente/clienteController";
           if(err){
               return res.status(500).json({"erro": "falha ao se conectar ao banco de dados1 "})
           }else{
-          //  res.header("Access-Control-Allow-Origin", "*");
-          //  res.header("Access-Control-Allow-Headers", "Origin, X-Request-Width, Content-Type, Accept");
             return  res.json({"ok":true});
           }
         }
@@ -26,15 +31,22 @@ import { ClienteController } from "./controllers/cliente/clienteController";
     })
 
  
-//    router.get(`${versao}/teste`, ( req, res )=>{
-//      console.log(req.body)
- //   })
- 
-//router.get(`${versao}/pedidos/:codigo`, checkToken , new Orcamento_service().selecionaPorCodigo)
- router.get(`${versao}/teste`,   new ProdutoController().buscaPorCodigo )
- router.get(`${versao}/produtos/geral`,   new ProdutoController().buscaGeral )
- router.get(`${versao}/clientes/geral`,   new ClienteController().buscaGeral )
+ router.get(`${versao}/offline/produtos`,   new ProdutoController().buscaGeral )
+ router.get(`${versao}/offline/clientes`,   new ClienteController().buscaGeral )
+ router.get(`${versao}/offline/servicos`,   new ServicosController().buscaGeral )
+ router.get(`${versao}/offline/formas_pagamento`, new FormasController().buscaGeral )
+ router.get(`${versao}/offline/tipo_os`,   new TipoOsController().buscaGeral )
 
+ router.get(`${versao}/pedidos`,    new pedidoController().select)
+
+
+ router.post(`${versao}/empresa`,   new CreateEmpresa().create)
+
+ router.post(`${versao}/login`, new Login().login)
+ router.post(`${versao}/registrar_usuario`, new UsuariosController().cadastrar)
+/////
+ router.post(`${versao}/pedidos`, new pedidoController().insert)
+////
 
  
 
