@@ -48,7 +48,7 @@ export class CreateOrcamento {
           id
       } = orcamento;
 
-
+      enviado = 'S';
 
       const servicos = orcamento.servicos;
       const parcelas = orcamento.parcelas;

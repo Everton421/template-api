@@ -36,7 +36,7 @@ export class SelectOrcamento{
          }
         return new Promise( async ( resolve, reject )=>{
 
-            const sql = `select * from ${empresa}.pedidos as co
+            const sql = `select *, CONVERT(observacoes USING utf8) as observacoes from ${empresa}.pedidos as co
                 where   co.data_recadastro >= '${param_data}' and co.vendedor = ${vendedor}
             `;
             await conn.query(sql,   async (err, result) => {

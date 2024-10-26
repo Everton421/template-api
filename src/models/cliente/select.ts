@@ -28,5 +28,17 @@ export class Select_clientes{
             })
          })
     }
+
+    async   buscaPorcodigo(empresa:any, codigo:number )   {
+        return new Promise <Cliente[]> ( async ( resolve , reject ) =>{
+        let sql = ` SELECT  codigo, nome, cnpj, celular  FROM ${empresa}.clientes WHERE codigo = ?  `
+            await conn.query(sql, [ codigo], (err, result:Cliente[] )=>{
+                if (err)  reject(err); 
+                  resolve(result)
+            })
+         })
+    }
+    
+
 }
 

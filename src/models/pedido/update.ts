@@ -11,19 +11,20 @@ export class UpdateOrcamento{
             let sql = `
                 UPDATE ${empresa}.pedidos  
                 set 
-                cliente         =  ${orcamento.codigo_cliente},
-                total_geral     =  ${orcamento.total_geral} ,
-                total_produtos  =  ${orcamento.total_produtos} ,
-                total_servicos  =  ${orcamento.total_servicos} ,
-                tipo_os         =  ${orcamento.tipo_os},
-                quantidade_parcelas   =  ${orcamento.quantidade_parcelas} ,
-                contato         = '${orcamento.contato}',
-                veiculo         =  ${orcamento.veiculo},
-                forma_pagamento =  ${orcamento.forma_pagamento},
-                observacoes     = '${orcamento.observacoes}',
-                data_cadastro   = '${orcamento.data_cadastro}',
-                data_recadastro      = '${orcamento.data_recadastro}',
-                situacao        = '${orcamento.situacao}'
+                cliente             =  ${orcamento.codigo_cliente},
+                total_geral         =  ${orcamento.total_geral} ,
+                total_produtos      =  ${orcamento.total_produtos} ,
+                total_servicos      =  ${orcamento.total_servicos} ,
+                tipo_os             =  ${orcamento.tipo_os},
+                quantidade_parcelas =  ${orcamento.quantidade_parcelas} ,
+                contato             = '${orcamento.contato}',
+                veiculo             =  ${orcamento.veiculo},
+                forma_pagamento     =  ${orcamento.forma_pagamento},
+                observacoes         = '${orcamento.observacoes}',
+                data_cadastro       = '${orcamento.data_cadastro}',
+                data_recadastro     = '${orcamento.data_recadastro}',
+                enviado             = 'S',
+                situacao            = '${orcamento.situacao}'
                 where codigo = ${codigo}
             `
             conn.query(sql, (err, result) => {

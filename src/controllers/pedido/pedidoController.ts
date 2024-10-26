@@ -2,6 +2,7 @@ import { Request, Response } from "express";
 import { CreateOrcamento } from "../../models/pedido/insert";
 import { SelectOrcamento } from "../../models/pedido/select";
 import { UpdateOrcamento } from "../../models/pedido/update";
+import { Select_clientes } from "../../models/cliente/select";
 
 export class pedidoController{
 
@@ -77,7 +78,7 @@ async select( req:Request,res:Response){
     let selectOrcamento = new SelectOrcamento();
     let insertOrcamento = new CreateOrcamento();
     let updateOrcamento = new UpdateOrcamento();
-
+    let select_clientes = new Select_clientes();
 
     let orcamentos_registrados:any=[];
 
@@ -89,7 +90,15 @@ async select( req:Request,res:Response){
                 let produtos: any = [];
                 let servicos: any = [];
                 let parcelas: any = [];
-
+                let cliente:any;
+                
+                try{
+                   let resultCliente = await select_clientes.buscaPorcodigo(cnpj, i.cliente);
+                    if( resultCliente.length === 0 ) { 
+                        cliente={}; } else{
+                            cliente = resultCliente[0] 
+                        }
+                }catch(e){ console.log(`erro ao buscar os produtos do pedido ${i.codigo}`)}
                 try{
                     produtos = await updateOrcamento.buscaProdutosDoOrcamento(cnpj, i.codigo);
                     if( produtos.length === 0 ) produtos=[];
@@ -108,7 +117,7 @@ async select( req:Request,res:Response){
                 i.produtos = produtos;
                 i.servicos = servicos;
                 i.parcelas = parcelas;
-                
+                i.cliente = cliente
                 console
                 orcamentos_registrados.push(i);
         
