@@ -10,5 +10,7 @@ export interface Cliente {
   cidade :string,
   data_cadastro :string,
   data_recadastro :string,
-  vendedor:number
+  vendedor:number,
+  estado:string,
+  bairro:string
 }

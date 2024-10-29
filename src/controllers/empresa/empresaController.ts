@@ -3,6 +3,7 @@ import   { conn} from '../../database/databaseConfig'
 import { UsuarioApi } from "../../models/usuariosApi/interface";
 import { UsuariosApi } from "../../models/usuariosApi/usuarios";
 import { Insert_UsuarioEmpresa } from "../../models/usuariosEmpresa/insert";
+import { Insert_empresa } from "../../models/empresa/insert";
  
 
 export class CreateEmpresa{
@@ -15,27 +16,33 @@ export class CreateEmpresa{
         let obj = new CreateEmpresa();
         let objUsuariosApi = new UsuariosApi();
         let objInertUserEmpresa = new Insert_UsuarioEmpresa();
+        let insert_empresa = new Insert_empresa();     
 
         let dbName;
-        let cnpj:string = request.body.cnpj
+        let cnpj:string = request.body.cnpj 
         let usuario:string =    String(request.body.usuario);
         let email:string = request.body.email
         let senha:string = request.body.senha
+        let email_empresa:string = request.body.email_empresa;
+        let nome_empresa:string = request.body.nome_empresa;
+        let telefone_empresa:string = request.body.telefone_empresa;
+
+         
 
 
             let objUser:newUser = { usuario, email, cnpj, senha};
 
-        if( !cnpj ){  return response.json({erro:"nao informado o cnpj da empresa "})
+        if( !cnpj ){  return response.json({msg:"nao informado o cnpj da empresa "})
         }else{
           dbName = `\`${cnpj}\``;
          }
 
-        if( !usuario )   return response.json({erro:"nao informado o usuario da empresa "})
-        if( !senha )   return response.json({erro:`nao foi informado a senha para o usuario ${ usuario} da empresa `})
+        if( !usuario )   return response.json({msg:"nao informado o usuario da empresa "})
+        if( !senha )   return response.json({msg:`nao foi informado a senha para o usuario ${ usuario} da empresa `})
 
- 
+            let validUserApi:UsuarioApi[] = await objUsuariosApi.selectPorEmail(objUser.email);
+            if (validUserApi.length > 0 )  return response.status(400).json({msg:` Já existe usuario cadastro com este email ${objUser.email }`})  ;
          
-let produtos = `\`${'produtos'}\``
       
 const sqlTables = [
     `CREATE TABLE IF NOT EXISTS ${dbName}.produtos (
@@ -80,7 +87,9 @@ const sqlTables = [
         cidade TEXT,
         data_cadastro TEXT NOT NULL,
         data_recadastro TEXT NOT NULL,
-        vendedor INTEGER NOT NULL DEFAULT 0
+        vendedor INTEGER NOT NULL DEFAULT 0,
+        bairro varchar(255) ,
+        estado  char(2) 
     );`,
     `CREATE TABLE IF NOT EXISTS ${dbName}.forma_pagamento (
         codigo INTEGER PRIMARY KEY NOT NULL,
@@ -143,12 +152,14 @@ const sqlTables = [
         senha TEXT NOT NULL,
         email varchar(255),
         cnpj varchar(255),
+        responsavel varchar(255) DEFAULT 'S',
         PRIMARY KEY (codigo) USING BTREE 
     );`,
     `CREATE TABLE IF NOT EXISTS ${dbName}.tipos_os (
         codigo INTEGER PRIMARY KEY NOT NULL,
         descricao TEXT NOT NULL 
     );`,
+
     `CREATE TABLE IF NOT EXISTS ${dbName}.veiculos (
         codigo INTEGER PRIMARY KEY NOT NULL,
         id int(10) unsigned NOT NULL DEFAULT 0,
@@ -161,6 +172,7 @@ const sqlTables = [
         cor INTEGER NOT NULL DEFAULT 0,
         combustivel TEXT NOT NULL 
     );`,
+
     `CREATE TABLE IF NOT EXISTS ${dbName}.api_config (
         codigo INTEGER PRIMARY KEY NOT NULL,
         url TEXT NOT NULL,
@@ -180,7 +192,7 @@ const sqlTables = [
                 sqlTables.forEach( async (e)=>{
                       await conn.query( e ,( err, result )=>{
                          if(err) throw err;
-                            else console.log(`tabela registrada com sucesso!`)
+                           // else console.log(`tabela registrada com sucesso!`)
                          })
 
                    })
@@ -199,20 +211,42 @@ const sqlTables = [
                                      })
                                })   
                                    
-                               let validUserApi:UsuarioApi[] = await objUsuariosApi.selectPorEmail(objUser.email);
-                                    if (validUserApi.length > 0 )  return response.status(400).json({erro:` Já existe usuario cadastro com este email ${objUser.email }`})  ;
-
+                            
+                               let codigoUsuario:any;
                                let userRegister:any = await objUsuariosApi.insertUsuario(objUser)
-                               console.log(userRegister)
+                               let codigoEmpresa:any;
+
+                                    if(userRegister.insertId > 0 ) {
+
+                                            let objEmpresa = { 
+                                                "responsavel":userRegister.insertId,
+                                                 "cnpj":cnpj, 
+                                                 "nome_empresa": nome_empresa ,
+                                                 "email_empresa":email_empresa, 
+                                                 "telefone_empresa":telefone_empresa
+                                             };
+
+                                             codigoEmpresa =  await insert_empresa.registrar_empresa(objEmpresa);
+                                    }
                                 
                                 if( userRegister.insertId > 0 ){
-                                    await objInertUserEmpresa.insert_usuario(dbName,objUser);
-                                    return  response.status(200).json({  empresa:`Empresa ${cnpj } registrada com sucesso ! `, usuario:` Usuario ${objUser.usuario} registrado com sucesso!`});
+                                    codigoUsuario  = await objInertUserEmpresa.insert_usuario(dbName,objUser);
+                                    //return  response.status(200).json({  empresa:`Empresa ${cnpj } registrada com sucesso ! `, usuario:` Usuario ${objUser.usuario} registrado com sucesso!`});
+                                    return  response.status(200).json( 
+                                          {
+                                            "codigo_usuario": codigoUsuario.insertId ,
+                                             "usuario":usuario,
+                                              "senha":senha ,
+                                              "cnpj":cnpj,
+                                               "nome_empresa": nome_empresa ,"email_empresa":email_empresa, 
+                                                "email_usuario":email,
+                                                "codigo_empresa":codigoEmpresa.insertId
+                                            } );
                                 }else{
 
                                     let resultDeleteEmpresa:any = await obj.delete_empresa(dbName);
                                     if( resultDeleteEmpresa.affectedRows > 0 ){
-                                          return  response.status(400).json({erro:` ocorreu um erro ao registrar a empresa ${cnpj }`}) ;
+                                          return  response.status(400).json({msg:` ocorreu um erro ao registrar a empresa ${cnpj }`}) ;
 
                                     }
                                 }
@@ -224,6 +258,22 @@ const sqlTables = [
     } 
 
 
+    async validaExistencia(request:Request, response:Response){
+
+        let obj = new CreateEmpresa();
+        let cnpj:string = request.body.cnpj 
+
+
+        let valid = await obj.consulta_empresas(cnpj);
+
+        if(valid === true ){
+            console.log(` a empresa com o cnpj ${cnpj } ja foi cadastrada!`);
+            return response.status(200).json({ "cadastrada":true , "msg": `Já existe uma empresa cadastrada com este cnpj !` });
+        }else{
+            return response.status(200).json({ "cadastrada":false , "msg": `Não encontramos empresa cadastrada com este cnpj!` });
+        }
+
+    }
 
     async consulta_empresas ( empresa:string ){
         return new Promise<boolean>( async ( resolve, reject)=>{

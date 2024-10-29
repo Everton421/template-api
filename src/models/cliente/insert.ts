@@ -21,13 +21,15 @@ export class Insert_clientes{
                 cidade ,
                 data_cadastro ,
                 data_recadastro ,
-                vendedor
+                vendedor,
+                bairro,
+                estado,
                ) values
                 (
-                ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ? );
+                ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ? );
             `   
                 const dados = [ cliente.codigo, cliente.celular, cliente.nome, cliente.cep, cliente.endereco, cliente.ie, cliente.numero, 
-                    cliente.cnpj, cliente.cidade, cliente.data_cadastro, cliente.data_recadastro, cliente.vendedor ]
+                    cliente.cnpj, cliente.cidade, cliente.data_cadastro, cliente.data_recadastro, cliente.vendedor, cliente.bairro, cliente.estado  ]
 
              await conn.query(sql, dados, (err, result:Cliente[] )=>{
                 if (err)  reject(err); 

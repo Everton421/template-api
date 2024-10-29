@@ -41,6 +41,8 @@ import { TipoOsController } from "./controllers/tipos_os/tipoOsController";
 
 
  router.post(`${versao}/empresa`,   new CreateEmpresa().create)
+ router.post(`${versao}/empresa/validacao`,   new CreateEmpresa().validaExistencia)
+//
 
  router.post(`${versao}/login`, new Login().login)
  router.post(`${versao}/registrar_usuario`, new UsuariosController().cadastrar)

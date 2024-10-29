@@ -10,8 +10,8 @@ export class Login {
         let selectUserApi = new UsuariosApi();
         let selectUserEmpresa = new Select_UsuarioEmpresa();
 
-        if(!req.body.email){ return res.status(400).json({erro:`É necessario informar o email`}) };
-        if(!req.body.senha) {return res.status(400).json({erro:`É necessario informar a senha`}) };
+        if(!req.body.email){ return res.status(200).json({msg:`É necessario informar o email`}) };
+        if(!req.body.senha) {return res.status(200).json({msg:`É necessario informar a senha`}) };
         
         let  { email , senha  } = req.body 
 
@@ -24,17 +24,20 @@ export class Login {
               let arrUser  = await selectUserEmpresa.buscaPorEmailSenha( empresa,email,senha  );
                if( arrUser.length > 0 ){
 
-                      let useLogin:UsuarioApi = arrUser[0];
+                      let useLogin:any = arrUser[0];
                      return res.status(200).json( 
-                         {  email: useLogin.email,
+                         {
+                            ok:true,
+                              email: useLogin.email,
                               senha: useLogin.senha ,
                                empresa:validUserApi[0].cnpj,
-                                codigo:validUserApi[0].codigo
+                                codigo:useLogin.codigo,
+                                nome:useLogin.nome
                             })
                    }
 
             }else{
-                return res.status(404).json({erro:`usuario nao encontrado!`});
+                return res.status(200).json({msg:`usuario nao encontrado!`});
             }
            
 
