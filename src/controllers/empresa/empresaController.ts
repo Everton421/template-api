@@ -1,5 +1,5 @@
 import { Request, response, Response } from "express";
-import   { conn} from '../../database/databaseConfig'  
+import   { conn, db_api} from '../../database/databaseConfig'  
 import { UsuarioApi } from "../../models/usuariosApi/interface";
 import { UsuariosApi } from "../../models/usuariosApi/usuarios";
 import { Insert_UsuarioEmpresa } from "../../models/usuariosEmpresa/insert";
@@ -18,7 +18,7 @@ export class CreateEmpresa{
         let objInertUserEmpresa = new Insert_UsuarioEmpresa();
         let insert_empresa = new Insert_empresa();     
 
-        let dbName;
+        let dbName:any;
         let cnpj:string = request.body.cnpj 
         let usuario:string =    String(request.body.usuario);
         let email:string = request.body.email
@@ -60,8 +60,8 @@ const sqlTables = [
         ativo TEXT DEFAULT 'S',
         class_fiscal TEXT,
         cst TEXT DEFAULT '00',
-        data_cadastro TEXT NOT NULL,
-        data_recadastro TEXT NOT NULL, 
+        data_recadastro  datetime DEFAULT NULL,
+        data_cadastro date NOT NULL DEFAULT '0000-00-00',
         observacoes1 BLOB,
         observacoes2 BLOB,
         observacoes3 BLOB,
@@ -85,8 +85,8 @@ const sqlTables = [
         cnpj TEXT,
         ativo varchar(10) DEFAULT 'S',
         cidade TEXT,
-        data_cadastro TEXT NOT NULL,
-        data_recadastro TEXT NOT NULL,
+        data_cadastro date NOT NULL DEFAULT '0000-00-00', 
+        data_recadastro  datetime DEFAULT NULL,
         vendedor INTEGER NOT NULL DEFAULT 0,
         bairro varchar(255) ,
         estado  char(2) 
@@ -100,8 +100,8 @@ const sqlTables = [
         intervalo INTEGER DEFAULT 0,  
         recebimento INTEGER DEFAULT 0  
     );`,
+
     `CREATE TABLE IF NOT EXISTS ${dbName}.pedidos (
-    
         codigo bigint(20)  unsigned NOT NULL DEFAULT 0,
         id int(10) unsigned NOT NULL DEFAULT 0,
         vendedor INTEGER NOT NULL DEFAULT 0,   
@@ -116,8 +116,8 @@ const sqlTables = [
         total_servicos REAL DEFAULT 0.00,
         cliente INTEGER NOT NULL DEFAULT 0,
         veiculo INTEGER NOT NULL DEFAULT 0,
-        data_cadastro TEXT NOT NULL,
-        data_recadastro TEXT NOT NULL,
+        data_cadastro date NOT NULL DEFAULT '0000-00-00',
+        data_recadastro  datetime DEFAULT NULL,
         tipo_os INTEGER DEFAULT 0, 
         enviado TEXT NOT NULL DEFAULT 'N',
         tipo INTEGER NOT NULL DEFAULT 1,  
@@ -144,7 +144,8 @@ const sqlTables = [
         pedido bigint(20) unsigned NOT NULL DEFAULT 0,
         parcela INTEGER NOT NULL,
         valor REAL NOT NULL DEFAULT 0.00,
-        vencimento TEXT NOT NULL DEFAULT '0000-00-00'
+        vencimento date NOT NULL DEFAULT '0000-00-00' 
+
     );`,
     `CREATE TABLE IF NOT EXISTS ${dbName}.usuarios (
         codigo  int(10)  NOT NULL AUTO_INCREMENT,
@@ -163,7 +164,6 @@ const sqlTables = [
     `CREATE TABLE IF NOT EXISTS ${dbName}.veiculos (
         codigo INTEGER PRIMARY KEY NOT NULL,
         id int(10) unsigned NOT NULL DEFAULT 0,
-
         cliente INTEGER NOT NULL DEFAULT 0,
         placa TEXT NOT NULL,
         marca INTEGER NOT NULL DEFAULT 0,
@@ -266,9 +266,29 @@ const sqlTables = [
 
         let valid = await obj.consulta_empresas(cnpj);
 
+
+
         if(valid === true ){
+                let dados = await obj.consulta_dados_empresa(cnpj);
+                let nome_empresa    
+                let telefone_empresa    
+                let email_empresa    
+                let cnpj_empresa    
+                if(dados.length > 0 ){
+                    cnpj_empresa = dados[0].cnpj 
+                    email_empresa = dados[0].email
+                    telefone_empresa = dados[0].telefone
+                    nome_empresa = dados[0].nome
+                }
+            
+            
             console.log(` a empresa com o cnpj ${cnpj } ja foi cadastrada!`);
-            return response.status(200).json({ "cadastrada":true , "msg": `Já existe uma empresa cadastrada com este cnpj !` });
+            return response.status(200).json({ "cadastrada":true , "msg": `Já existe uma empresa cadastrada com este cnpj !`,
+                cnpj:cnpj_empresa,
+                email_empresa:email_empresa,
+                telefone_empresa:telefone_empresa,
+                nome:nome_empresa
+             });
         }else{
             return response.status(200).json({ "cadastrada":false , "msg": `Não encontramos empresa cadastrada com este cnpj!` });
         }
@@ -287,6 +307,17 @@ const sqlTables = [
             })
         })
     }
+    async consulta_dados_empresa ( empresa:string ){
+        return new Promise<any[]>( async ( resolve, reject)=>{
+            await conn.query(`select * from ${db_api}.empresas where cnpj = ${empresa}`,(err, result)=>{
+                if(err) reject(err);
+                else
+                     resolve(result)
+            })
+        })
+    }
+    
+
 
 async delete_empresa( empresa:string ){
     return new Promise<boolean>( async ( resolve, reject)=>{

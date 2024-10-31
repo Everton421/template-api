@@ -10,7 +10,7 @@
     "version": "1.0.0",
     "servers": [
         {
-            "url": "http://localhost:3000",
+            "url": "http://localhost:3000/v1",
             "description": "Api"
         }
     ],
@@ -194,6 +194,172 @@
                                             "exigir_laudo": "N"
                                         }
                                     ]
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/pedidos": {
+            "get": {
+                "summary": "busca pedidos",
+                "description": "rota responsavel por buscar pedidos do sistema com base na data de alteração e no vendedor informado.",
+                "tags": ["pedidos"],
+                "parameters": [
+                    {
+                        "data": "data ",
+                        "in": "query",
+                        "name": "2024-09-30 15:00:00",
+                        "description": "data ultima alteracao",
+                        "required": true
+                    },
+                    {
+                        "vendedor": "vendedor ",
+                        "in": "query",
+                        "name": "vendedor",
+                        "description": "Codigo do vendedor",
+                        "required": true
+                    }
+                ],
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "examples": {
+                                "pedidos": {
+                                    "value": [
+                                        {
+                                            "cliente": {
+                                                "codigo": 1,
+                                                "nome": "JOAO FLAVIO FERNANDES",
+                                                "cnpj": "187.734.009-04",
+                                                "celular": "(44) 99916-0504"
+                                            },
+                                            "codigo": 1,
+                                            "codigo_site": 2,
+                                            "situacao": "AI",
+                                            "total_geral": 339.26,
+                                            "total_produtos": 339.26,
+                                            "total_servicos": 0,
+                                            "quantidade_parcelas": 1,
+                                            "forma_pagamento": 0,
+                                            "contato": "REACT-NATIVE ",
+                                            "vendedor": 110,
+                                            "data_recadastro": "2024-10-03 13:31:01",
+                                            "data_cadastro": "2024-10-02",
+                                            "veiculo": 0,
+                                            "observacoes": "",
+                                            "tipo_os": 0,
+                                            "tipo": "1",
+                                            "descontos": 0,
+                                            "produtos": [
+                                                {
+                                                    "pedido": 2,
+                                                    "codigo": 7,
+                                                    "descricao": "LUBRIFICANTE FREIO DOT4 500ML",
+                                                    "quantidade": 1,
+                                                    "preco": 26.76,
+                                                    "desconto": 0,
+                                                    "total": 26.76
+                                                },
+                                                {
+                                                    "pedido": 2,
+                                                    "codigo": 1657,
+                                                    "descricao": "ABRACADEIRA 3 TUBOS",
+                                                    "quantidade": 1,
+                                                    "preco": 20.73,
+                                                    "desconto": 0,
+                                                    "total": 20.73
+                                                },
+                                                {
+                                                    "pedido": 2,
+                                                    "codigo": 1677,
+                                                    "descricao": "ABRACADEIRA CRUZETA DO CARDAN",
+                                                    "quantidade": 1,
+                                                    "preco": 34.349998,
+                                                    "desconto": 0,
+                                                    "total": 34.35
+                                                },
+                                                {
+                                                    "pedido": 2,
+                                                    "codigo": 3315,
+                                                    "descricao": "ABRACADEIRA DA TURBINA",
+                                                    "quantidade": 1,
+                                                    "preco": 127.5,
+                                                    "desconto": 0,
+                                                    "total": 127.5
+                                                }
+                                            ],
+                                            "parcelas": [
+                                                {
+                                                    "pedido": 1,
+                                                    "parcela": 1,
+                                                    "valor": 339.26,
+                                                    "vencimento": "2024-10-03"
+                                                }
+                                            ],
+                                            "servicos": []
+                                        }
+                                    ]
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+            "post": {
+                "summary": "cria/atualiza um pedido",
+                "description": "rota responsavel por validar a existência de um pedido, caso exista é feita a atualização caso contrario é criado o pedido.",
+                "tags": ["pedidos"],
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "examples": {
+                                "pedidos": {
+                                    "value": {
+                                        "cliente": {
+                                            "codigo": 3,
+                                            "nome": "ACP AUTO CABINES PARANA",
+                                            "cnpj": "11.556.583/0001-58",
+                                            "celular": ""
+                                        },
+                                        "codigo": 4,
+                                        "total_geral": 66.76,
+                                        "total_produtos": 26.76,
+                                        "quantidade_parcelas": 1,
+                                        "forma_pagamento": 0,
+                                        "contato": "react-native/mobile 4",
+                                        "data_recadastro": "2024-09-30T17:21:29.000Z",
+                                        "data_cadastro": "2024-09-30T03:00:00.000Z",
+                                        "produtos": [
+                                            {
+                                                "pedido": 4,
+                                                "codigo": 7,
+                                                "descricao": "LUBRIFICANTE FREIO DOT4 500ML",
+                                                "quantidade": 1,
+                                                "preco": 26.76,
+                                                "desconto": 0,
+                                                "total": 26.76
+                                            }
+                                        ],
+                                        "parcelas": [
+                                            {
+                                                "pedido": 4,
+                                                "parcela": 1,
+                                                "valor": 66.76,
+                                                "vencimento": "2024-09-30"
+                                            }
+                                        ],
+                                        "servicos": [
+                                            {
+                                                "pedido": 4,
+                                                "aplicacao": "SUBSTITUIR LONA FREIO DIANTEIRO",
+                                                "quantidade": 1,
+                                                "desconto": 0,
+                                                "valor": 40
+                                            }
+                                        ]
+                                    }
                                 }
                             }
                         }

@@ -25,7 +25,7 @@ export class SelectOrcamento{
 
 
         let objSelect = new  SelectOrcamento();
-        let param_data;
+        let param_data:any;
          if (!queryData) {
             param_data = objSelect.obterDataAtualSemHoras();
          } else {
