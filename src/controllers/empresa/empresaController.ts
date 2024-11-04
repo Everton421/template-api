@@ -273,12 +273,14 @@ const sqlTables = [
                 let nome_empresa    
                 let telefone_empresa    
                 let email_empresa    
-                let cnpj_empresa    
+                let cnpj_empresa 
+                let codigo 
                 if(dados.length > 0 ){
                     cnpj_empresa = dados[0].cnpj 
                     email_empresa = dados[0].email
                     telefone_empresa = dados[0].telefone
                     nome_empresa = dados[0].nome
+                    codigo = dados[0].codigo
                 }
             
             
@@ -287,7 +289,8 @@ const sqlTables = [
                 "cnpj":cnpj_empresa,
                 "email_empresa":email_empresa,
                 "telefone_empresa":telefone_empresa,
-                "nome":nome_empresa
+                "nome":nome_empresa,
+                "codigo":codigo
              });
         }else{
             return response.status(200).json({ "cadastrada":false , "msg": `Não encontramos empresa cadastrada com este cnpj!` });
