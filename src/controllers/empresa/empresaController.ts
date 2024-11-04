@@ -284,10 +284,10 @@ const sqlTables = [
             
             console.log(` a empresa com o cnpj ${cnpj } ja foi cadastrada!`);
             return response.status(200).json({ "cadastrada":true , "msg": `Já existe uma empresa cadastrada com este cnpj !`,
-                cnpj:cnpj_empresa,
-                email_empresa:email_empresa,
-                telefone_empresa:telefone_empresa,
-                nome:nome_empresa
+                "cnpj":cnpj_empresa,
+                "email_empresa":email_empresa,
+                "telefone_empresa":telefone_empresa,
+                "nome":nome_empresa
              });
         }else{
             return response.status(200).json({ "cadastrada":false , "msg": `Não encontramos empresa cadastrada com este cnpj!` });
