@@ -3,6 +3,7 @@ import { Insert_UsuarioEmpresa } from "../../models/usuariosEmpresa/insert";
 import { Select_UsuarioEmpresa } from "../../models/usuariosEmpresa/select";
 import { newUserEmpresa } from "../../models/usuariosEmpresa/interface";
 import { UsuariosApi } from "../../models/usuariosApi/usuarios";
+import { newUser, UsuarioApi } from "../../models/usuariosApi/interface";
 
 export class UsuariosController{
 
@@ -23,8 +24,9 @@ export class UsuariosController{
                         let senha = req.body.senha;
                         let usuario = req.body.usuario;
                         let cnpj = `\`${req.headers.cnpj}\``;
+                        let cnpjF:any = req.headers.cnpj;
 
-                            let user:newUserEmpresa = {cnpj:cnpj, email:email, senha:senha,usuario:usuario };
+                            let user:newUserEmpresa = {cnpj:cnpjF, email:email, senha:senha,usuario:usuario };
         
          let validUser = await selectUser.buscaPorEmailNome(cnpj,usuario, email  );
                     if( validUser.length > 0  ){
@@ -32,16 +34,16 @@ export class UsuariosController{
                     }
 
                     
-                    let userCad:any =  await insertUser.insert_usuario( req.headers.cnpj, user)
+                    let userCad:any =  await insertUser.insert_usuario( cnpj, user)
                         if(userCad.insertId > 0 ){
-                            let userApi = {
+                            let userApi:newUser   = {
                                 usuario:req.body.usuario,
                                 email:req.body.email,
-                                cnpj:req.headers.cnpj,
+                                cnpj:String(req.headers.cnpj),
                                 senha:req.body.senha        
                                 }
 
-                             await insertUserApi.insertUsuario(userApi)
+                              await insertUserApi.insertUsuario(userApi)
                             return res.status(200).json(  
                                                             {
                                                                 ok:`usuario registrado com sucesso!` ,
