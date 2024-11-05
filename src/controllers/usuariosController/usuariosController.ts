@@ -31,7 +31,7 @@ export class UsuariosController{
                     }
 
                     
-                    let userCad:any =  await insertUser.insert_usuario(cnpj, user)
+                    let userCad:any =  await insertUser.insert_usuario( req.headers.cnpj, user)
                         if(userCad.insertId > 0 ){
                             console.log(userCad.insertId);
                             return res.status(200).json(  
