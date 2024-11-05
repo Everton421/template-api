@@ -2,6 +2,7 @@ import { Request, Response } from "express";
 import { Insert_UsuarioEmpresa } from "../../models/usuariosEmpresa/insert";
 import { Select_UsuarioEmpresa } from "../../models/usuariosEmpresa/select";
 import { newUserEmpresa } from "../../models/usuariosEmpresa/interface";
+import { UsuariosApi } from "../../models/usuariosApi/usuarios";
 
 export class UsuariosController{
 
@@ -11,7 +12,7 @@ export class UsuariosController{
 
         let  insertUser = new Insert_UsuarioEmpresa();
         let selectUser   = new Select_UsuarioEmpresa();
-        
+        let insertUserApi = new UsuariosApi();
 
              if(!req.body.email)   return res.status(400).json({erro:"É necessario informar o email do usuario "})
              if(!req.body.senha)   return res.status(400).json({erro:"É necessario informar a senha do usuario "})
@@ -33,7 +34,14 @@ export class UsuariosController{
                     
                     let userCad:any =  await insertUser.insert_usuario( req.headers.cnpj, user)
                         if(userCad.insertId > 0 ){
-                            console.log(userCad.insertId);
+                            let userApi = {
+                                usuario:req.body.usuario,
+                                email:req.body.email,
+                                cnpj:req.headers.cnpj,
+                                senha:req.body.senha        
+                                }
+
+                             await insertUserApi.insertUsuario(userApi)
                             return res.status(200).json(  
                                                             {
                                                                 ok:`usuario registrado com sucesso!` ,
