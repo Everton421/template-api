@@ -178,7 +178,18 @@ const sqlTables = [
         url TEXT NOT NULL,
         porta INTEGER NOT NULL DEFAULT 3000,
         token TEXT NOT NULL 
-    );`
+    );`,
+    
+    ` CREATE TABLE ${dbName}.fotos_produtos(
+      produto int(10) unsigned NOT NULL DEFAULT 0,
+      sequencia  int(10) unsigned NOT NULL DEFAULT 0,
+      descricao  varchar(50) DEFAULT NULL,
+      descricao  varchar(50) DEFAULT NULL,
+       link  text NOT NULL,
+      foto  longblob DEFAULT NULL,
+     PRIMARY KEY ( produto , sequencia )
+      ); `
+
 ];
 
        
