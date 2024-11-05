@@ -187,7 +187,7 @@ const sqlTables = [
       descricao  varchar(50) DEFAULT NULL,
        link  text NOT NULL,
       foto  longblob DEFAULT NULL,
-     PRIMARY KEY ( produto , sequencia )
+         PRIMARY KEY ( produto , sequencia )
       ); `
 
 ];
