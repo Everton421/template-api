@@ -164,7 +164,16 @@ class CreateEmpresa {
         url TEXT NOT NULL,
         porta INTEGER NOT NULL DEFAULT 3000,
         token TEXT NOT NULL 
-    );`
+    );`,
+            ` CREATE TABLE ${dbName}.fotos_produtos(
+      produto int(10) unsigned NOT NULL DEFAULT 0,
+      sequencia  int(10) unsigned NOT NULL DEFAULT 0,
+      descricao  varchar(50) DEFAULT NULL,
+      descricao  varchar(50) DEFAULT NULL,
+       link  text NOT NULL,
+      foto  longblob DEFAULT NULL,
+         PRIMARY KEY ( produto , sequencia )
+      ); `
         ];
         let sql = ` create database if not exists  ${dbName}  ;  `;
         let valid = await obj.consulta_empresas(cnpj);
@@ -239,18 +248,24 @@ class CreateEmpresa {
             let telefone_empresa;
             let email_empresa;
             let cnpj_empresa;
+            let codigo;
+            let responsavel;
             if (dados.length > 0) {
                 cnpj_empresa = dados[0].cnpj;
                 email_empresa = dados[0].email;
                 telefone_empresa = dados[0].telefone;
                 nome_empresa = dados[0].nome;
+                codigo = dados[0].codigo;
+                responsavel = dados[0].responsavel;
             }
             console.log(` a empresa com o cnpj ${cnpj} ja foi cadastrada!`);
             return response.status(200).json({ "cadastrada": true, "msg": `Já existe uma empresa cadastrada com este cnpj !`,
-                cnpj: cnpj_empresa,
-                email_empresa: email_empresa,
-                telefone_empresa: telefone_empresa,
-                nome: nome_empresa
+                "cnpj": cnpj_empresa,
+                "email_empresa": email_empresa,
+                "telefone_empresa": telefone_empresa,
+                "nome": nome_empresa,
+                "codigo": codigo,
+                "responsavel": responsavel
             });
         }
         else {

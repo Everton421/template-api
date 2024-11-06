@@ -5,7 +5,7 @@ const databaseConfig_1 = require("../../database/databaseConfig");
 class SelectTipo_os {
     async buscaGeral(empresa) {
         return new Promise(async (resolve, reject) => {
-            let sql = ` select * from ${empresa}.tipo_os  `;
+            let sql = ` select * from ${empresa}.tipos_os  `;
             await databaseConfig_1.conn.query(sql, (err, result) => {
                 if (err)
                     reject(err);

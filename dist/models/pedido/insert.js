@@ -60,10 +60,10 @@ class CreateOrcamento {
                 quantidade_parcelas = 0;
             let sql = `INSERT INTO 
       ${empresa}.pedidos 
-      ( codigo ,  id ,  vendedor ,  contato ,  descontos ,  forma_pagamento ,  quantidade_parcelas ,  total_geral ,  total_produtos ,  total_servicos ,  cliente ,  veiculo ,  data_cadastro ,  data_recadastro ,  tipo_os ,  enviado )
-       VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)  
+      ( codigo ,  id ,  vendedor , situacao, contato ,  descontos ,  forma_pagamento ,  quantidade_parcelas ,  total_geral ,  total_produtos ,  total_servicos ,  cliente ,  veiculo ,  data_cadastro ,  data_recadastro ,  tipo_os ,  enviado )
+       VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)  
         `;
-            databaseConfig_1.conn.query(sql, [codigo, id, vendedor, contato, descontos, forma_pagamento, quantidade_parcelas, total_geral, total_produtos, total_servicos, cliente.codigo, veiculo, data_cadastro, data_recadastro, tipo_os, enviado], async (err, result) => {
+            databaseConfig_1.conn.query(sql, [codigo, id, vendedor, contato, situacao, descontos, forma_pagamento, quantidade_parcelas, total_geral, total_produtos, total_servicos, cliente.codigo, veiculo, data_cadastro, data_recadastro, tipo_os, enviado], async (err, result) => {
                 if (err) {
                     console.log(err);
                     reject(err);
