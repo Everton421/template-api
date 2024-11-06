@@ -20,15 +20,17 @@ import { TipoOsController } from "./controllers/tipos_os/tipoOsController";
 
 
     router.get(`${versao}/`, async (req:Request, res:Response)=>{
-      await conn.getConnection(
-        async (err:Error)=>{
-          if(err){
-              return res.status(500).json({"erro": "falha ao se conectar ao banco de dados1 "})
-          }else{
-            return  res.json({"ok":true});
-          }
-        }
-      )
+     // await conn.getConnection(
+     //   async (err:Error)=>{
+     //     if(err){
+     //         return res.status(500).json({"erro": "falha ao se conectar ao banco de dados1 "})
+     //     }else{
+     //       return  res.json({"ok":true});
+     //     }
+     //   }
+     // )
+      return  res.json({"ok":true});
+
     })
 
  
