@@ -32,7 +32,7 @@ export class CreateEmpresa{
 
             let objUser:newUser = { usuario, email, cnpj, senha};
 
-        if( !cnpj ){  return response.json({msg:"nao informado o cnpj da empresa "})
+        if( !cnpj ){  return response.json({ erro:true,msg:"nao informado o cnpj da empresa "})
         }else{
           dbName = `\`${cnpj}\``;
          }
@@ -41,7 +41,7 @@ export class CreateEmpresa{
         if( !senha )   return response.json({msg:`nao foi informado a senha para o usuario ${ usuario} da empresa `})
 
             let validUserApi:UsuarioApi[] = await objUsuariosApi.selectPorEmail(objUser.email);
-            if (validUserApi.length > 0 )  return response.status(400).json({msg:` Já existe usuario cadastro com este email ${objUser.email }`})  ;
+            if (validUserApi.length > 0 )  return response.status(200).json({msg:` Já existe usuario cadastro com este email ${objUser.email }`})  ;
          
       
 const sqlTables = [
@@ -180,10 +180,9 @@ const sqlTables = [
         token TEXT NOT NULL 
     );`,
     
-    ` CREATE TABLE ${dbName}.fotos_produtos(
+    `CREATE TABLE IF NOT EXISTS ${dbName}.fotos_produtos(
       produto int(10) unsigned NOT NULL DEFAULT 0,
       sequencia  int(10) unsigned NOT NULL DEFAULT 0,
-      descricao  varchar(50) DEFAULT NULL,
       descricao  varchar(50) DEFAULT NULL,
        link  text NOT NULL,
       foto  longblob DEFAULT NULL,
@@ -208,7 +207,12 @@ const sqlTables = [
 
                    })
 
-                   return  response.status(400).json({erro:` a empresa com o cnpj ${cnpj } ja foi cadastrada!`})  ;
+                   return  response.status(200).json(
+                        {  
+                            erro: true,
+                            msg:` a empresa com o cnpj ${cnpj } ja foi cadastrada!`
+                            
+                        })  ;
 
              }else{
                  await  conn.query(sql  , async ( err, result )=>{
@@ -245,6 +249,8 @@ const sqlTables = [
                                     //return  response.status(200).json({  empresa:`Empresa ${cnpj } registrada com sucesso ! `, usuario:` Usuario ${objUser.usuario} registrado com sucesso!`});
                                     return  response.status(200).json( 
                                           {
+                                            "ok":true,
+                                            "msg":"Empresa registrada com sucesso!",
                                             "codigo_usuario": codigoUsuario.insertId ,
                                              "usuario":usuario,
                                               "senha":senha ,
@@ -257,7 +263,7 @@ const sqlTables = [
 
                                     let resultDeleteEmpresa:any = await obj.delete_empresa(dbName);
                                     if( resultDeleteEmpresa.affectedRows > 0 ){
-                                          return  response.status(400).json({msg:` ocorreu um erro ao registrar a empresa ${cnpj }`}) ;
+                                          return  response.status(200).json({ erro:true, msg:` ocorreu um erro ao registrar a empresa ${cnpj }`}) ;
 
                                     }
                                 }

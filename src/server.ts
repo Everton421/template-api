@@ -45,9 +45,7 @@ import { conn } from './database/databaseConfig';
 
                 const PORT_API = process.env.PORT_API; // Porta padrão para HTTPS
 
-app.get(`/teste`,(req,res)=>{ 
-        return  res.json({"ok":true});
-      })
+
 
  
    app.listen(PORT_API,()=>{ console.log(`app rodando porta ${PORT_API}  `)})

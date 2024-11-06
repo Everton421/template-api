@@ -33,6 +33,10 @@ import { TipoOsController } from "./controllers/tipos_os/tipoOsController";
 
     })
 
+    router.get(`${versao}/teste`,checkToken,(req,res)=>{ 
+      return  res.json({"ok":true});
+    })
+
  
  router.get(`${versao}/offline/produtos`,   new ProdutoController().buscaGeral )
  router.get(`${versao}/offline/clientes`,   new ClienteController().buscaGeral )
