@@ -18,10 +18,6 @@ import { TipoOsController } from "./controllers/tipos_os/tipoOsController";
   const router = Router();
   export const versao = '/v1'
 
-    router.get(`${versao}/teste`,(req,res)=>{ 
-      return  res.json({"ok":true});
-
-    })
 
     router.get(`${versao}/`, async (req:Request, res:Response)=>{
       await conn.getConnection(
