@@ -6,18 +6,40 @@ import { Select_clientes } from "../../models/cliente/select";
 
 export class pedidoController{
 
+      formatarData(data:any) {
+        const dia = String(data.getDate()).padStart(2, '0');
+        const mes = String(data.getMonth() + 1).padStart(2, '0');
+        const ano = data.getFullYear();
+        return `${ano}-${mes}-${dia}`;
+    }
+    
+
+      formatarDataHora(data:any) {
+        const dia = String(data.getDate()).padStart(2, '0');
+        const mes = String(data.getMonth() + 1).padStart(2, '0');
+        const ano = data.getFullYear();
+        const hora = String(data.getHours()).padStart(2, '0');
+        const minuto = String(data.getMinutes()).padStart(2, '0');
+        const segundo = String(data.getSeconds()).padStart(2, '0');
+        return `${ano}-${mes}-${dia} ${hora}:${minuto}:${segundo}`;
+    }
+    
+
+
     async insert( req:Request,res:Response){
+
+        let controller = new pedidoController();
         let insertPedido = new CreateOrcamento();
         let selectPedido = new SelectOrcamento();
         let updatePedido = new UpdateOrcamento();
    //     console.log(req.body);
    //     console.log(req.headers);
 
-        if(!req.headers.cnpj) return  res.status(400).json({erro:"É necessario informar o codigo da empresa "})
+        if(!req.headers.cnpj) return  res.status(200).json({erro:"É necessario informar o codigo da empresa "})
 
         let cnpj = `\`${req.headers.cnpj}\``;
 
-        if( req.body.length < 0 ) return   res.status(400).json({erro:"É necessario informar os pedidos! "})
+        if( req.body.length < 0 ) return   res.status(200).json({erro:"É necessario informar os pedidos! "})
 
 
             if( req.body.length > 0  ){
@@ -34,7 +56,9 @@ export class pedidoController{
                             if( validPedido.length > 0  ){
 
                                 let pedidoEncontrado = validPedido[0]; 
-                                         if ( p.data_recadastro >  pedidoEncontrado.data_recadastro){
+                                    let data_recad = controller.formatarDataHora(pedidoEncontrado.data_recadastro)
+
+                                         if ( p.data_recadastro >  data_recad){
                                               let aux = await updatePedido.update(cnpj, p, p.codigo)
                                              console.log( aux)
                                              return { codigo: aux , status: 'atualizado' };
@@ -44,7 +68,7 @@ export class pedidoController{
                                          }
 
                                 } else{
-                                    console.log(`registrando pedido      `)
+                                    console.log(`registrando pedido      ${p}`)
                                      status_registrado = await insertPedido.create(cnpj, p)
 
                                   return { codigo: p.codigo , status: 'inserido' };
@@ -67,6 +91,8 @@ export class pedidoController{
 
 async select( req:Request,res:Response){
  
+    let controller = new pedidoController();
+
   if(!req.query.data)  return res.status(400).json({erro:`é necessario informar uma data`});
     if(!req.query.vendedor)  return res.status(400).json({erro:`é necessario informar o vendedor`});
     if(!req.headers.cnpj) return  res.status(400).json({erro:"É necessario informar o codigo da empresa "})
@@ -92,6 +118,10 @@ async select( req:Request,res:Response){
                 let parcelas: any = [];
                 let cliente:any;
                 
+                    i.data_recadastro = controller.formatarDataHora(i.data_recadastro);
+                    i.data_cadastro = controller.formatarData(i.data_cadastro);
+
+
                 try{
                    let resultCliente = await select_clientes.buscaPorcodigo(cnpj, i.cliente);
                     if( resultCliente.length === 0 ) { 

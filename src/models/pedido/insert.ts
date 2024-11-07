@@ -60,6 +60,7 @@ export class CreateOrcamento {
       if (!situacao)   situacao = 'EA';
       if (!vendedor)   vendedor = 1;
       if (!tipo_os) tipo_os = 0;
+      if (!tipo ) tipo  = 1;
       if (!veiculo)    veiculo = 0;
       if (!data_cadastro)   data_cadastro = dataAtual;
       if (!data_recadastro)   data_recadastro = dataAtual;
@@ -77,12 +78,12 @@ export class CreateOrcamento {
        
       let sql = `INSERT INTO 
       ${empresa}.pedidos 
-      ( codigo ,  id ,  vendedor , situacao, contato ,  descontos ,  forma_pagamento ,  quantidade_parcelas ,  total_geral ,  total_produtos ,  total_servicos ,  cliente ,  veiculo ,  data_cadastro ,  data_recadastro ,  tipo_os ,  enviado )
-       VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)  
+      ( codigo ,  id ,  vendedor , situacao, contato ,  descontos ,  forma_pagamento ,  quantidade_parcelas ,  total_geral ,  total_produtos ,  total_servicos ,  cliente ,  veiculo ,  data_cadastro ,  data_recadastro ,  tipo_os ,  enviado, tipo, observacoes)
+       VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ? )  
         `
         conn.query(
           sql,
-          [codigo ,  id ,  vendedor ,  situacao, contato,  descontos ,  forma_pagamento ,  quantidade_parcelas ,  total_geral ,  total_produtos ,  total_servicos ,  cliente.codigo,  veiculo ,  data_cadastro ,  data_recadastro ,  tipo_os ,  enviado ],
+          [codigo ,  id ,  vendedor ,  situacao, contato,  descontos ,  forma_pagamento ,  quantidade_parcelas ,  total_geral ,  total_produtos ,  total_servicos ,  cliente.codigo,  veiculo ,  data_cadastro ,  data_recadastro ,  tipo_os ,  enviado, tipo, observacoes ],
           async    (err: any, result: any) => {
               if (err) {
                   console.log(err)

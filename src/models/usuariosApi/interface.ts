@@ -5,7 +5,8 @@ codigo:number,
 usuario:string,
 email:string,
 cnpj:string,
-senha:string        
+senha:string, 
+responsavel:string       
 }
 
 

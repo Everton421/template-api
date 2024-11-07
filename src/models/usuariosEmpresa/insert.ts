@@ -11,13 +11,14 @@ async insert_usuario( empresa:any, usuario:newUserEmpresa ){
             nome,
             email,
             cnpj,
-            senha 
+            senha,
+            responsavel
         )VALUES
-         ( ?, ?, ?, ? )
+         ( ?, ?, ?, ?, ? )
         `;
     return new Promise  ( async ( resolve ,reject )=>{
 
-        await conn.query( sql,[ usuario.usuario, usuario.email, usuario.cnpj, usuario.senha ] ,(err, result )=>{
+        await conn.query( sql,[ usuario.usuario, usuario.email, usuario.cnpj, usuario.senha, usuario.responsavel ] ,(err, result )=>{
             if(err){
                 reject(err)
             }else{  

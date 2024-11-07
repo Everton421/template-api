@@ -26,11 +26,11 @@ export class CreateEmpresa{
         let email_empresa:string = request.body.email_empresa;
         let nome_empresa:string = request.body.nome_empresa;
         let telefone_empresa:string = request.body.telefone_empresa;
-
+        let responsavel:string = 'S';
          
 
 
-            let objUser:newUser = { usuario, email, cnpj, senha};
+            let objUser:newUser = { usuario, email, cnpj, senha, responsavel };
 
         if( !cnpj ){  return response.json({ erro:true,msg:"nao informado o cnpj da empresa "})
         }else{
@@ -46,26 +46,28 @@ export class CreateEmpresa{
       
 const sqlTables = [
     `CREATE TABLE IF NOT EXISTS ${dbName}.produtos (
-        codigo INTEGER PRIMARY KEY NOT NULL,
-        id int(10) unsigned NOT NULL DEFAULT 0,
-        estoque REAL DEFAULT 0,
-        preco REAL DEFAULT 0,
-        grupo INTEGER DEFAULT 0,
-        origem TEXT,   
-        descricao TEXT NOT NULL,
-        num_fabricante TEXT,
-        num_original TEXT,
-        sku TEXT,
-        marca INTEGER DEFAULT 0,
-        ativo TEXT DEFAULT 'S',
-        class_fiscal TEXT,
-        cst TEXT DEFAULT '00',
-        data_recadastro  datetime DEFAULT NULL,
-        data_cadastro date NOT NULL DEFAULT '0000-00-00',
-        observacoes1 BLOB,
-        observacoes2 BLOB,
-        observacoes3 BLOB,
-        tipo TEXT
+     codigo  int(11) NOT NULL,
+   id  int(10) unsigned NOT NULL DEFAULT 0,
+   estoque  double DEFAULT 0,
+   preco  double DEFAULT 0,
+   grupo  int(11) DEFAULT 0,
+   origem  char(1) NOT NULL DEFAULT '0',
+   descricao  varchar(255) NOT NULL DEFAULT '',
+   num_fabricante  varchar(255) NOT NULL DEFAULT '',
+   num_original  varchar(255) DEFAULT NULL,
+   sku  varchar(255) NOT NULL DEFAULT '',
+   marca  int(11) DEFAULT 0,
+   ativo  char(1) NOT NULL DEFAULT 'S',
+   class_fiscal  varchar(255) NOT NULL DEFAULT '',
+   cst  char(3) DEFAULT '00',
+   data_recadastro  datetime DEFAULT NULL,
+   data_cadastro  date NOT NULL DEFAULT '0000-00-00',
+   observacoes1  blob DEFAULT NULL,
+   observacoes2  blob DEFAULT NULL,
+   observacoes3  blob DEFAULT NULL,
+   tipo  int(10) NOT NULL DEFAULT 0,
+  PRIMARY KEY ( codigo )
+ 
     );`,
     `CREATE TABLE IF NOT EXISTS ${dbName}.servicos (
         codigo INTEGER PRIMARY KEY NOT NULL,
@@ -74,22 +76,23 @@ const sqlTables = [
         tipo_serv INTEGER DEFAULT 0
     );`,
     `CREATE TABLE IF NOT EXISTS ${dbName}.clientes (
-        codigo INTEGER PRIMARY KEY NOT NULL,
-        id int(10) unsigned NOT NULL DEFAULT 0,
-        celular TEXT,
-        nome TEXT NOT NULL,
-        cep TEXT NOT NULL DEFAULT '00000-000',
-        endereco TEXT,
-        ie TEXT,
-        numero TEXT,
-        cnpj TEXT,
-        ativo varchar(10) DEFAULT 'S',
-        cidade TEXT,
-        data_cadastro date NOT NULL DEFAULT '0000-00-00', 
-        data_recadastro  datetime DEFAULT NULL,
-        vendedor INTEGER NOT NULL DEFAULT 0,
-        bairro varchar(255) ,
-        estado  char(2) 
+            codigo  int(11) NOT NULL,
+    id  varchar(255) NOT NULL DEFAULT '0',
+    celular  varchar(255) DEFAULT NULL,
+    nome  varchar(255) NOT NULL DEFAULT '',
+    cep  varchar(255) NOT NULL DEFAULT '00000-000',
+    endereco  varchar(255) DEFAULT NULL,
+    ie  varchar(255) DEFAULT '',
+    numero  varchar(255) DEFAULT '',
+    cnpj  varchar(255) DEFAULT '',
+    ativo  char(1) NOT NULL DEFAULT 'S',
+    cidade  varchar(255) DEFAULT NULL,
+    data_cadastro  date NOT NULL DEFAULT '0000-00-00',
+    data_recadastro  datetime DEFAULT '0000-00-00 00:00:00',
+    vendedor  int(11) NOT NULL DEFAULT 0,
+    bairro  varchar(255) DEFAULT NULL,
+    estado  char(2) DEFAULT NULL,
+    PRIMARY KEY ( codigo )
     );`,
     `CREATE TABLE IF NOT EXISTS ${dbName}.forma_pagamento (
         codigo INTEGER PRIMARY KEY NOT NULL,
@@ -103,24 +106,24 @@ const sqlTables = [
 
     `CREATE TABLE IF NOT EXISTS ${dbName}.pedidos (
         codigo bigint(20)  unsigned NOT NULL DEFAULT 0,
-        id int(10) unsigned NOT NULL DEFAULT 0,
-        vendedor INTEGER NOT NULL DEFAULT 0,   
-        situacao TEXT NOT NULL DEFAULT 'EA',
-        contato TEXT,
-        descontos REAL DEFAULT 0.00,
-        forma_pagamento INTEGER DEFAULT 0,
-        observacoes BLOB,
-        quantidade_parcelas INTEGER DEFAULT 0,
-        total_geral REAL DEFAULT 0.00,
-        total_produtos REAL DEFAULT 0.00,
-        total_servicos REAL DEFAULT 0.00,
-        cliente INTEGER NOT NULL DEFAULT 0,
-        veiculo INTEGER NOT NULL DEFAULT 0,
-        data_cadastro date NOT NULL DEFAULT '0000-00-00',
-        data_recadastro  datetime DEFAULT NULL,
-        tipo_os INTEGER DEFAULT 0, 
-        enviado TEXT NOT NULL DEFAULT 'N',
-        tipo INTEGER NOT NULL DEFAULT 1,  
+         id  int(10) unsigned NOT NULL DEFAULT 0,
+         vendedor  int(11) NOT NULL DEFAULT 0,
+         situacao  char(2) NOT NULL DEFAULT 'EA',
+         contato  varchar(255) DEFAULT NULL,
+         descontos  double DEFAULT 0,
+         forma_pagamento  int(11) DEFAULT 0,
+         observacoes  blob DEFAULT NULL,
+         quantidade_parcelas  int(11) DEFAULT 0,
+         total_geral  double DEFAULT 0,
+         total_produtos  double DEFAULT 0,
+         total_servicos  double DEFAULT 0,
+         cliente  int(11) NOT NULL DEFAULT 0,
+         veiculo  int(11) NOT NULL DEFAULT 0,
+         data_cadastro  date NOT NULL DEFAULT '0000-00-00',
+         data_recadastro  datetime DEFAULT NULL,
+         tipo_os  int(11) DEFAULT 0,
+         enviado  enum('N','S') NOT NULL DEFAULT 'S',
+         tipo  int(11) NOT NULL DEFAULT 1, 
         PRIMARY KEY (codigo),
         KEY id (id) USING BTREE
     );`,
@@ -153,7 +156,7 @@ const sqlTables = [
         senha TEXT NOT NULL,
         email varchar(255),
         cnpj varchar(255),
-        responsavel varchar(255) DEFAULT 'S',
+        responsavel varchar(255) DEFAULT 'N',
         PRIMARY KEY (codigo) USING BTREE 
     );`,
     `CREATE TABLE IF NOT EXISTS ${dbName}.tipos_os (
@@ -283,10 +286,10 @@ const sqlTables = [
 
         let valid = await obj.consulta_empresas(cnpj);
 
-
+        let formatCnpj = `'${cnpj}'` 
 
         if(valid === true ){
-                let dados = await obj.consulta_dados_empresa(cnpj);
+                let dados = await obj.consulta_dados_empresa(formatCnpj);
                 let nome_empresa    
                 let telefone_empresa    
                 let email_empresa    
@@ -332,6 +335,8 @@ const sqlTables = [
         })
     }
     async consulta_dados_empresa ( empresa:string ){
+        
+        console.log(`select * from ${db_api}.empresas where cnpj = ${empresa}`)
         return new Promise<any[]>( async ( resolve, reject)=>{
             await conn.query(`select * from ${db_api}.empresas where cnpj = ${empresa}`,(err, result)=>{
                 if(err) reject(err);

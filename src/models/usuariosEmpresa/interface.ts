@@ -3,7 +3,8 @@ export interface usuarioEmpresa {
     usuario:string,
     email:string,
     cnpj:string,
-    senha:string        
+    senha:string,
+    responsavel:string        
     }
 
 export type newUserEmpresa = Omit<usuarioEmpresa , "codigo"> 

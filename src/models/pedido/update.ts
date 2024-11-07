@@ -16,6 +16,7 @@ export class UpdateOrcamento{
                 total_produtos      =  ${orcamento.total_produtos} ,
                 total_servicos      =  ${orcamento.total_servicos} ,
                 tipo_os             =  ${orcamento.tipo_os},
+                tipo                =  ${orcamento.tipo},
                 quantidade_parcelas =  ${orcamento.quantidade_parcelas} ,
                 contato             = '${orcamento.contato}',
                 veiculo             =  ${orcamento.veiculo},
@@ -24,6 +25,7 @@ export class UpdateOrcamento{
                 data_cadastro       = '${orcamento.data_cadastro}',
                 data_recadastro     = '${orcamento.data_recadastro}',
                 enviado             = 'S',
+                observacoes         =  '${orcamento.observacoes}',
                 situacao            = '${orcamento.situacao}'
                 where codigo = ${codigo}
             `
@@ -153,6 +155,26 @@ export class UpdateOrcamento{
             const ano = dataAtual.getFullYear();
             return `${ano}-${mes}-${dia}`;
         }
+
+
+        function formatarData(data:any) {
+            const dia = String(data.getDate()).padStart(2, '0');
+            const mes = String(data.getMonth() + 1).padStart(2, '0');
+            const ano = data.getFullYear();
+            return `${ano}-${mes}-${dia}`;
+        }
+        
+
+        function formatarDataHora(data:any) {
+            const dia = String(data.getDate()).padStart(2, '0');
+            const mes = String(data.getMonth() + 1).padStart(2, '0');
+            const ano = data.getFullYear();
+            const hora = String(data.getHours()).padStart(2, '0');
+            const minuto = String(data.getMinutes()).padStart(2, '0');
+            const segundo = String(data.getSeconds()).padStart(2, '0');
+            return `${ano}-${mes}-${dia} ${hora}:${minuto}:${segundo}`;
+        }
+        
 
         const dataAtual = obterDataAtual();
 
