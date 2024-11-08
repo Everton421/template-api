@@ -62,7 +62,7 @@ export class UpdateOrcamento{
     async   deleteServicosPedido(empresa:any ,codigo: number) {
         return new Promise((resolve, reject) => {
 
-            let sql2 = ` delete from ${empresa}.ser_orca
+            let sql2 = ` delete from ${empresa}.servicos_pedido
                                     where pedido = ${codigo}
                                 `
             conn.query(sql2, (err, result) => {

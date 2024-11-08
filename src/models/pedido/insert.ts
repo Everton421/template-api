@@ -101,7 +101,7 @@ export class CreateOrcamento {
                      }
 
             
-                     if(parcelas.length > 0 && status == true  ){
+                     if(parcelas.length > 0  ){
                           try{
                            await this.cadastraParcelasDoPeidido( parcelas, empresa, codigo );
                            status == true   
@@ -109,7 +109,7 @@ export class CreateOrcamento {
                               console.log(e)
                           }    
                      }
-                     if(servicos.length > 0  && status == true ){
+                     if(servicos.length > 0 ){
                           try{
                               await this.cadastraServicosDoPedido(servicos, codigo, empresa);
                               status == true   
@@ -171,12 +171,12 @@ export class CreateOrcamento {
  
 
   async cadastraParcelasDoPeidido(parcelas:any,empresa:any, codigoPedido:any){
-      parcelas.forEach( async (p: any) => {
+    let obj  = new CreateOrcamento();
+    parcelas.forEach( async (p: any) => {
         
     let {
         pedido ,  parcela ,  valor ,vencimento  
     } = p     
-
         
         let sql = `  INSERT INTO ${empresa}.parcelas ( pedido ,  parcela ,  valor, vencimento ) VALUES ( ?  , ?,  ?, ?  )`;
         let dados = [ codigoPedido ,  parcela ,  valor ,vencimento ]
@@ -238,6 +238,6 @@ export class CreateOrcamento {
           } }
         })
 }
-
+ 
 
 }
