@@ -46,9 +46,7 @@ import { TipoOsController } from "./controllers/tipos_os/tipoOsController";
 
  router.get(`${versao}/pedidos`,    new pedidoController().select)
 
- router.post(`${versao}/produtos`,   ( req, res )=>{
-    console.log(req.body)
- })
+ router.post(`${versao}/produtos`,   new ProdutoController().cadastrar)
 
  router.post(`${versao}/empresa`,   new CreateEmpresa().create)
  router.post(`${versao}/empresa/validacao`,   new CreateEmpresa().validaExistencia)
