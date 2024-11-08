@@ -8,8 +8,11 @@ export class Select_clientes{
         return new Promise <Cliente[]> ( async ( resolve , reject ) =>{
   
 
-       let sql = ` select * from ${empresa}.clientes c
-        WHERE c.ativo = 'S' and 
+       let sql = ` select *,
+             DATE_FORMAT(data_cadastro, '%Y-%m-%d') AS data_cadastro,
+            DATE_FORMAT(data_recadastro, '%Y-%m-%d %H:%i:%s') AS data_recadastro 
+            from ${empresa}.clientes c
+            WHERE c.ativo = 'S' and 
                        ( c.vendedor = ${vendedor} OR c.vendedor = 0 or c.vendedor = null)
                        order by c.vendedor    `
             await conn.query(sql,  (err, result:Cliente[] )=>{
@@ -21,7 +24,10 @@ export class Select_clientes{
     
     async   buscaPorVendedor(empresa:any, vendedor:number )   {
         return new Promise <Cliente[]> ( async ( resolve , reject ) =>{
-        let sql = ` SELECT * FROM ${empresa}.clientes WHERE vendedor = ?  `
+        let sql = ` SELECT *,
+             DATE_FORMAT(data_cadastro, '%Y-%m-%d') AS data_cadastro,
+            DATE_FORMAT(data_recadastro, '%Y-%m-%d %H:%i:%s') AS data_recadastro 
+           FROM ${empresa}.clientes WHERE vendedor = ?  `
             await conn.query(sql, [ vendedor], (err, result:Cliente[] )=>{
                 if (err)  reject(err); 
                   resolve(result)
@@ -31,7 +37,10 @@ export class Select_clientes{
 
     async   buscaPorcodigo(empresa:any, codigo:number )   {
         return new Promise <Cliente[]> ( async ( resolve , reject ) =>{
-        let sql = ` SELECT  codigo, nome, cnpj, celular  FROM ${empresa}.clientes WHERE codigo = ?  `
+        let sql = ` SELECT  codigo, nome, cnpj, celular ,
+          DATE_FORMAT(data_cadastro, '%Y-%m-%d') AS data_cadastro,
+            DATE_FORMAT(data_recadastro, '%Y-%m-%d %H:%i:%s') AS data_recadastro 
+        FROM ${empresa}.clientes WHERE codigo = ?  `
             await conn.query(sql, [ codigo], (err, result:Cliente[] )=>{
                 if (err)  reject(err); 
                   resolve(result)

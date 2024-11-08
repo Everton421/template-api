@@ -70,13 +70,16 @@ const sqlTables = [
  
     );`,
     `CREATE TABLE IF NOT EXISTS ${dbName}.servicos (
-        codigo INTEGER PRIMARY KEY NOT NULL,
+         codigo  int(11) NOT NULL,
         valor REAL DEFAULT 0,
         aplicacao TEXT NOT NULL,
-        tipo_serv INTEGER DEFAULT 0
+        tipo_serv INTEGER DEFAULT 0,
+        data_cadastro  date NOT NULL DEFAULT '0000-00-00',
+        data_recadastro  datetime DEFAULT NULL,
+         PRIMARY KEY ( codigo)
     );`,
     `CREATE TABLE IF NOT EXISTS ${dbName}.clientes (
-            codigo  int(11) NOT NULL,
+     codigo  int(11) NOT NULL,
     id  varchar(255) NOT NULL DEFAULT '0',
     celular  varchar(255) DEFAULT NULL,
     nome  varchar(255) NOT NULL DEFAULT '',
@@ -95,13 +98,16 @@ const sqlTables = [
     PRIMARY KEY ( codigo )
     );`,
     `CREATE TABLE IF NOT EXISTS ${dbName}.forma_pagamento (
-        codigo INTEGER PRIMARY KEY NOT NULL,
+         codigo  int(11) NOT NULL,
         id int(10) unsigned NOT NULL DEFAULT 0,
         descricao TEXT NOT NULL, 
         desc_maximo INTEGER DEFAULT 0,  
         parcelas INTEGER DEFAULT 0,  
         intervalo INTEGER DEFAULT 0,  
-        recebimento INTEGER DEFAULT 0  
+        recebimento INTEGER DEFAULT 0,
+    data_cadastro  date NOT NULL DEFAULT '0000-00-00',
+         data_recadastro  datetime DEFAULT NULL,
+          PRIMARY KEY (codigo)
     );`,
 
     `CREATE TABLE IF NOT EXISTS ${dbName}.pedidos (
@@ -160,12 +166,15 @@ const sqlTables = [
         PRIMARY KEY (codigo) USING BTREE 
     );`,
     `CREATE TABLE IF NOT EXISTS ${dbName}.tipos_os (
-        codigo INTEGER PRIMARY KEY NOT NULL,
-        descricao TEXT NOT NULL 
+                codigo  int(11) NOT NULL,
+        descricao TEXT NOT NULL,
+    data_cadastro  date NOT NULL DEFAULT '0000-00-00',
+         data_recadastro  datetime DEFAULT NULL,
+          PRIMARY KEY ( codigo )
     );`,
 
     `CREATE TABLE IF NOT EXISTS ${dbName}.veiculos (
-        codigo INTEGER PRIMARY KEY NOT NULL,
+         codigo  int(11) NOT NULL,
         id int(10) unsigned NOT NULL DEFAULT 0,
         cliente INTEGER NOT NULL DEFAULT 0,
         placa TEXT NOT NULL,
@@ -173,7 +182,10 @@ const sqlTables = [
         modelo INTEGER NOT NULL DEFAULT 0,
         ano TEXT NOT NULL,
         cor INTEGER NOT NULL DEFAULT 0,
-        combustivel TEXT NOT NULL 
+        combustivel TEXT NOT NULL,
+    data_cadastro  date NOT NULL DEFAULT '0000-00-00',
+        data_recadastro  datetime DEFAULT NULL,
+          PRIMARY KEY ( codigo )
     );`,
 
     `CREATE TABLE IF NOT EXISTS ${dbName}.api_config (
@@ -189,6 +201,8 @@ const sqlTables = [
       descricao  varchar(50) DEFAULT NULL,
        link  text NOT NULL,
       foto  longblob DEFAULT NULL,
+    data_cadastro  date NOT NULL DEFAULT '0000-00-00',
+       data_recadastro  datetime DEFAULT NULL,
          PRIMARY KEY ( produto , sequencia )
       ); `
 

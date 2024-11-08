@@ -32,7 +32,23 @@ export class ProdutoController{
         }
   }
 
+async cadastrar(req:Request,res:Response){
+  let empresa   = req.headers.cnpj 
+   let select = new Select_produtos();
 
+     if(!empresa){
+        return res.json(400).json({erro:"É necessario informar a empresa "});   
+     } 
+     let  dbName = `\`${empresa}\``;
+     let produtos:Produto[]
+
+     try{
+      produtos =   await   select.buscaGeral(dbName  )
+     }catch(e){
+
+     }
+
+}
 
 
 /** 

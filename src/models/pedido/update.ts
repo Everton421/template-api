@@ -125,7 +125,7 @@ export class UpdateOrcamento{
     }
     async   buscaParcelasDoOrcamento(empresa:any,codigo: number) {
         return new Promise((resolve, reject) => {
-            const sql = ` select *  from ${empresa}.parcelas where pedido = ? `
+            const sql = ` select *,  DATE_FORMAT(vencimento, '%Y-%m-%d') AS vencimento   from ${empresa}.parcelas where pedido = ? `
             conn.query(sql, [codigo], async (err, result) => {
                 if (err) {
                     console.log(err);

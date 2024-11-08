@@ -9,6 +9,8 @@ export class Select_produtos{
         let sql = `
          select 
             *,
+                 DATE_FORMAT(data_cadastro, '%Y-%m-%d') AS data_cadastro,
+        DATE_FORMAT(data_recadastro, '%Y-%m-%d %H:%i:%s') AS data_recadastro,
              CONVERT(observacoes1 USING utf8) as observacoes1,
              CONVERT(observacoes2 USING utf8) as observacoes2,
              CONVERT(observacoes3 USING utf8) as observacoes3
@@ -27,6 +29,8 @@ async buscaPorCodigoDescricao(empresa:any, codigo:number, descricao:string){
      
 
     const sql = `SELECT *, 
+          DATE_FORMAT(data_cadastro, '%Y-%m-%d') AS data_cadastro,
+        DATE_FORMAT(data_recadastro, '%Y-%m-%d %H:%i:%s') AS data_recadastro,
                   CONVERT(observacoes1 USING utf8) as observacoes1,
                   CONVERT(observacoes2 USING utf8) as observacoes2,
                   CONVERT(observacoes3 USING utf8) as observacoes3
@@ -49,6 +53,8 @@ async   buscaGeral(empresa:any )   {
     return new Promise <Produto[]> ( async ( resolve , reject ) =>{
         let sql = ` select 
         *,
+        DATE_FORMAT(data_cadastro, '%Y-%m-%d') AS data_cadastro,
+        DATE_FORMAT(data_recadastro, '%Y-%m-%d %H:%i:%s') AS data_recadastro, 
              CONVERT(observacoes1 USING utf8) as observacoes1,
              CONVERT(observacoes2 USING utf8) as observacoes2,
              CONVERT(observacoes3 USING utf8) as observacoes3
