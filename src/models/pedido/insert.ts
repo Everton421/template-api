@@ -171,23 +171,23 @@ export class CreateOrcamento {
  
 
   async cadastraParcelasDoPeidido(parcelas:any,empresa:any, codigoPedido:any){
-
       parcelas.forEach( async (p: any) => {
         
     let {
-        pedido ,  parcela ,  valor 
+        pedido ,  parcela ,  valor ,vencimento  
     } = p     
+
         
-        let vencimento = this.converterData(p.vencimento);
-        
-        let sql = `  INSERT INTO ${empresa}.parcelas ( pedido ,  parcela ,  valor ) VALUES ( ?  , ?,  ? )`;
-        let dados = [ codigoPedido ,  parcela ,  valor  ]
+        let sql = `  INSERT INTO ${empresa}.parcelas ( pedido ,  parcela ,  valor, vencimento ) VALUES ( ?  , ?,  ?, ?  )`;
+        let dados = [ codigoPedido ,  parcela ,  valor ,vencimento ]
+
+
           await   conn.query( sql,  dados , (err: any, resultParcelas) => {
                   if (err) {
                       console.log("erro ao inserir parcelas !" + err)
                       //  return response.status(500).json({ err: "erro ao as parcelas" });
                   } else {
-                      console.log('  Parcela inserida com sucesso '   )
+                      console.log('  Parcela inserida com sucesso '    )
                   }
               }
           )
