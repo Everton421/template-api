@@ -13,6 +13,7 @@ import { pedidoController } from "./controllers/pedido/pedidoController";
 import { ServicosController } from "./controllers/servicos/servicosController";
 import { FormasController } from "./controllers/formas_pagamento/formasController";
 import { TipoOsController } from "./controllers/tipos_os/tipoOsController";
+import { VeiculoController } from "./controllers/veiculo/VeiculoController";
 
   const crypt = require('crypt');
   const router = Router();
@@ -43,6 +44,7 @@ import { TipoOsController } from "./controllers/tipos_os/tipoOsController";
  router.get(`${versao}/offline/servicos`,   new ServicosController().buscaGeral )
  router.get(`${versao}/offline/formas_pagamento`, new FormasController().buscaGeral )
  router.get(`${versao}/offline/tipo_os`,   new TipoOsController().buscaGeral )
+ router.get(`${versao}/offline/veiculos`,   new VeiculoController().busca )
 
  router.get(`${versao}/pedidos`,    new pedidoController().select)
 

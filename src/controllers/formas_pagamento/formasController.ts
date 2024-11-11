@@ -9,10 +9,14 @@ export class FormasController{
       let select = new  SelectForma_pagamento();
   
        if(!empresa){
-          return res.json(400).json({erro:"É necessario informar a empresa "});   
+          return res.json(200).json({erro:"É necessario informar a empresa "});   
        } 
-       let  dbName = `\`${empresa}\``;
   
+       let headerCnpj:any =   String(req.headers.cnpj) ;
+
+       let cnpjF = headerCnpj.replace(/\D/g, '');
+       let dbName  = `\`${cnpjF}\``;
+
         let fpgt:any;  
   
           try{

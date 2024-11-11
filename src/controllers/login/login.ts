@@ -18,8 +18,12 @@ export class Login {
         let validUserApi = await selectUserApi.selectPorEmailSenha( email,senha ); 
 
             if(validUserApi.length > 0  ){
+
                 
-                let empresa = `\`${validUserApi[0].cnpj }\``;
+           //     let empresa = `\`${validUserApi[0].cnpj }\``;
+                
+                let empresa = validUserApi[0].cnpj.replace(/\D/g, '');
+                empresa= `\`${empresa}\``;
 
               let arrUser  = await selectUserEmpresa.buscaPorEmailSenha( empresa,email,senha  );
                if( arrUser.length > 0 ){

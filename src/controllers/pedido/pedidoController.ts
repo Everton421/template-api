@@ -36,7 +36,10 @@ export class pedidoController{
    //     console.log(req.headers);
 
         if(!req.headers.cnpj) return  res.status(200).json({erro:"É necessario informar o codigo da empresa "})
-
+            let headerCnpj:string = String(req.headers.cnpj);
+            let empresa = headerCnpj.replace(/\D/g, '');
+            empresa= `\`${empresa}\``;
+            
         let cnpj = `\`${req.headers.cnpj}\``;
 
         if( req.body.length < 0 ) return   res.status(200).json({erro:"É necessario informar os pedidos! "})

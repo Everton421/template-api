@@ -4,8 +4,17 @@ import { Select_clientes } from "../../models/cliente/select";
 export class ClienteController{
 
     async buscaGeral( req:Request,res:Response  ){
-        let empresa   = req.headers.cnpj 
-        let cnpj = `\`${req.headers.cnpj}\``;
+        let empresa:any   = req.headers.cnpj 
+
+        if(!req.headers.cnpj ){
+            return res.status(200).json({erro:"É necessario informar a empresa "});   
+         } 
+    
+           
+         let headerCnpj:any  = empresa.replace(/\D/g, '');
+    
+         let  dbName = `\`${headerCnpj}\``;
+    
         
         const queryVendedor = req.query.vendedor;
 
@@ -20,7 +29,7 @@ export class ClienteController{
      
         let select = new Select_clientes();
         try{
-            let clientes = await select.buscaGeral(cnpj, queryVendedor);
+            let clientes = await select.buscaGeral(dbName, queryVendedor);
 
             if (clientes.length === 0) {
                 return res.status(404).json({ erro: "Nenhum cliente encontrado." });

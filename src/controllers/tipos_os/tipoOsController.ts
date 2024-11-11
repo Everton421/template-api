@@ -12,8 +12,12 @@ export class TipoOsController{
        if(!empresa){
           return res.json(400).json({erro:"É necessario informar a empresa "});   
        } 
-       let  dbName = `\`${empresa}\``;
-  
+
+
+       let headerCnpj:any =   String(req.headers.cnpj) ;
+       empresa  = headerCnpj.replace(/\D/g, '');
+
+        let  dbName = `\`${empresa}\``;
         let tipoOS:any;  
   
           try{

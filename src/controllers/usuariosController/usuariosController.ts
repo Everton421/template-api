@@ -24,13 +24,16 @@ export class UsuariosController{
                         let email = req.body.email;
                         let senha = req.body.senha;
                         let usuario = req.body.usuario;
-                        let cnpj = `\`${req.headers.cnpj}\``;
-                        let cnpjF:any = req.headers.cnpj;
+                       
+                        let headerCnpj:any =   String(req.headers.cnpj) ;
 
-                            let user:newUserEmpresa = {cnpj:cnpjF, email:email, senha:senha,usuario:usuario , responsavel:'N'};
-        
-         let validUserEmpresa = await selectUserEmpresa.buscaPorEmailNome(cnpj,usuario, email  );
-         let validUserApi = await objUserApi.selectPorEmail( email );
+                        let cnpjF:any = req.headers.cnpj;
+                        let empresa  = headerCnpj.replace(/\D/g, '');
+                        let cnpj  = `\`${empresa}\``;
+
+                let user:newUserEmpresa = {cnpj:cnpjF, email:email, senha:senha,usuario:usuario , responsavel:'N'};
+                let validUserEmpresa = await selectUserEmpresa.buscaPorEmailNome(cnpj,usuario, email  );
+                let validUserApi = await objUserApi.selectPorEmail( email );
 
                  if( validUserEmpresa.length > 0  ){
                          return res.status(200).json({ok:false, msg:`O usuario ${email} já foi cadastrado na empresa !`})
