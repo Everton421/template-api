@@ -48,6 +48,7 @@ export class pedidoController{
 
             const results = await Promise.all(dadosPedidos.map(async (p:any) => {
 
+                    console.log(p)
                     let validPedido:any;
                     let status_registrado:any;  
                              
@@ -60,7 +61,7 @@ export class pedidoController{
 
                                          if ( p.data_recadastro >  data_recad){
                                               let aux = await updatePedido.update(cnpj, p, p.codigo)
-                                             console.log( aux)
+                                            // console.log( aux)
                                              return { codigo: aux , status: 'atualizado' };
                                          } else{
                                             console.log(` o pedido ${p.codigo} se encontra atualizado com sucesso` )
