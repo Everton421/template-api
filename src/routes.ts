@@ -1,9 +1,7 @@
 import { Router,Request,Response, NextFunction } from "express";
 import { conn  } from "./database/databaseConfig";
 import 'dotenv/config';
-//import { Orcamento_service } from "./controllers/orcamento/orcamento_service";
 import { checkToken } from "./middleware/cheqtoken";
-import { Select_produtos } from "./models/produtos/select";
 import { ProdutoController } from "./controllers/produtos/produtoController";
 import { ClienteController } from "./controllers/cliente/clienteController";
 import { CreateEmpresa } from "./controllers/empresa/empresaController";
@@ -14,11 +12,12 @@ import { ServicosController } from "./controllers/servicos/servicosController";
 import { FormasController } from "./controllers/formas_pagamento/formasController";
 import { TipoOsController } from "./controllers/tipos_os/tipoOsController";
 import { VeiculoController } from "./controllers/veiculo/VeiculoController";
+import { EnvioCodigoValidador } from "./controllers/recuperarConta/EnvioCodigoValidador";  
+import { Alterar_senha } from "./controllers/recuperarConta/alterarSenha";
 
   const crypt = require('crypt');
   const router = Router();
   export const versao = '/v1'
-
 
     router.get(`${versao}/`, async (req:Request, res:Response)=>{
        await conn.getConnection(
@@ -30,38 +29,40 @@ import { VeiculoController } from "./controllers/veiculo/VeiculoController";
            }
          }
        )
-      //return  res.json({"ok":true});
 
     })
 
-    router.get(`${versao}/teste`,(req,res)=>{ 
+    router.get(`${versao}/teste`,checkToken,(req,res)=>{ 
       return  res.json({"ok":true});
     })
 
  
- router.get(`${versao}/offline/produtos`,   new ProdutoController().buscaGeral )
- router.get(`${versao}/offline/clientes`,   new ClienteController().buscaGeral )
- router.get(`${versao}/offline/servicos`,   new ServicosController().buscaGeral )
- router.get(`${versao}/offline/formas_pagamento`, new FormasController().buscaGeral )
- router.get(`${versao}/offline/tipo_os`,   new TipoOsController().buscaGeral )
- router.get(`${versao}/offline/veiculos`,   new VeiculoController().busca )
+ router.get(`${versao}/offline/produtos`,         checkToken,  new ProdutoController().buscaGeral )
+ router.get(`${versao}/offline/clientes`,         checkToken,  new ClienteController().buscaGeral )
+ router.get(`${versao}/offline/servicos`,         checkToken,  new ServicosController().buscaGeral )
+ router.get(`${versao}/offline/formas_pagamento`, checkToken,  new FormasController().buscaGeral )
+ router.get(`${versao}/offline/tipo_os`,          checkToken,  new TipoOsController().buscaGeral )
+ router.get(`${versao}/offline/veiculos`,         checkToken,  new VeiculoController().busca )
 
- router.get(`${versao}/pedidos`,    new pedidoController().select)
+ router.get(`${versao}/pedidos`,  checkToken,  new pedidoController().select)
 
- router.post(`${versao}/produtos`,   new ProdutoController().cadastrar)
+ ////////
+  router.post(`${versao}/enviar_codigo`,  checkToken, new EnvioCodigoValidador().main);
+  router.post(`${versao}/alterar_senha`,  checkToken, new Alterar_senha().main);
 
- router.post(`${versao}/empresa`,   new CreateEmpresa().create)
- router.post(`${versao}/empresa/validacao`,   new CreateEmpresa().validaExistencia)
+
+
+ router.post(`${versao}/produtos`,        checkToken, new ProdutoController().cadastrar)
+
+ router.post(`${versao}/empresa`,   checkToken, new CreateEmpresa().create)
+ router.post(`${versao}/empresa/validacao`, checkToken,  new CreateEmpresa().validaExistencia)
 //
 
  router.post(`${versao}/login`, checkToken,  new Login().login)
- router.post(`${versao}/registrar_usuario`, new UsuariosController().cadastrar)
+ router.post(`${versao}/registrar_usuario`,checkToken, new UsuariosController().cadastrar)
 /////
- router.post(`${versao}/pedidos`, new pedidoController().insert)
+ router.post(`${versao}/pedidos`, checkToken, new pedidoController().insert)
 ////
 
  
-
-/**___________ */
-
     export {router} 

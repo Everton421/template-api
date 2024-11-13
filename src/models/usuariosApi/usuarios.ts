@@ -40,11 +40,31 @@ export class UsuariosApi{
 
     async selectPorEmail(email:string){
         return new Promise< UsuarioApi[]>( async  (resolve, reject)=>{
+
             let sql = `
-                select * from ${db_api}.usuarios where email = ?
+                select * from ${db_api}.usuarios where email ='${email}'
             `;
 
-            await conn.query(sql, [ email ],(err, result )=>{ 
+
+            await conn.query(sql,  (err, result )=>{ 
+                if(err){
+                    console.log(err); 
+                    reject(err);
+                }else{ 
+                    resolve(result);
+                }
+             })
+
+        })
+    }
+ 
+    async selectPorEmailCodigoValidador(email:string, codigoRecuperador:any){
+        return new Promise< UsuarioApi[]>( async  (resolve, reject)=>{
+            let sql = `
+                select * from ${db_api}.usuarios where email = ? and cod_recuperador = ? 
+            `;
+
+            await conn.query(sql, [ email, codigoRecuperador  ],(err, result )=>{ 
                 if(err) reject(err);
                 else 
                     resolve(result);
@@ -52,7 +72,7 @@ export class UsuariosApi{
 
         })
     }
- 
+
     async selectPorEmailSenha(email:string, senha:any){
         return new Promise< UsuarioApi[]>( async  (resolve, reject)=>{
             let sql = `
@@ -66,7 +86,45 @@ export class UsuariosApi{
             })
 
         })
-}
+    }
+
+    async updateCodigoValidador( codigo:number, data:any, email:any ){
+        return new Promise ( async  (resolve, reject)=>{
+
+            let sql = `
+                  update ${db_api}.usuarios
+                    set cod_recuperador= '${codigo}',
+                        data_expiracao='${data}'
+                  where email = '${email}'   
+            `;
+
+            await conn.query(sql,  (err, result )=>{ 
+                if(err) reject(err);
+                else 
+                    resolve(result);
+            })
+
+        })
+    }
+
+    async updateSenha( senha:any,  email:any ){
+        return new Promise ( async  (resolve, reject)=>{
+
+            let sql = `
+                  update ${db_api}.usuarios
+                    set senha = '${senha}' 
+                  where email = '${email}'   
+            `;
+
+            await conn.query(sql,  (err, result )=>{ 
+                if(err) reject(err);
+                else 
+                    resolve(result);
+            })
+
+        })
+    }
+
 
 
 

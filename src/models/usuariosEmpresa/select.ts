@@ -5,7 +5,7 @@ export class Select_UsuarioEmpresa{
 
     async buscaGeral( empresa:any){
         return new Promise<usuarioEmpresa[]>( async ( resolve, reject )=>{
-            let sql = ` select * form ${empresa}.usuarios;`
+            let sql = ` select * from ${empresa}.usuarios;`
             await conn.query( sql ,( err, result )=>{
                 if(err){
                     reject(err);
@@ -18,7 +18,7 @@ export class Select_UsuarioEmpresa{
 
     async buscaPorEmail( empresa:any,email:any ){
         return new Promise<usuarioEmpresa[]>( async ( resolve, reject )=>{
-            let sql = ` select * form ${empresa}.usuarios where email = ? ;`
+            let sql = ` select * from ${empresa}.usuarios where email = ? ;`
             await conn.query( sql ,[ email ],( err, result )=>{
                 if(err){
                     reject(err);
@@ -31,7 +31,7 @@ export class Select_UsuarioEmpresa{
   
     async buscaPorCodigo( empresa:any,codigo:any ){
         return new Promise<usuarioEmpresa[]>( async ( resolve, reject )=>{
-            let sql = ` select * form ${empresa}.usuarios where codigo = ? ;`
+            let sql = ` select * from ${empresa}.usuarios where codigo = ? ;`
             await conn.query( sql ,[ codigo ],( err, result )=>{
                 if(err){
                     reject(err);
