@@ -45,7 +45,6 @@ export class UsuariosApi{
                 select * from ${db_api}.usuarios where email ='${email}'
             `;
 
-
             await conn.query(sql,  (err, result )=>{ 
                 if(err){
                     console.log(err); 
