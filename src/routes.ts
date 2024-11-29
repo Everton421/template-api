@@ -37,8 +37,13 @@ import { Alterar_senha } from "./controllers/recuperarConta/alterarSenha";
     })
 
  
- router.get(`${versao}/offline/produtos`,         checkToken,  new ProdutoController().buscaGeral )
- router.get(`${versao}/offline/clientes`,         checkToken,  new ClienteController().buscaGeral )
+ router.get(`${versao}/offline/produtos`,   checkToken,  new ProdutoController().buscaGeral )
+ router.post(`${versao}/produtos`,          checkToken, new ProdutoController().cadastrar)
+
+ router.get(`${versao}/offline/clientes`,   checkToken,  new ClienteController().buscaGeral )
+ router.post(`${versao}/clientes`,          checkToken, new ClienteController().cadastrar)
+
+
  router.get(`${versao}/offline/servicos`,         checkToken,  new ServicosController().buscaGeral )
  router.get(`${versao}/offline/formas_pagamento`, checkToken,  new FormasController().buscaGeral )
  router.get(`${versao}/offline/tipo_os`,          checkToken,  new TipoOsController().buscaGeral )
@@ -50,9 +55,6 @@ import { Alterar_senha } from "./controllers/recuperarConta/alterarSenha";
   router.post(`${versao}/enviar_codigo`,  checkToken, new EnvioCodigoValidador().main);
   router.post(`${versao}/alterar_senha`,  checkToken, new Alterar_senha().main);
 
-
-
- router.post(`${versao}/produtos`,        checkToken, new ProdutoController().cadastrar)
 
  router.post(`${versao}/empresa`,   checkToken, new CreateEmpresa().create)
  router.post(`${versao}/empresa/validacao`, checkToken,  new CreateEmpresa().validaExistencia)

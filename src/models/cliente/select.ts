@@ -47,7 +47,28 @@ export class Select_clientes{
             })
          })
     }
-    
 
+    async   buscaPorCnpj(empresa:any, cnpj:any )   {
+      return new Promise <Cliente[]> ( async ( resolve , reject ) =>{
+      let sql = ` SELECT  *,
+        DATE_FORMAT(data_cadastro, '%Y-%m-%d') AS data_cadastro,
+          DATE_FORMAT(data_recadastro, '%Y-%m-%d %H:%i:%s') AS data_recadastro 
+      FROM ${empresa}.clientes WHERE cnpj = ?  `
+          await conn.query(sql, [ cnpj], (err, result:Cliente[] )=>{
+              if (err)  reject(err); 
+                resolve(result)
+          })
+       })
+  }
+  
+  async   buscaUltimoIdInserido(empresa:any,   )   {
+    return new Promise <any> ( async ( resolve , reject ) =>{
+    let sql = ` SELECT MAX(codigo) as codigo FROM ${empresa}.clientes `
+        await conn.query(sql,   (err, result:any )=>{
+            if (err)  reject(err); 
+              resolve(result)
+        })
+     })
 }
 
+}

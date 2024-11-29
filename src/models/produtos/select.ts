@@ -66,5 +66,15 @@ async   buscaGeral(empresa:any )   {
      })
 }
 
+async   buscaUltimoCodigoInserido(empresa:any )   {
+    return new Promise <any> ( async ( resolve , reject ) =>{
+
+    let sql = ` select MAX(codigo) as codigo  from ${empresa}.produtos `
+        await conn.query(sql,   (err, result:any[] )=>{
+            if (err)  reject(err); 
+              resolve(result[0])
+        })
+     })
+}
 
 }

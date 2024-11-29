@@ -4,7 +4,7 @@ import {conn} from '../../database/databaseConfig'
 
 export class Insert_clientes{
 
-    async   buscaGeral(empresa:any, cliente:Cliente )   {
+    async   cadastrar(empresa:any, cliente:Cliente )   {
         return new Promise  ( async ( resolve , reject ) =>{
         let sql =
          `  
@@ -23,7 +23,7 @@ export class Insert_clientes{
                 data_recadastro ,
                 vendedor,
                 bairro,
-                estado,
+                estado 
                ) values
                 (
                 ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ? );
@@ -33,7 +33,7 @@ export class Insert_clientes{
 
              await conn.query(sql, dados, (err, result:Cliente[] )=>{
                 if (err)  reject(err); 
-                  resolve(result)
+                  resolve(cliente)
             })
          })
     }
