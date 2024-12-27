@@ -14,6 +14,8 @@ import { TipoOsController } from "./controllers/tipos_os/tipoOsController";
 import { VeiculoController } from "./controllers/veiculo/VeiculoController";
 import { EnvioCodigoValidador } from "./controllers/recuperarConta/EnvioCodigoValidador";  
 import { Alterar_senha } from "./controllers/recuperarConta/alterarSenha";
+import { CategoriaController } from "./controllers/categorias/categoriaController";
+import { MarcasController } from "./controllers/marcas/marcasController";
 
   const crypt = require('crypt');
   const router = Router();
@@ -65,6 +67,18 @@ import { Alterar_senha } from "./controllers/recuperarConta/alterarSenha";
 /////
  router.post(`${versao}/pedidos`, checkToken, new pedidoController().insert)
 ////
+router.post(`${versao}/offline/categorias`,   new CategoriaController().cadastrar )
+router.get(`${versao}/offline/categorias`,   new CategoriaController().buscaGeral )
+router.get(`${versao}/offline/categorias/:descricao`,   new CategoriaController().buscaPorDescricao )
+
+////
+
+
+router.post(`${versao}/offline/marcas`,   new MarcasController().cadastrar )
+router.get(`${versao}/offline/marcas`,   new MarcasController().buscaGeral )
+router.get(`${versao}/offline/marcas/:descricao`,   new MarcasController().buscaPorDescricao )
+
+
 
  
     export {router} 

@@ -224,7 +224,25 @@ export class CreateEmpresa {
     data_cadastro  date NOT NULL DEFAULT '0000-00-00',
        data_recadastro  datetime DEFAULT NULL,
          PRIMARY KEY ( produto , sequencia )
-      ); `,
+      );`,
+     ` CREATE TABLE  ${dbName}.categorias  (
+         codigo  int(11) NOT NULL AUTO_INCREMENT,
+         id  int(10) unsigned NOT NULL DEFAULT 0,
+         data_cadastro  date NOT NULL DEFAULT '0000-00-00',
+         data_recadastro  datetime DEFAULT NULL,
+         descricao  varchar(255) NOT NULL DEFAULT '',
+        PRIMARY KEY ( codigo )
+      ) ;
+      `,
+      ` CREATE TABLE  ${dbName}.marcas  (
+        codigo  int(11) NOT NULL AUTO_INCREMENT,
+        id  int(10) unsigned NOT NULL DEFAULT 0,
+        data_cadastro  date NOT NULL DEFAULT '0000-00-00',
+        data_recadastro  datetime DEFAULT NULL,
+        descricao  varchar(255) NOT NULL DEFAULT '',
+       PRIMARY KEY ( codigo )
+     ) ;
+     `
     ];
 
     let sql = ` create database if not exists  ${dbName}  ;  `;
