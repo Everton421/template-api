@@ -1,4 +1,5 @@
 export interface Cliente {
+  id:any,
   codigo :number, 
   celular:string, 
   nome :string,
@@ -9,7 +10,7 @@ export interface Cliente {
   cnpj :string,
   cidade :string,
   data_cadastro :string,
-  data_recadastro :string,
+  data_recadastro :string | null,
   vendedor:number,
   estado:string,
   bairro:string

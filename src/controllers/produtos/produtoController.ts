@@ -46,13 +46,13 @@ async cadastrar(req:Request,res:Response){
         if(!req.body.id)                return res.status(200).json({ erro:true, msg: "É necessario informar o id  para registrar o produto!"});
         if(!req.body.grupo)             return res.status(200).json({ erro:true, msg: "É necessario informar o grupo para registrar o produto!"});
         if(!req.body.descricao)         return res.status(200).json({ erro:true, msg: "É necessario informar a descrição para registrar o produto!"});
-        if(!req.body.num_fabricante)    return res.status(200).json({ erro:true, msg: "É necessario informar o codigo de barras para registrar o produto!"});
-        if(!req.body.num_original)      return res.status(200).json({ erro:true, msg: "É necessario informar a referência  para registrar o produto!"});
-        if(!req.body.sku)               return res.status(200).json({ erro:true, msg: "É necessario informar o sku  para registrar o produto!"});
-        if (!req.body.ativo)            return res.status(200).json({ erro:true, msg: "É necessario informar o status do produto !"});
-        if (!req.body.class_fiscal)     return res.status(200).json({ erro:true, msg: "É necessario informar o ncm  para registrar o produto!"});
-        if (!req.body.cst)              return res.status(200).json({ erro:true, msg: "É necessario informar  cst para registrar o produto!"});
-
+       // if(!req.body.num_fabricante)    return res.status(200).json({ erro:true, msg: "É necessario informar o codigo de barras para registrar o produto!"});
+       // if(!req.body.num_original)      return res.status(200).json({ erro:true, msg: "É necessario informar a referência  para registrar o produto!"});
+       // if(!req.body.sku)               return res.status(200).json({ erro:true, msg: "É necessario informar o sku  para registrar o produto!"});
+        if (!req.body.ativo)   req.body.ativo = 'S'     // return res.status(200).json({ erro:true, msg: "É necessario informar o status do produto !"});
+        if (!req.body.class_fiscal)      return res.status(200).json({ erro:true, msg: "É necessario informar o ncm  para registrar o produto!"});
+        if (!req.body.cst) req.body.cst='00'   //return res.status(200).json({ erro:true, msg: "É necessario informar  cst para registrar o produto!"});
+    
         let produto =  {
           "codigo"          : req.body.codigo,
           "id"              : req.body.id,
@@ -61,8 +61,8 @@ async cadastrar(req:Request,res:Response){
           "grupo"           : req.body.grupo,
           "origem"          : req.body.origem,
           "descricao"       : req.body.descricao,
-          "num_fabricante"  : req.body.num_fabricante,
-          "num_original"    : req.body.num_original,
+          "num_fabricante"  : req.body.num_fabricante, // num-fabricante gtim/codigo de barros 
+          "num_original"    : req.body.num_original,   //referencia 
           "sku"             : req.body.sku,
           "marca"           : req.body.marca,
           "ativo"           : req.body.ativo,

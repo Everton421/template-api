@@ -66,7 +66,7 @@ export class CreateEmpresa {
 
     const sqlTables = [
       `CREATE TABLE IF NOT EXISTS ${dbName}.produtos (
-     codigo  int(11) NOT NULL,
+     codigo int(11) unsigned NOT NULL AUTO_INCREMENT,
    id  int(10) unsigned NOT NULL DEFAULT 0,
    estoque  double DEFAULT 0,
    preco  double DEFAULT 0,
@@ -74,7 +74,7 @@ export class CreateEmpresa {
    origem  char(1) NOT NULL DEFAULT '0',
    descricao  varchar(255) NOT NULL DEFAULT '',
    num_fabricante  varchar(255) NOT NULL DEFAULT '',
-   num_original  varchar(255) DEFAULT NULL,
+   num_original  varchar(255) DEFAULT NULL DEFAULT '',
    sku  varchar(255) NOT NULL DEFAULT '',
    marca  int(11) DEFAULT 0,
    ativo  char(1) NOT NULL DEFAULT 'S',
