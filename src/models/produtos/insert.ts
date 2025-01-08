@@ -4,13 +4,8 @@ export class InsertProdutos{
 
     async insert ( empresa:any, produto:any){
 
-     //   return new Promise( async ( resolve, reject)=>{
-//
-//
-     //   }))
-
+       return new Promise( async ( resolve, reject)=>{
             let {
-                codigo,
                 ativo,
                 class_fiscal,
                 cst,
@@ -32,7 +27,6 @@ export class InsertProdutos{
 
                 const sql =` INSERT INTO  ${empresa}.produtos  
                              (
-                            codigo,
                             estoque ,
                             preco ,
                             grupo ,
@@ -50,7 +44,6 @@ export class InsertProdutos{
                             observacoes2,
                             observacoes3
                                 ) VALUES (
-                                    ${codigo},
                                     ${estoque} ,
                                     ${preco} ,
                                     ${grupo} ,
@@ -70,18 +63,18 @@ export class InsertProdutos{
                                   )
                             `;
 
-
-                let dados = [codigo, estoque , preco ,  grupo , origem ,  descricao ,  num_fabricante ,   num_original , sku ,  marca ,  class_fiscal , data_cadastro , data_recadastro ,  tipo, observacoes1, observacoes2, observacoes3 ]
+                let dados = [   estoque , preco ,  grupo , origem ,  descricao ,  num_fabricante ,   num_original , sku ,  marca ,  class_fiscal , data_cadastro , data_recadastro ,  tipo, observacoes1, observacoes2, observacoes3 ]
                             await conn.query(sql,   (err, result )=>{
                                 if(err){
-                                    console.log(err)
-                                    //reject(err);
+                                     console.log(err)
+                                     reject(err);
                                 }else{
                                     console.log(`produto cadastrado com sucesso `)
-                                   // resolve(result);
+                                     resolve(result);
                                 }
                             })
-    }
+                        })
+        }
 
 }
  

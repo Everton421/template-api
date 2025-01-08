@@ -58,6 +58,8 @@ export class CategoriaController{
                 let resultado:any = await select.busca_geral(dbName);
                 if( resultado.length > 0 ){
                     return res.status(200).json(resultado)
+                }else{
+                return res.status(404).json({ erro: "Nenhuma categoria encontrada." });
                 }
 
          }catch(e){

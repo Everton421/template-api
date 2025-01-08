@@ -42,17 +42,49 @@ async cadastrar(req:Request,res:Response){
    let select = new Select_produtos();
    let insert = new InsertProdutos();
  
-        if(!req.body.codigo)            return res.status(200).json({ erro:true, msg: "É necessario informar o codigo para registrar o produto!"});
-        if(!req.body.id)                return res.status(200).json({ erro:true, msg: "É necessario informar o id  para registrar o produto!"});
+
+   
+ function  obterDataAtual() {
+  const dataAtual = new Date();
+  const dia = String(dataAtual.getDate()).padStart(2, '0');
+  const mes = String(dataAtual.getMonth() + 1).padStart(2, '0');
+  const ano = dataAtual.getFullYear();
+  return `${ano}-${mes}-${dia}`;
+}
+
+ function  obterDataHoraAtual() {
+    const dataAtual = new Date();
+    const dia = String(dataAtual.getDate()).padStart(2, '0');
+    const mes = String(dataAtual.getMonth() + 1).padStart(2, '0');
+    const ano = dataAtual.getFullYear();
+    const hora = dataAtual.getHours();
+    const minuto = dataAtual.getMinutes();
+    const segundos = dataAtual.getSeconds();
+    return `${ano}-${mes}-${dia} ${hora}:${minuto}:${segundos}`;
+}
+
+        if(!req.body.id)    req.body.id = 0 
+        if(!req.body.preco)    req.body.preco = 0 
+        if(!req.body.estoque)    req.body.estoque = 0 
+
         if(!req.body.grupo)             return res.status(200).json({ erro:true, msg: "É necessario informar o grupo para registrar o produto!"});
         if(!req.body.descricao)         return res.status(200).json({ erro:true, msg: "É necessario informar a descrição para registrar o produto!"});
-       // if(!req.body.num_fabricante)    return res.status(200).json({ erro:true, msg: "É necessario informar o codigo de barras para registrar o produto!"});
-       // if(!req.body.num_original)      return res.status(200).json({ erro:true, msg: "É necessario informar a referência  para registrar o produto!"});
-       // if(!req.body.sku)               return res.status(200).json({ erro:true, msg: "É necessario informar o sku  para registrar o produto!"});
+        if(!req.body.num_fabricante)   req.body.num_fabricante =''  //return res.status(200).json({ erro:true, msg: "É necessario informar o codigo de barras para registrar o produto!"});
+        if(!req.body.num_original)     req.body.num_original =''  //return res.status(200).json({ erro:true, msg: "É necessario informar a referência  para registrar o produto!"});
+        
+        if(!req.body.origem) req.body.origem = 0;     
+        if(!req.body.sku)              req.body.sku =''  //return res.status(200).json({ erro:true, msg: "É necessario informar o sku  para registrar o produto!"});
         if (!req.body.ativo)   req.body.ativo = 'S'     // return res.status(200).json({ erro:true, msg: "É necessario informar o status do produto !"});
-        if (!req.body.class_fiscal)      return res.status(200).json({ erro:true, msg: "É necessario informar o ncm  para registrar o produto!"});
+        if (!req.body.class_fiscal) req.body.class_fiscal= '0000.00.00'    //return res.status(200).json({ erro:true, msg: "É necessario informar o ncm  para registrar o produto!"});
         if (!req.body.cst) req.body.cst='00'   //return res.status(200).json({ erro:true, msg: "É necessario informar  cst para registrar o produto!"});
-    
+        if(!req.body.tipo) req.body.tipo = 0
+        if(!req.body.data_cadastro ) req.body.data_cadastro = obterDataAtual(); 
+        if(!req.body.data_recadastro ) req.body.data_recadastro = obterDataHoraAtual();
+
+        if(!req.body.observacoes1) req.body.observacoes1 =  ""
+        if(!req.body.observacoes2) req.body.observacoes2 = "" 
+        if(!req.body.observacoes3) req.body.observacoes3 = "" 
+
         let produto =  {
           "codigo"          : req.body.codigo,
           "id"              : req.body.id,
@@ -77,14 +109,31 @@ async cadastrar(req:Request,res:Response){
          }   
    
      try{
-          let resultUltimoId =   await   select.buscaUltimoCodigoInserido(dbName )
-      console.log(resultUltimoId)
-          let codigoNovo = resultUltimoId.codigo + 1; 
-          produto.codigo = codigoNovo;
-          await insert.insert(dbName, produto);
-            return res.status(200).json({
-              ok:true,  
-            msg: `produto cadastrado com sucesso  ${codigoNovo}` })
+          let resultinsertId:any = await insert.insert(dbName, produto);
+            return res.status(200).json(
+              {
+              "codigo": resultinsertId.insertId,
+              "id"              : req.body.id,
+              "estoque"         : req.body.estoque,
+              "preco"           : req.body.preco,
+              "grupo"           : req.body.grupo,
+              "origem"          : req.body.origem,
+              "descricao"       : req.body.descricao,
+              "num_fabricante"  : req.body.num_fabricante, // num-fabricante gtim/codigo de barros 
+              "num_original"    : req.body.num_original,   //referencia 
+              "sku"             : req.body.sku,
+              "marca"           : req.body.marca,
+              "ativo"           : req.body.ativo,
+              "class_fiscal"    : req.body.class_fiscal,
+              "cst"             : req.body.cst,
+              "data_recadastro" : req.body.data_recadastro,
+              "data_cadastro"   : req.body.data_cadastro,
+              "observacoes1"    : req.body.observacoes1,
+              "observacoes2"    : req.body.observacoes2,
+              "observacoes3"    : req.body.observacoes3,
+              "tipo"            : req.body.tipo 
+            })
+           
             
         }catch(e){
           return res.status(200).json({ erro:true, msg: `Ocorreu um erro ao cadastrar o produto!`});

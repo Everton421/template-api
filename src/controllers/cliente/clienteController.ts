@@ -153,7 +153,6 @@ async cadastrar(req:Request,res:Response){
 
                         }   
             }
-
         }
 	
         
