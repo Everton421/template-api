@@ -99,7 +99,7 @@ export class CreateEmpresa {
          PRIMARY KEY ( codigo)
     );`,
       `CREATE TABLE IF NOT EXISTS ${dbName}.clientes (
-     codigo  int(11) NOT NULL,
+     codigo int(11) unsigned NOT NULL AUTO_INCREMENT,
     id  varchar(255) NOT NULL DEFAULT '0',
     celular  varchar(255) DEFAULT NULL,
     nome  varchar(255) NOT NULL DEFAULT '',
@@ -118,7 +118,7 @@ export class CreateEmpresa {
     PRIMARY KEY ( codigo )
     );`,
       `CREATE TABLE IF NOT EXISTS ${dbName}.forma_pagamento (
-         codigo  int(11) NOT NULL,
+        codigo int(11) unsigned NOT NULL AUTO_INCREMENT,
         id int(10) unsigned NOT NULL DEFAULT 0,
         descricao TEXT NOT NULL, 
         desc_maximo INTEGER DEFAULT 0,  

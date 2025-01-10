@@ -121,6 +121,13 @@ async cadastrar(req:Request,res:Response){
             if (!postCliente.bairro)          postCliente.bairro = "";
             if (!postCliente.estado)          postCliente.estado = "";
 
+
+
+               function removerCaracteres(str:string) {
+              return str.replace(/\D/g, '');  
+              }
+               vCnpj = removerCaracteres(vCnpj)
+
         if(vCnpj.length < 11 || vCnpj.length > 14 ||   vCnpj.length === 12 || vCnpj.length === 13 ) {
             return res.status(200).json({erro:true, msg:"cnpj/cpf invalido  "});   
         }
@@ -137,15 +144,28 @@ async cadastrar(req:Request,res:Response){
             if( validCnpj.length > 0 ){
                     return res.status(200).json({erro:true, msg:"já existe cliente cadastrado com este cnpj/cpf"});        
             }else{
-                let resultId = await select.buscaUltimoIdInserido(dbName);
-                let ultimoId =resultId[0].codigo; 
-                let novoCod = ultimoId + 1;
-                let itemInserido;
-                     postCliente.codigo = novoCod;
+                postCliente.cnpj = cnpjFormat; 
+
+                let itemInserido:any;
                         try{
                             itemInserido = await insert.cadastrar(dbName,postCliente )
-                            console.log(itemInserido)
-                            return res.status(200).json({ok:true, msg:"cliente cadastrado com sucesso!"});        
+                     postCliente.codigo = itemInserido.insertId;
+
+                            return res.status(200).json(
+                                { 
+                                    codigo : postCliente.codigo,
+                                    id : postCliente.id,
+                                    celular : postCliente.celular,
+                                    nome : postCliente.nome,
+                                    cep : postCliente.cep,
+                                    endereco : postCliente.endereco,
+                                    ie : postCliente.ie,
+                                    numero : postCliente.numero,
+                                    cnpj : postCliente.cnpj,
+                                    cidade : postCliente.cidade,
+                                    data_cadastro:postCliente.data_cadastro,
+                                    data_recadastro:postCliente.data_recadastro
+                                });        
 
                         }catch(err){
                                 console.log(`erro ao inserir o cliente`,err);

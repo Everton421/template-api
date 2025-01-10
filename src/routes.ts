@@ -47,7 +47,11 @@ import { MarcasController } from "./controllers/marcas/marcasController";
 
 
  router.get(`${versao}/offline/servicos`,         checkToken,  new ServicosController().buscaGeral )
+ 
  router.get(`${versao}/offline/formas_pagamento`, checkToken,  new FormasController().buscaGeral )
+ router.post(`${versao}/formas_pagamento`,checkToken, new FormasController().cadastrar)
+
+
  router.get(`${versao}/offline/tipo_os`,          checkToken,  new TipoOsController().buscaGeral )
  router.get(`${versao}/offline/veiculos`,         checkToken,  new VeiculoController().busca )
 

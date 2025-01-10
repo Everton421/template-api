@@ -13,6 +13,7 @@ export class Insert_Categorias{
             await conn.query( sql , values,(err, result )=>{
                 if(err){
                     reject(err);
+                    console.log(err)
                 }else{
                     resolve(result);
                 }
