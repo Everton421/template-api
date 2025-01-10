@@ -63,10 +63,10 @@ import { MarcasController } from "./controllers/marcas/marcasController";
 
 
  router.post(`${versao}/empresa`,   checkToken, new CreateEmpresa().create)
- router.post(`${versao}/empresa/validacao`, checkToken,  new CreateEmpresa().validaExistencia)
+ router.post(`${versao}/empresa/validacao`,    new CreateEmpresa().validaExistencia)
 //
 
- router.post(`${versao}/login`, checkToken,  new Login().login)
+ router.post(`${versao}/login`,   new Login().login)
  router.post(`${versao}/registrar_usuario`,checkToken, new UsuariosController().cadastrar)
 /////
  router.post(`${versao}/pedidos`, checkToken, new pedidoController().insert)
