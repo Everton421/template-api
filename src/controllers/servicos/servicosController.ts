@@ -1,5 +1,6 @@
 import { Request, Response } from "express";
 import { Select_servicos } from "../../models/servicos/select";
+import { InsertServico } from "../../models/servicos/insert";
 
 export class ServicosController{
 
@@ -35,5 +36,71 @@ export class ServicosController{
         }
   }
 
+
+  
+  async cadastrar(req:Request,res:Response){
+    let empresa   = req.headers.cnpj 
+    if(!empresa){
+      return res.json(400).json({erro:"É necessario informar a empresa "});   
+   } 
+   let  dbName = `\`${empresa}\``;
+  
+     let insert = new InsertServico();
+     
+   function  obterDataAtual() {
+    const dataAtual = new Date();
+    const dia = String(dataAtual.getDate()).padStart(2, '0');
+    const mes = String(dataAtual.getMonth() + 1).padStart(2, '0');
+    const ano = dataAtual.getFullYear();
+    return `${ano}-${mes}-${dia}`;
+  }
+  
+   function  obterDataHoraAtual() {
+      const dataAtual = new Date();
+      const dia = String(dataAtual.getDate()).padStart(2, '0');
+      const mes = String(dataAtual.getMonth() + 1).padStart(2, '0');
+      const ano = dataAtual.getFullYear();
+      const hora = dataAtual.getHours();
+      const minuto = dataAtual.getMinutes();
+      const segundos = dataAtual.getSeconds();
+      return `${ano}-${mes}-${dia} ${hora}:${minuto}:${segundos}`;
+  }
+  console.log(req.body)
+  
+ 
+          if(!req.body.tipo_serv)    req.body.tipo_serv = 0 
+          if(!req.body.valor)    req.body.valor = 0 
+
+          if(!req.body.aplicacao)         return res.status(200).json({ erro:true, msg: "É necessario informar a descrição para registrar o servico!"});
+         if (!req.body.data_cadastro) req.body.data_cadastro = obterDataAtual(); 
+         if(!req.body.data_recadastro) req.body.data_recadastro = obterDataHoraAtual();
+
+          let servico = {
+        "valor" :req.body.valor,
+        "aplicacao" :req.body.aplicacao,
+        "tipo_serv" :req.body.tipo_serv,
+        "data_cadastro" :req.body.data_cadastro,
+        "data_recadastro" :req.body.data_recadastro,
+          }
+
+       try{
+            let resultinsertId:any = await insert.insert(dbName, servico);
+              return res.status(200).json(
+                {
+                "codigo"               : resultinsertId.insertId,
+                "valor"                : req.body.valor,
+                "aplicacao"            : req.body.aplicacao,
+                "tipo_serv"            : req.body.tipo_serv,
+                "data_cadastro"        : req.body.data_cadastro,
+                "data_recadastro"      : req.body.data_recadastro,
+                      
+              })
+          }catch(e){
+            return res.status(200).json({ erro:true, msg: `Ocorreu um erro ao cadastrar o servico!`});
+  
+           }
+ 
+   
+  }
 
 }

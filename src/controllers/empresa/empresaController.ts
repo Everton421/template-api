@@ -90,7 +90,7 @@ export class CreateEmpresa {
  
     );`,
       `CREATE TABLE IF NOT EXISTS ${dbName}.servicos (
-         codigo  int(11) NOT NULL,
+           codigo int(11) unsigned NOT NULL AUTO_INCREMENT,
         valor REAL DEFAULT 0,
         aplicacao TEXT NOT NULL,
         tipo_serv INTEGER DEFAULT 0,
