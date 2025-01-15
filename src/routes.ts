@@ -45,14 +45,11 @@ import { MarcasController } from "./controllers/marcas/marcasController";
  router.get(`${versao}/offline/clientes`,   checkToken,  new ClienteController().buscaGeral )
  router.post(`${versao}/clientes`,          checkToken, new ClienteController().cadastrar)
 
-
  router.get(`${versao}/offline/servicos`,         checkToken,  new ServicosController().buscaGeral )
  router.post(`${versao}/servicos`,  checkToken,  new ServicosController().cadastrar)
- 
 
  router.get(`${versao}/offline/formas_pagamento`, checkToken,  new FormasController().buscaGeral )
  router.post(`${versao}/formas_pagamento`,checkToken, new FormasController().cadastrar)
-
 
  router.get(`${versao}/offline/tipo_os`,          checkToken,  new TipoOsController().buscaGeral )
  router.get(`${versao}/offline/veiculos`,         checkToken,  new VeiculoController().busca )
@@ -62,7 +59,6 @@ import { MarcasController } from "./controllers/marcas/marcasController";
  ////////
   router.post(`${versao}/enviar_codigo`,  checkToken, new EnvioCodigoValidador().main);
   router.post(`${versao}/alterar_senha`,  checkToken, new Alterar_senha().main);
-
 
  router.post(`${versao}/empresa`,   checkToken, new CreateEmpresa().create)
  router.post(`${versao}/empresa/validacao`, checkToken,  new CreateEmpresa().validaExistencia)
@@ -79,11 +75,13 @@ router.get(`${versao}/offline/categorias/:descricao`,   new CategoriaController(
 
 ////
 
-
 router.post(`${versao}/offline/marcas`,   new MarcasController().cadastrar )
 router.get(`${versao}/offline/marcas`,   new MarcasController().buscaGeral )
 router.get(`${versao}/offline/marcas/:descricao`,   new MarcasController().buscaPorDescricao )
 
+//////////// rotas next
+ router.get(`${versao}/next/produtos/:produto`,  checkToken,  new ProdutoController().buscaProdutoNext)
+    
 
 
  

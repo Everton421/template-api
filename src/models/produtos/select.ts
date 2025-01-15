@@ -48,6 +48,27 @@ async buscaPorCodigoDescricao(empresa:any, codigo:number, descricao:string){
     })
 }
 
+async buscaPorCodigoOuDescricao(empresa:any, parametro:string){
+
+    const sql = `SELECT *, 
+          DATE_FORMAT(data_cadastro, '%Y-%m-%d') AS data_cadastro,
+        DATE_FORMAT(data_recadastro, '%Y-%m-%d %H:%i:%s') AS data_recadastro,
+                  CONVERT(observacoes1 USING utf8) as observacoes1,
+                  CONVERT(observacoes2 USING utf8) as observacoes2,
+                  CONVERT(observacoes3 USING utf8) as observacoes3
+
+            FROM ${empresa}.produtos 
+            WHERE  codigo like ? OR descricao = ?    `;
+    return new Promise<Produto[]>( async (resolve,reject)=>{
+        await conn.query( sql,[  parametro , parametro], (err, result)=>{
+            if(err){ 
+                  reject(err)
+            }else{
+                 resolve(result)
+                 }
+        } )
+    })
+}
 
 async   buscaGeral(empresa:any )   {
     return new Promise <Produto[]> ( async ( resolve , reject ) =>{
